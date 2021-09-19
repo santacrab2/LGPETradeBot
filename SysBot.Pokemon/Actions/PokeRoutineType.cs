@@ -5,6 +5,7 @@
         Idle,
         LGPE_OverworldScan,
         LGPE_EncounterBot,
+        LGPETradeBot,
         SWSH_OverworldScan,
         SWSH_EncounterBot,
         SWSH_DynamaxAdventure,

@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
+using System.Collections.Concurrent;
 
 namespace SysBot.Pokemon
 {
@@ -18,5 +19,6 @@ namespace SysBot.Pokemon
         public readonly PokeTradeHubConfig Config;
         public readonly BotSynchronizer? BotSync;
         public readonly BotCompleteCounts Counts;
+        public readonly ConcurrentPool<LetsGoTrades> Bots = new();
     }
 }

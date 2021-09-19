@@ -8,9 +8,14 @@
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" />
-    <PackageReference Include="PKHeX.Core" Version="21.5.21" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
+    <PackageReference Include="PKHeX.Core" Version="21.8.6" />
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PKHeX.Core.AutoMod">
+      <HintPath>..\..\PKHeX-Plugins8.14.21\AutoLegalityMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
+    </Reference>
   </ItemGroup>
 </Project>
