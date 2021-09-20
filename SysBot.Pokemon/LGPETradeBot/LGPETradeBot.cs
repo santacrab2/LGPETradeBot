@@ -38,9 +38,7 @@ namespace SysBot.Pokemon
                 var task = Config.CurrentRoutineType switch
                 {
                     
-                    PokeRoutineType.LGPETradeBot => DoTrades(token),
-                    PokeRoutineType.Idle => DoNothing(token),
-                    _ => DoNothing(token)
+                    _ => DoTrades(token)
                 };
                 await task.ConfigureAwait(false);
             }
@@ -77,13 +75,14 @@ namespace SysBot.Pokemon
                     await Task.Delay(1_000, token).ConfigureAwait(false);
                     
                 }
-                await Click(A, 200, token);
-                await Task.Delay(3000);
-                await Click(DDOWN, 200, token);
-                await Click(A, 200, token);
-                await Task.Delay(3000);
-                await Click(A, 200, token);
-                await Task.Delay(1000);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(3000).ConfigureAwait(false);
+                await SetStick(SwitchStick.RIGHT,0,-30000, 100, token).ConfigureAwait(false);
+                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(3000).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(1000).ConfigureAwait(false);
                 var code = new List<pictocodes>();
                 for(int i = 0; i <= 2; i++)
                 {
@@ -98,13 +97,55 @@ namespace SysBot.Pokemon
                 await ((IMessageChannel)Channel.Peek()).SendMessageAsync($"Here is your link code: {strbui}\n My IGN is {Connection.Label.Split('-')[0]}");
                 foreach(pictocodes pc in code)
                 {
-                    for(int i = (int)pc; i > 0; i--)
+                    if((int)pc > 4)
                     {
-                        await Click(DRIGHT, 200, token);
-                        await Task.Delay(500);
+                        await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
+                        await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
-                    await Click(A, 200, token);
-                    await Task.Delay(500);
+                    if ((int)pc <= 4)
+                    {
+                        for (int i = (int)pc; i > 0; i--)
+                        {
+                            await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = (int)pc-5; i > 0; i--)
+                        {
+                            await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(500).ConfigureAwait(false);
+                    if ((int)pc <= 4)
+                    {
+                        for (int i = (int)pc; i > 0; i--)
+                        {
+                            await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        for (int i = (int)pc-5; i > 0; i--)
+                        {
+                            await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                            await Task.Delay(500).ConfigureAwait(false);
+                        }
+                    }
+
+                    if ((int)pc > 4)
+                    {
+                        await SetStick(SwitchStick.RIGHT, 0, 30000, 100, token).ConfigureAwait(false);
+                        await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                    }
                 }
                
             }
