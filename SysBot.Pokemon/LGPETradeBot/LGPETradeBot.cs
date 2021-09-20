@@ -106,7 +106,7 @@ namespace SysBot.Pokemon
                     await Click(A, 200, token);
                     await Task.Delay(500);
                 }
-                while(!await lgbox)
+               
             }
         }
 
