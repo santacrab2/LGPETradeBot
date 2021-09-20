@@ -15,7 +15,7 @@ namespace SysBot.Pokemon.Discord
 {
     
 
-    class TradeModule : ModuleBase<SocketCommandContext>
+   public class TradeModule : ModuleBase<SocketCommandContext>
     {
 
        
