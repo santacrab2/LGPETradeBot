@@ -63,6 +63,7 @@ namespace SysBot.Pokemon
         public PokeRoutineExecutor CreateBotFromConfig(PokeBotState cfg) => cfg.NextRoutineType switch
         {
             PokeRoutineType.LGPE_OverworldScan => new OverworldBot(cfg, Hub),
+            PokeRoutineType.LGPETradeBot => new LetsGoTrades(Hub,cfg),
             PokeRoutineType.LGPE_EncounterBot => new Letsgo(cfg, Hub),
             PokeRoutineType.SWSH_OverworldScan => new OverworldScan(cfg, Hub),
             PokeRoutineType.SWSH_EggFetch => new EggBot(cfg, Hub),
