@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
+using Discord;
 
 namespace SysBot.Pokemon.WinForms
 {
@@ -85,14 +86,14 @@ namespace SysBot.Pokemon.WinForms
             var lastTime = bot.LastTime;
             if (!b.IsRunning)
             {
-                PB_Lamp.BackColor = Color.Transparent;
+                PB_Lamp.BackColor = System.Drawing.Color.Transparent;
                 return;
             }
 
             var cfg = bot.Config;
             if (cfg.CurrentRoutineType == PokeRoutineType.Idle && cfg.NextRoutineType == PokeRoutineType.Idle)
             {
-                PB_Lamp.BackColor = Color.Yellow;
+                PB_Lamp.BackColor = System.Drawing.Color.Yellow;
                 return;
             }
             if (LastUpdateStatus == lastTime)
@@ -100,8 +101,8 @@ namespace SysBot.Pokemon.WinForms
 
             // Color decay from Green based on time
             const int threshold = 100;
-            Color good = Color.Green;
-            Color bad = Color.Red;
+            System.Drawing.Color good = System.Drawing.Color.Green;
+            System.Drawing.Color bad = System.Drawing.Color.Red;
 
             var delta = DateTime.Now - lastTime;
             var seconds = delta.Seconds;
@@ -125,12 +126,12 @@ namespace SysBot.Pokemon.WinForms
             }
         }
 
-        private static Color Blend(Color color, Color backColor, double amount)
+        private static System.Drawing.Color Blend(System.Drawing.Color color, System.Drawing.Color backColor, double amount)
         {
             byte r = (byte)((color.R * amount) + (backColor.R * (1 - amount)));
             byte g = (byte)((color.G * amount) + (backColor.G * (1 - amount)));
             byte b = (byte)((color.B * amount) + (backColor.B * (1 - amount)));
-            return Color.FromArgb(r, g, b);
+            return System.Drawing.Color.FromArgb(r, g, b);
         }
 
         public void TryRemove()
@@ -140,7 +141,7 @@ namespace SysBot.Pokemon.WinForms
             Remove?.Invoke(this, EventArgs.Empty);
         }
 
-        public void SendCommand(BotControlCommand cmd, bool echo = true)
+        public async void SendCommand(BotControlCommand cmd, bool echo = true)
         {
             var bot = GetBot();
             switch (cmd)
@@ -150,23 +151,43 @@ namespace SysBot.Pokemon.WinForms
                 case BotControlCommand.Stop: bot.Stop(); break;
                 case BotControlCommand.Resume: bot.Resume(); break;
                 case BotControlCommand.Restart:
-                {
-                    var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "Are you sure you want to restart the connection?");
-                    if (prompt != DialogResult.Yes)
-                        return;
+                    {
+                        var prompt = WinFormsUtil.Prompt(MessageBoxButtons.YesNo, "Are you sure you want to restart the connection?");
+                        if (prompt != DialogResult.Yes)
+                            return;
 
-                    bot.Bot.Connection.Reset();
-                    bot.Start();
-                    break;
-                }
+                        bot.Bot.Connection.Reset();
+                        bot.Start();
+                        break;
+                    }
                 default:
                     WinFormsUtil.Alert($"{cmd} is not a command that can be sent to the Bot.");
                     return;
             }
-            if (echo)
-                EchoUtil.Echo($"{bot.Bot.Connection.Name} has been issued a command to {cmd}.");
+            if (cmd == BotControlCommand.Start)
+            {
+                if (bot.Bot.Config.NextRoutineType == PokeRoutineType.LGPETradeBot)
+                {
+                    ulong.TryParse("872611393222897694", out var tchan);
+                    var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
+                    if (tradechan.Name.Contains("❌"))
+                        await tradechan.ModifyAsync(prop => prop.Name = "empoleon-LGPE-bot✅");
+                    var offembed = new EmbedBuilder();
+                    offembed.AddField("Empoleon Bot Announcement", "LGPE Trade Bot is Online");
+                    await tradechan.SendMessageAsync(embed: offembed.Build());
+                }
+            }
+            if (cmd == BotControlCommand.Stop)
+            {
+                ulong.TryParse("872611393222897694", out var tchan);
+                var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
+                if (tradechan.Name.Contains("✅"))
+                    await tradechan.ModifyAsync(prop => prop.Name = "empoleon-LGPE-bot❌");
+                var offembed = new EmbedBuilder();
+                offembed.AddField("Empoleon Bot Announcement", "LGPE Trade Bot is Offline");
+                await tradechan.SendMessageAsync(embed: offembed.Build());
+            }
         }
-
         private BotSource<PokeBotState> GetBot()
         {
             if (Runner == null)
@@ -178,8 +199,8 @@ namespace SysBot.Pokemon.WinForms
             return bot;
         }
 
-        private void BotController_MouseEnter(object? sender, EventArgs e) => BackColor = Color.LightSkyBlue;
-        private void BotController_MouseLeave(object? sender, EventArgs e) => BackColor = Color.Transparent;
+        private void BotController_MouseEnter(object? sender, EventArgs e) => BackColor = System.Drawing.Color.LightSkyBlue;
+        private void BotController_MouseLeave(object? sender, EventArgs e) => BackColor = System.Drawing.Color.Transparent;
 
         public void ReadState()
         {

@@ -1,6 +1,7 @@
 ﻿using PKHeX.Core;
 using SysBot.Base;
 using System;
+using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +11,7 @@ using static SysBot.Pokemon.PokeDataOffsets;
 using System.Collections;
 using System.Collections.Generic;
 using Discord;
+
 
 namespace SysBot.Pokemon
 {
@@ -29,7 +31,7 @@ namespace SysBot.Pokemon
         public override async Task MainLoop(CancellationToken token)
         {
             Log("Identifying trainer data of the host console.");
-            var sav = await IdentifyTrainer(token).ConfigureAwait(false);
+          var sav= await LGIdentifyTrainer(token).ConfigureAwait(false);
 
             Log("Starting main TradeBot loop.");
             while (!token.IsCancellationRequested)
@@ -62,6 +64,13 @@ namespace SysBot.Pokemon
 
         public async Task DoTrades(CancellationToken token)
         {
+            var BoxStart = 0x533675B0;
+            var SlotSize = 260;
+            var GapSize = 380;
+            var SlotCount = 25;
+            //uint GetBoxOffset(int box) => (uint)BoxStart + (uint)((SlotSize + GapSize) * SlotCount * box);
+            uint GetBoxOffset(int box) => 0x533675B0;
+            uint GetSlotOffset(int box, int slot) => GetBoxOffset(box) + (uint)((SlotSize + GapSize) * slot);
             while (!token.IsCancellationRequested)
             {
                 int waitCounter = 0;
@@ -75,6 +84,35 @@ namespace SysBot.Pokemon
                     await Task.Delay(1_000, token).ConfigureAwait(false);
                     
                 }
+                Log("starting a trade sequence");
+                var code = new List<pictocodes>();
+                for (int i = 0; i <= 2; i++)
+                {
+                    code.Add((pictocodes)Util.Rand.Next(10));
+
+                }
+                System.Text.StringBuilder strbui = new System.Text.StringBuilder();
+                var pictoembed = new EmbedBuilder();
+                foreach (pictocodes t in code)
+                {
+                 
+                    strbui.Append($"{t}, ");
+                }
+                var user = (IUser)discordname.Peek();
+                await user.SendMessageAsync($"Here is your link code: {strbui}\n My IGN is {Connection.Label.Split('-')[0]}");
+                var pkm = (PB7)tradepkm.Peek();
+                var slotofs = GetSlotOffset(1, 0);
+                var StoredLength = SlotSize- 0x1C;
+                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1,token);
+                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70),token);
+              
+                await Click(X, 200, token).ConfigureAwait(false);
+                await Task.Delay(1000).ConfigureAwait(false);
+               await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                await SetStick(SwitchStick.RIGHT, 0, 0, 100, token).ConfigureAwait(false);
+                await Task.Delay(500);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(3000).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT,0,-30000, 100, token).ConfigureAwait(false);
@@ -83,18 +121,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(3000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000).ConfigureAwait(false);
-                var code = new List<pictocodes>();
-                for(int i = 0; i <= 2; i++)
-                {
-                    code.Add((pictocodes)Util.Rand.Next(10));
-                    
-                }
-                System.Text.StringBuilder strbui = new System.Text.StringBuilder();
-                foreach(pictocodes t in code)
-                {
-                    strbui.Append($"{t}, ");
-                }
-                await ((IMessageChannel)Channel.Peek()).SendMessageAsync($"Here is your link code: {strbui}\n My IGN is {Connection.Label.Split('-')[0]}");
+           
                 foreach(pictocodes pc in code)
                 {
                     if((int)pc > 4)
@@ -147,7 +174,47 @@ namespace SysBot.Pokemon
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
                 }
-               
+                await user.SendMessageAsync("searching for you now, you have 1 minute to match").ConfigureAwait(false);
+                await Task.Delay(60_000).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(30_000).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(60_000).ConfigureAwait(false);
+                await Click(B, 200, token).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
+                while (!await LGIsOnOverworld(token).ConfigureAwait(false))
+                {
+                    await Click(B, 200, token).ConfigureAwait(false);
+                    await Task.Delay(500).ConfigureAwait(false);
+                }
+                await Task.Delay(500);
+                await Click(B, 200, token);
+                await Task.Delay(500);
+                await Click(B, 200, token);
+                await Task.Delay(500);
+                await Click(B, 200, token);
+                await Task.Delay(500);
+                await Click(B, 200, token);
+                // var returnpkbytes = await Connection.ReadBytesAsync(BoxSlot1, 260, token);
+                // var returnpk = PKMConverter.GetPKMfromBytes(returnpkbytes);
+                var returnpk = await LGReadPokemon(BoxSlot1, token);
+                if (returnpk == null)
+                {
+                    returnpk = new PB7();
+                }
+                    
+                byte[] writepoke = returnpk.EncryptedBoxData;
+               var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
+                tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
+                System.IO.File.WriteAllBytes(tpfile, writepoke);
+                await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
+                discordID.Dequeue();
+                discordname.Dequeue();
+                Channel.Dequeue();
+                tradepkm.Dequeue();
+                continue;
+
             }
         }
 

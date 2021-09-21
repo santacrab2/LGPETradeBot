@@ -49,6 +49,7 @@ namespace SysBot.Pokemon.Discord
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
+                await Context.User.SendMessageAsync("You have been added to the queue. I will message you here when the trade begins!");
             } catch
             {
                 var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
