@@ -23,6 +23,11 @@ namespace SysBot.Pokemon.Discord
         [Alias("t")]
         public async Task Trade([Remainder]string Content)
         {
+            APILegality.AllowBatchCommands = true;
+            APILegality.AllowTrainerOverride = true;
+            APILegality.ForceSpecifiedBall = true;
+            APILegality.SetMatchingBalls = true;
+           
             var set = new ShowdownSet(Content);
             if (set.InvalidLines.Count != 0)
             {
@@ -33,7 +38,7 @@ namespace SysBot.Pokemon.Discord
            try
             {
                 var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "Piplup");
-                var pkm = sav.GetLegalFromSet(set, out var result);
+                var pkm = LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                     pkm= EggTrade((PB7)pkm);
                 if (pkm is not PB7 || !new LegalityAnalysis(pkm).Valid)
@@ -43,12 +48,15 @@ namespace SysBot.Pokemon.Discord
                     await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
                     return;
                 }
-
+                
                 pkm.ResetPartyStats();
                LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
+                await Context.Message.DeleteAsync();
+                await ReplyAsync($"{Context.User.Username} added you to the queue. There are {LetsGoTrades.discordname.Count} users in line");
+                await Context.User.SendMessageAsync("You have been added to the queue. I will message you here when the trade begins!");
             } catch
             {
                 var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
