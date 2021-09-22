@@ -11,12 +11,14 @@ using static SysBot.Pokemon.PokeDataOffsets;
 using System.Collections;
 using System.Collections.Generic;
 using Discord;
+using System.Diagnostics;
 
 
 namespace SysBot.Pokemon
 {
     public class LetsGoTrades : PokeRoutineExecutor
     {
+        public static SAV7b sav = new();
         public static PB7 pkm = new();
         private readonly PokeTradeHub<PK8> Hub;
         public static Queue discordname = new();
@@ -31,7 +33,7 @@ namespace SysBot.Pokemon
         public override async Task MainLoop(CancellationToken token)
         {
             Log("Identifying trainer data of the host console.");
-          var sav= await LGIdentifyTrainer(token).ConfigureAwait(false);
+          sav = await LGIdentifyTrainer(token).ConfigureAwait(false);
 
             Log("Starting main TradeBot loop.");
             while (!token.IsCancellationRequested)
@@ -177,27 +179,25 @@ namespace SysBot.Pokemon
                 await user.SendMessageAsync("searching for you now, you have 1 minute to match").ConfigureAwait(false);
                 await Task.Delay(60_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(30_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(60_000).ConfigureAwait(false);
+                await Click(A, 200, token);
+                await Task.Delay(500);
                 await Click(B, 200, token).ConfigureAwait(false);
+                await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
-                while (!await LGIsOnOverworld(token).ConfigureAwait(false))
+                Stopwatch btimeout = new();
+                btimeout.Restart();
+                while (btimeout.ElapsedMilliseconds < 10_000)
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);
                 }
-                await Task.Delay(500);
-                await Click(B, 200, token);
-                await Task.Delay(500);
-                await Click(B, 200, token);
-                await Task.Delay(500);
-                await Click(B, 200, token);
-                await Task.Delay(500);
-                await Click(B, 200, token);
-                // var returnpkbytes = await Connection.ReadBytesAsync(BoxSlot1, 260, token);
-                // var returnpk = PKMConverter.GetPKMfromBytes(returnpkbytes);
+                btimeout.Stop();
+             
                 var returnpk = await LGReadPokemon(BoxSlot1, token);
                 if (returnpk == null)
                 {

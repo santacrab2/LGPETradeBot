@@ -168,23 +168,23 @@ namespace SysBot.Pokemon.WinForms
             {
                 if (bot.Bot.Config.NextRoutineType == PokeRoutineType.LGPETradeBot)
                 {
-                    ulong.TryParse("872611393222897694", out var tchan);
+                    ulong.TryParse("890016056549195797", out var tchan);
                     var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
-                    if (tradechan.Name.Contains("❌"))
-                        await tradechan.ModifyAsync(prop => prop.Name = "empoleon-LGPE-bot✅");
+                    if (tradechan.Name != "articuno-LGPE-bot✅")
+                        await tradechan.ModifyAsync(prop => prop.Name = "articuno-LGPE-bot✅");
                     var offembed = new EmbedBuilder();
-                    offembed.AddField("Empoleon Bot Announcement", "LGPE Trade Bot is Online");
+                    offembed.AddField("Articuno Bot Announcement", "LGPE Trade Bot is Online");
                     await tradechan.SendMessageAsync(embed: offembed.Build());
                 }
             }
             if (cmd == BotControlCommand.Stop)
             {
-                ulong.TryParse("872611393222897694", out var tchan);
+                ulong.TryParse("890016056549195797", out var tchan);
                 var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
-                if (tradechan.Name.Contains("✅"))
-                    await tradechan.ModifyAsync(prop => prop.Name = "empoleon-LGPE-bot❌");
+                if (tradechan.Name != "articuno-LGPE-bot❌")
+                    await tradechan.ModifyAsync(prop => prop.Name = "articuno-LGPE-bot❌");
                 var offembed = new EmbedBuilder();
-                offembed.AddField("Empoleon Bot Announcement", "LGPE Trade Bot is Offline");
+                offembed.AddField("Articuno Bot Announcement", "LGPE Trade Bot is Offline");
                 await tradechan.SendMessageAsync(embed: offembed.Build());
             }
         }
