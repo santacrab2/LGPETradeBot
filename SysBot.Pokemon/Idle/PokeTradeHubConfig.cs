@@ -45,6 +45,10 @@ namespace SysBot.Pokemon
 
         [Category(Bots)]
         [TypeConverter(typeof(ExpandableObjectConverter))]
+        public TradebotSettings TradeBot { get; set; } = new();
+
+        [Category(Bots)]
+        [TypeConverter(typeof(ExpandableObjectConverter))]
         public OverworldScanSettings SWSH_OverworldScan { get; set; } = new();
 
         [Category(Bots)]

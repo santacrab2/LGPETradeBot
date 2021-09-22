@@ -3,6 +3,7 @@ using SysBot.Base;
 using System;
 using System.Drawing;
 using System.Linq;
+using PKHeX.Drawing;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Text.RegularExpressions;
@@ -16,8 +17,11 @@ using System.Diagnostics;
 
 namespace SysBot.Pokemon
 {
+
     public class LetsGoTrades : PokeRoutineExecutor
     {
+        
+        
         public static SAV7b sav = new();
         public static PB7 pkm = new();
         private readonly PokeTradeHub<PK8> Hub;
@@ -32,6 +36,7 @@ namespace SysBot.Pokemon
         }
         public override async Task MainLoop(CancellationToken token)
         {
+            
             Log("Identifying trainer data of the host console.");
           sav = await LGIdentifyTrainer(token).ConfigureAwait(false);
 
@@ -70,7 +75,7 @@ namespace SysBot.Pokemon
             var SlotSize = 260;
             var GapSize = 380;
             var SlotCount = 25;
-            //uint GetBoxOffset(int box) => (uint)BoxStart + (uint)((SlotSize + GapSize) * SlotCount * box);
+         
             uint GetBoxOffset(int box) => 0x533675B0;
             uint GetSlotOffset(int box, int slot) => GetBoxOffset(box) + (uint)((SlotSize + GapSize) * slot);
             while (!token.IsCancellationRequested)
@@ -93,15 +98,18 @@ namespace SysBot.Pokemon
                     code.Add((pictocodes)Util.Rand.Next(10));
 
                 }
-                System.Text.StringBuilder strbui = new System.Text.StringBuilder();
-                var pictoembed = new EmbedBuilder();
-                foreach (pictocodes t in code)
-                {
-                 
-                    strbui.Append($"{t}, ");
-                }
+              //  System.Text.StringBuilder strbui = new System.Text.StringBuilder();
+                var pictoembed0 = new EmbedBuilder();
+                var pictoembed1 = new EmbedBuilder();
+                var pictoembed2 = new EmbedBuilder();
+                pictoembed0.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[0]}.gif";
+                pictoembed1.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[1]}.gif";
+                pictoembed2.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[2]}.gif";
                 var user = (IUser)discordname.Peek();
-                await user.SendMessageAsync($"Here is your link code: {strbui}\n My IGN is {Connection.Label.Split('-')[0]}");
+                await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
+                await user.SendMessageAsync(embed: pictoembed0.Build());
+                await user.SendMessageAsync(embed: pictoembed1.Build());
+                await user.SendMessageAsync(embed: pictoembed2.Build());
                 var pkm = (PB7)tradepkm.Peek();
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;
@@ -191,7 +199,7 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 Stopwatch btimeout = new();
                 btimeout.Restart();
-                while (btimeout.ElapsedMilliseconds < 10_000)
+                while (btimeout.ElapsedMilliseconds < 15_000)
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);

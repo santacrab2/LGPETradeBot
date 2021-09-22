@@ -16,6 +16,7 @@ namespace SysBot.Pokemon
         {
             if (!string.IsNullOrWhiteSpace(Hub.Config.Discord.Token))
                 AddDiscordBot(Hub.Config.Discord.Token);
+           
         }
 
         private void AddDiscordBot(string apiToken)
