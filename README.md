@@ -6,6 +6,8 @@ You need Manu's custom sysbot base for this work. setting it up after that is ba
 
 any further questions can be answered at [The Ice Den Discord](https://www.piplup.net)
 
+I imagine thos bit will get updated frequently i am always coming up with new ideas for things and just adding them and pushing so keep an eye out for that.
+
 
 
 
