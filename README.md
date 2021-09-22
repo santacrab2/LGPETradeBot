@@ -1,10 +1,10 @@
-#Santa's Lets Go Trade Bot
+# Santa's Lets Go Trade Bot
 
-##Disclaimer I am lazy. Offset hunting sucks. This is basically done all through over-estimated average timings for the button pushes. Its sloppy, im not super duper proud of it but hey now the genning community has a trade bot for every single game from generations 6-8 mission accomplished. 
+## Disclaimer I am lazy. Offset hunting sucks. This is basically done all through over-estimated average timings for the button pushes. Its sloppy, im not super duper proud of it but hey now the genning community has a trade bot for every single game from generations 6-8 mission accomplished. 
 
 You need Manu's custom sysbot base for this work. setting it up after that is basically the same as sysbot. Also its timing based, so its slow and wont be as fast as gen 8 sysbot, just let your users know to just go through the trade and wait for the bot to catch up hahah
 
-any further questions can be answered at https://www.piplup.net
+any further questions can be answered at [The Ice Den Discord](https://www.piplup.net)
 
 
 
