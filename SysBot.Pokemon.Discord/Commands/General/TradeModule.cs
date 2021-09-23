@@ -25,7 +25,7 @@ namespace SysBot.Pokemon.Discord
         [Alias("t")]
         public async Task Trade([Remainder]string Content)
         {
-            if (LetsGoTrades.discordname.Contains(Context.User.Username))
+            if (LetsGoTrades.discordname.Contains(Context.User))
             {
                 await ReplyAsync("you are already in queue");
                 return;
@@ -139,7 +139,7 @@ namespace SysBot.Pokemon.Discord
         public async Task filetrade()
         {
             
-            if (LetsGoTrades.discordname.Contains(Context.User.Username))
+            if (LetsGoTrades.discordname.Contains(Context.User))
             {
                 await ReplyAsync("you are already in queue");
                 return;

@@ -99,9 +99,9 @@ namespace SysBot.Pokemon
 
                 }
               //  System.Text.StringBuilder strbui = new System.Text.StringBuilder();
-                var pictoembed0 = new EmbedBuilder();
-                var pictoembed1 = new EmbedBuilder();
-                var pictoembed2 = new EmbedBuilder();
+                var pictoembed0 = new EmbedBuilder().WithTitle($"{code[0]}");
+                var pictoembed1 = new EmbedBuilder().WithTitle($"{code[1]}");
+                var pictoembed2 = new EmbedBuilder().WithTitle($"{code[2]}");
                 pictoembed0.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[0].ToString().ToLower()}.gif";
                 pictoembed1.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[1].ToString().ToLower()}.gif";
                 pictoembed2.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[2].ToString().ToLower()}.gif";
