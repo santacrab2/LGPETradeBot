@@ -68,7 +68,17 @@ namespace SysBot.Pokemon
                 await Task.Delay(1_000, token).ConfigureAwait(false);
             }
         }
-
+        private static readonly byte[] BlackPixel = // 1x1 black pixel
+       {
+            0x42, 0x4D, 0x3A, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x36, 0x00, 0x00, 0x00, 0x28, 0x00,
+            0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01, 0x00,
+            0x00, 0x00, 0x01, 0x00, 0x18, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+            0x00, 0x00
+        };
         public async Task DoTrades(CancellationToken token)
         {
             var BoxStart = 0x533675B0;
@@ -131,10 +141,10 @@ namespace SysBot.Pokemon
                 await Task.Delay(3000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000).ConfigureAwait(false);
-           
-                foreach(pictocodes pc in code)
+                System.IO.File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}/Block.png", BlackPixel);
+                foreach (pictocodes pc in code)
                 {
-                    if((int)pc > 4)
+                    if ((int)pc > 4)
                     {
                         await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
@@ -150,7 +160,7 @@ namespace SysBot.Pokemon
                     }
                     else
                     {
-                        for (int i = (int)pc-5; i > 0; i--)
+                        for (int i = (int)pc - 5; i > 0; i--)
                         {
                             await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
@@ -170,7 +180,7 @@ namespace SysBot.Pokemon
                     }
                     else
                     {
-                        for (int i = (int)pc-5; i > 0; i--)
+                        for (int i = (int)pc - 5; i > 0; i--)
                         {
                             await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
@@ -184,22 +194,25 @@ namespace SysBot.Pokemon
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
                 }
-                await user.SendMessageAsync("searching for you now, you have 1 minute to match").ConfigureAwait(false);
-                await Task.Delay(60_000).ConfigureAwait(false);
+                
+                await user.SendMessageAsync("searching for you now, you have 30 seconds to match").ConfigureAwait(false);
+                await Task.Delay(30_000).ConfigureAwait(false);
+                System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
+                await user.SendMessageAsync("assuming we have matched,You have 15 seconds to select your trade pokemon");
                 await Task.Delay(15_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
+                await user.SendMessageAsync("trading...");
                 await Task.Delay(60_000).ConfigureAwait(false);
-                await Click(A, 200, token);
+                await Click(B, 200, token);
                 await Task.Delay(500);
                 await Click(B, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
-                await Click(A, 200, token).ConfigureAwait(false);
                 Stopwatch btimeout = new();
                 btimeout.Restart();
-                while (btimeout.ElapsedMilliseconds < 15_000)
+                while (btimeout.ElapsedMilliseconds < 20_000)
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);
