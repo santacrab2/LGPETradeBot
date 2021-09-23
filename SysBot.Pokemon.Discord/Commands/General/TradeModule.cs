@@ -52,12 +52,13 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync(msg).ConfigureAwait(false);
                 return;
             }
+           
            try
             {
                 
-                var pkm = LetsGoTrades.sav.GetLegalFromSet(set, out var result);
+                PB7 pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    pkm= EggTrade((PB7)pkm);
+                    pkm= EggTrade(pkm);
                 if (pkm is not PB7 || !new LegalityAnalysis(pkm).Valid)
                 {
                     var reason = result.ToString() == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
@@ -65,8 +66,9 @@ namespace SysBot.Pokemon.Discord
                     await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
                     return;
                 }
+              
                 
-                pkm.ResetPartyStats();
+               
                LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
