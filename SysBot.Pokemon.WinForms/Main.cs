@@ -266,5 +266,10 @@ namespace SysBot.Pokemon.WinForms
         {
             TB_IP.Visible = CB_Protocol.SelectedIndex == 0;
         }
+
+        private void Main_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
