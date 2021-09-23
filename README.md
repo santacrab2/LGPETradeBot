@@ -1,10 +1,25 @@
+# Santa's Lets Go Trade Bot
+
+## Disclaimer I am lazy. Offset hunting sucks. This is basically done all through over-estimated average timings for the button pushes. Its sloppy, im not super duper proud of it but hey now the genning community has a trade bot for every single game from generations 6-8 mission accomplished. 
+
+You need Manu's custom sysbot base for this work. setting it up after that is basically the same as sysbot. Also its timing based, so its slow and wont be as fast as gen 8 sysbot, just let your users know to just go through the trade and wait for the bot to catch up hahah
+
+any further questions can be answered at [The Ice Den Discord](https://www.piplup.net)
+
+I imagine thos bit will get updated frequently i am always coming up with new ideas for things and just adding them and pushing so keep an eye out for that.
+
+
+
+
+
+
 # Sys-EncounterBot.NET
 ![License](https://img.shields.io/badge/License-AGPLv3-blue.svg)
 
 ## Disclaimer:
 I am doing this project for personal use and, above all, as a learning tool. Some bots are a proof of concept and they may work for me but not for you. If you run into any problems or have any suggestions, feel free to contact me, but please note that I may not be able to offer the support you are looking for. This is by no means a polished product.
 ## Support:
-For support on setting up your own instance of Sys-EncounterBot.NET, feel free to [join my Discord](https://discord.gg/WFbcUd6U8d)!
+For support on setting up your own instance of Sys-EncounterBot.NET, feel free to [join my Discord]
 This fork is not maintained by the PKHeX Dev server.
 
 Refer to the [Release section](https://github.com/Manu098vm/Sys-EncounterBot.NET/releases) to download the latest release.
@@ -14,7 +29,7 @@ The Sys-EncounterBot allows to hunt and reset for almost all the Pokémon encoun
 Check the [Wiki](https://github.com/Manu098vm/Sys-EncounterBot.NET/wiki) for a detailed explaination on what these bots can do.
 
 ## Credits
-
+[Manu098vm](https://github.com/Manu098vm) for starting the original lets go PE bot that laid the foundations for making a trade bot for the game finally.
 [olliz0r](https://github.com/olliz0r) and [berichan](https://github.com/berichan) for [sys-botbase](https://github.com/olliz0r/sys-botbase)
 
 [fishguy6564](https://github.com/fishguy6564) and [Koi-3088](https://github.com/Koi-3088) for [usb-botbase](https://github.com/fishguy6564/USB-Botbase)
