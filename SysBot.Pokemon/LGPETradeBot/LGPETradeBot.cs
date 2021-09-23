@@ -102,9 +102,9 @@ namespace SysBot.Pokemon
                 var pictoembed0 = new EmbedBuilder();
                 var pictoembed1 = new EmbedBuilder();
                 var pictoembed2 = new EmbedBuilder();
-                pictoembed0.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[0]}.gif";
-                pictoembed1.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[1]}.gif";
-                pictoembed2.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[2]}.gif";
+                pictoembed0.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[0].ToString().ToLower()}.gif";
+                pictoembed1.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[1].ToString().ToLower()}.gif";
+                pictoembed2.ImageUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[2].ToString().ToLower()}.gif";
                 var user = (IUser)discordname.Peek();
                 await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
                 await user.SendMessageAsync(embed: pictoembed0.Build());
