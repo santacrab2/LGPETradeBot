@@ -24,7 +24,7 @@ namespace SysBot.Pokemon
         
         public static SAV7b sav = new();
         public static PB7 pkm = new();
-        private readonly PokeTradeHub<PK8> Hub;
+        public static PokeTradeHub<PK8> Hub;
         public static Queue discordname = new();
         public static Queue Channel = new();
         public static Queue discordID = new();

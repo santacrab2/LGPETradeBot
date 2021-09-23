@@ -17,8 +17,10 @@ namespace SysBot.Pokemon.Discord
 
    public class TradeModule : ModuleBase<SocketCommandContext>
     {
+        public static PokeTradeHub<PK8> Hub = SysCordInstance.Self.Hub;
 
-       
+
+
         [Command("Trade")]
         [Alias("t")]
         public async Task Trade([Remainder]string Content)
@@ -28,6 +30,15 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync("you are already in queue");
                 return;
             }
+            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(' ');
+            if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
+            {
+                await ReplyAsync("You can not use that command in this channel");
+               
+                return;
+            }
+            if (!EncounterEvent.Initialized)
+                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
             APILegality.AllowBatchCommands = true;
             APILegality.AllowTrainerOverride = true;
             APILegality.ForceSpecifiedBall = true;
@@ -43,7 +54,7 @@ namespace SysBot.Pokemon.Discord
             }
            try
             {
-                var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "Piplup");
+                
                 var pkm = LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                     pkm= EggTrade((PB7)pkm);
@@ -69,7 +80,7 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync(msg).ConfigureAwait(false);
             }
         }
-
+  
         public static PB7 EggTrade(PB7 pk)
         {
            
@@ -131,6 +142,12 @@ namespace SysBot.Pokemon.Discord
             if (LetsGoTrades.discordname.Contains(Context.User.Username))
             {
                 await ReplyAsync("you are already in queue");
+                return;
+            }
+            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
+            if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
+            {
+                await ReplyAsync("You can not use that command in this channel");
                 return;
             }
             var attachment = Context.Message.Attachments.FirstOrDefault();
