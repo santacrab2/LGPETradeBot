@@ -189,7 +189,7 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(30_000).ConfigureAwait(false);
+                await Task.Delay(15_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(60_000).ConfigureAwait(false);
                 await Click(A, 200, token);
