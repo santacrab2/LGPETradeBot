@@ -213,7 +213,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(500);
                 Stopwatch btimeout = new();
                 btimeout.Restart();
-                while (btimeout.ElapsedMilliseconds < 20_000)
+                while (btimeout.ElapsedMilliseconds < 30_000)
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);
