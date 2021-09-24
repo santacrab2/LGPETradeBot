@@ -217,11 +217,27 @@ namespace SysBot.Pokemon
                 await Task.Delay(500);
                 Stopwatch btimeout = new();
                 btimeout.Restart();
-                while (btimeout.ElapsedMilliseconds < 30_000 && await LGIsInCatchScreen(token))
+                int acount = 0;
+                while (btimeout.ElapsedMilliseconds < 35_000)
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);
+                    if(acount == 4)
+                    {
+                        await Click(A, 200, token);
+                        await Task.Delay(500);
+                        acount = 0;
+                        continue;
+                    }
+                    acount++;
                 }
+                await Task.Delay(500);
+                await Click(B, 200, token).ConfigureAwait(false);
+                await Task.Delay(500);
+                await Click(B, 200, token).ConfigureAwait(false);
+                await Task.Delay(500);
+                await Click(B, 200, token).ConfigureAwait(false);
+
                 btimeout.Stop();
              
                 var returnpk = await LGReadPokemon(BoxSlot1, token);

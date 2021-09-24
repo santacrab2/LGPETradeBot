@@ -182,12 +182,14 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync("you are already in queue");
                 return;
             }
-            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
+            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(' ');
             if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
             {
                 await ReplyAsync("You can not use that command in this channel");
                 return;
             }
+            if (!EncounterEvent.Initialized)
+                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
             var attachment = Context.Message.Attachments.FirstOrDefault();
             if (attachment == default)
             {
