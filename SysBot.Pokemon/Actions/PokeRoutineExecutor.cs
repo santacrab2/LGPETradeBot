@@ -346,6 +346,7 @@ namespace SysBot.Pokemon
         }
 
 
+
         public async Task ReOpenGame(PokeTradeHubConfig config, CancellationToken token)
         {
             await CloseGame(config, token).ConfigureAwait(false);

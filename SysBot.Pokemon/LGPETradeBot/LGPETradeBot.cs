@@ -197,6 +197,7 @@ namespace SysBot.Pokemon
                 
                 await user.SendMessageAsync("searching for you now, you have 30 seconds to match").ConfigureAwait(false);
                 await Task.Delay(30_000).ConfigureAwait(false);
+              
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
@@ -208,7 +209,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(60_000).ConfigureAwait(false);
                 await Click(B, 200, token);
                 await Task.Delay(500);
-                await Click(B, 200, token).ConfigureAwait(false);
+                await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 Stopwatch btimeout = new();
                 btimeout.Restart();

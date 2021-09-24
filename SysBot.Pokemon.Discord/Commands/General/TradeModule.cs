@@ -56,9 +56,9 @@ namespace SysBot.Pokemon.Discord
            try
             {
                 
-                PB7 pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
+                var pkm = LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    pkm= EggTrade(pkm);
+                    pkm= EggTrade((PB7)pkm);
                 if (pkm is not PB7 || !new LegalityAnalysis(pkm).Valid)
                 {
                     var reason = result.ToString() == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
