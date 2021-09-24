@@ -45,17 +45,11 @@ namespace SysBot.Pokemon.Discord
             APILegality.SetMatchingBalls = true;
 
             var set = new ShowdownSet(Content);
-            if (set.InvalidLines.Count != 0)
-            {
-                
-                var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
-                await ReplyAsync(msg).ConfigureAwait(false);
-                return;
-            }
+     
            
            try
             {
-                
+                string[] pset = Content.Split('\n');
                 var pkm = LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                     pkm= EggTrade((PB7)pkm);
@@ -66,10 +60,52 @@ namespace SysBot.Pokemon.Discord
                     await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
                     return;
                 }
-              
-                
-               
-               LetsGoTrades.discordname.Enqueue(Context.User);
+                if (Content.Contains("OT:"))
+                {
+                    int q = 0;
+                    foreach (string b in pset)
+                    {
+                        if (pset[q].Contains("OT:"))
+                            pkm.OT_Name = pset[q].Replace("OT: ", "");
+                        q++;
+                    }
+                }
+                if (LegalityFormatting.GetLegalityReport(new LegalityAnalysis(pkm)).ToLower().Contains("ot name too long"))
+                    pkm.OT_Name = "Pip";
+                if (pkm.OT_Name == "PKHeX")
+                    pkm.OT_Name = LetsGoTrades.sav.OT;
+                if (Content.Contains("TID:"))
+                {
+
+                    int h = 0;
+                    foreach (string v in pset)
+                    {
+                        if (pset[h].Contains("TID:"))
+                        {
+                            int trid7 = Convert.ToInt32(pset[h].Replace("TID: ", ""));
+                            pkm.TrainerID7 = trid7;
+
+                        }
+                        h++;
+                    }
+                }
+                if (Content.Contains("SID:"))
+                {
+                    int h = 0;
+                    foreach (string v in pset)
+                    {
+                        if (pset[h].Contains("SID:"))
+                        {
+                            int trsid7 = Convert.ToInt32(pset[h].Replace("SID: ", ""));
+                            pkm.TrainerSID7 = trsid7;
+
+                        }
+                        h++;
+                    }
+                }
+
+
+                LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
