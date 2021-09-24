@@ -41,17 +41,19 @@ namespace SysBot.Pokemon
           sav = await LGIdentifyTrainer(token).ConfigureAwait(false);
 
             Log("Starting main TradeBot loop.");
-            while (!token.IsCancellationRequested)
-            {
+         
                 Config.IterateNextRoutine();
                 var task = Config.CurrentRoutineType switch
                 {
                     
-                    _ => DoTrades(token)
+                     PokeRoutineType.LGPETradeBot => DoTrades(token),
+                     _ => DoNothing(token)
                 };
                 await task.ConfigureAwait(false);
-            }
+            
+            await DetachController(token);
             Hub.Bots.Remove(this);
+            
         }
 
         private const int InjectBox = 0;
@@ -206,14 +208,16 @@ namespace SysBot.Pokemon
                 await Task.Delay(15_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
-                await Task.Delay(60_000).ConfigureAwait(false);
+                while (await LGIsInTrade(token))
+                    await Task.Delay(25);
+                await Task.Delay(5000);
                 await Click(B, 200, token);
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 Stopwatch btimeout = new();
                 btimeout.Restart();
-                while (btimeout.ElapsedMilliseconds < 30_000)
+                while (btimeout.ElapsedMilliseconds < 30_000 && await LGIsInCatchScreen(token))
                 {
                     await Click(B, 200, token).ConfigureAwait(false);
                     await Task.Delay(500).ConfigureAwait(false);
