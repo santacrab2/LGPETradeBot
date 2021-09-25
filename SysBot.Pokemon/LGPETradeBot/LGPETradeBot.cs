@@ -252,18 +252,18 @@ namespace SysBot.Pokemon
                     returnpk = new PB7();
                 }
                 if (SearchUtil.HashByDetails(returnpk) != SearchUtil.HashByDetails(pkm))
-                {
+               {
                     byte[] writepoke = returnpk.EncryptedBoxData;
                     var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
                     tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
                     System.IO.File.WriteAllBytes(tpfile, writepoke);
                     await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
                     Log($"{discordname.Peek()} completed their trade");
-                }
+               }
                 else
                 {
                     await user.SendMessageAsync("Something went wrong, no trade happened, please try again!");
-                    Log($"{discordname.Peek()} did not complet their trade");
+                    Log($"{discordname.Peek()} did not complete their trade");
                 }
                 discordID.Dequeue();
                 discordname.Dequeue();

@@ -49,6 +49,10 @@ namespace SysBot.Pokemon.Discord
                 showdowntext = showdowntext.Replace("Shiny: Yes", "Shiny: Square");
             else if (pkm.IsShiny)
                 showdowntext = showdowntext.Replace("Shiny: Yes", "Shiny: Star");
+           var IVs = pkm.IVs;
+            var pb7conv = (PB7)pkm;
+            int[] AVs = new int[] { pb7conv.AV_HP, pb7conv.AV_ATK, pb7conv.AV_DEF, pb7conv.AV_SPA, pb7conv.AV_SPD, pb7conv.AV_SPE };
+            showdowntext = showdowntext.Insert(showdowntext.Length, $"\nAVs: {AVs[0]} HP / {AVs[1]} Atk / {AVs[2]} Def / {AVs[3]} SpA / {AVs[4]} SpD / {AVs[5]} Spe");
             string showdown = $"{showdowntext}\nOT: {pkm.OT_Name}\nTID: {TID}\nSID: {SID}";
             return Format.Code(showdown);
         }
