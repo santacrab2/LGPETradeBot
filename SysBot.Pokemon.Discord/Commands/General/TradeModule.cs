@@ -104,7 +104,10 @@ namespace SysBot.Pokemon.Discord
                         h++;
                     }
                 }
-
+                if (pkm.TrainerID7 == 993401)
+                    pkm.TrainerID7 = LetsGoTrades.sav.TrainerID7;
+                if (pkm.TrainerSID7 == 3559)
+                    pkm.TrainerSID7 = LetsGoTrades.sav.TrainerSID7;
 
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
