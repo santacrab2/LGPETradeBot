@@ -1,4 +1,5 @@
 ﻿using PKHeX.Core;
+using PKHeX.Core.Searching;
 using SysBot.Base;
 using System;
 using System.Drawing;
@@ -200,15 +201,17 @@ namespace SysBot.Pokemon
                 Log($"Searching for user {discordname.Peek()}");
                 await user.SendMessageAsync("searching for you now, you have 30 seconds to match").ConfigureAwait(false);
                 await Task.Delay(30_000).ConfigureAwait(false);
-              
+                Log("30 seconds are up, hopefully weve matched");
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("assuming we have matched,You have 15 seconds to select your trade pokemon");
+                Log("waiting on trade screen");
                 await Task.Delay(15_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
+                Log("trading...");
                 await Task.Delay(10000);
                 while (await LGIsInTrade(token))
                     await Task.Delay(25);
@@ -248,12 +251,20 @@ namespace SysBot.Pokemon
                 {
                     returnpk = new PB7();
                 }
-                    
-                byte[] writepoke = returnpk.EncryptedBoxData;
-               var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
-                tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
-                System.IO.File.WriteAllBytes(tpfile, writepoke);
-                await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
+                if (SearchUtil.HashByDetails(returnpk) != SearchUtil.HashByDetails(pkm))
+                {
+                    byte[] writepoke = returnpk.EncryptedBoxData;
+                    var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
+                    tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
+                    System.IO.File.WriteAllBytes(tpfile, writepoke);
+                    await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
+                    Log($"{discordname.Peek()} completed their trade");
+                }
+                else
+                {
+                    await user.SendMessageAsync("Something went wrong, no trade happened, please try again!");
+                    Log($"{discordname.Peek()} did not complet their trade");
+                }
                 discordID.Dequeue();
                 discordname.Dequeue();
                 Channel.Dequeue();
