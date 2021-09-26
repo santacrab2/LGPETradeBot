@@ -112,12 +112,14 @@ namespace SysBot.Pokemon
 
                 }
                 TradebotSettings.generatebotsprites(code);
-                
+                var code0 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code0.png");
+                var code1 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code1.png");
+                var code2 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code2.png");
+                var finalpic = Merge(code0, code1, code2);
+                finalpic.Save($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
                 var user = (IUser)discordname.Peek();
                 await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
-                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code0.png", $"{code[0]}");
-                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code1.png", $"{code[1]}");
-                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code2.png", $"{code[2]}");
+                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", $"{code[0]},{code[1]},{code[2]}");
                 var pkm = (PB7)tradepkm.Peek();
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;
@@ -271,7 +273,41 @@ namespace SysBot.Pokemon
 
             }
         }
+        public static Bitmap Merge(System.Drawing.Image firstImage, System.Drawing.Image secondImage, System.Drawing.Image thirdImage)
+        {
+            if (firstImage == null)
+            {
+                throw new ArgumentNullException("firstImage");
+            }
 
+            if (secondImage == null)
+            {
+                throw new ArgumentNullException("secondImage");
+            }
+
+            if (thirdImage == null)
+            {
+                throw new ArgumentNullException("thirdImage");
+            }
+
+            int outputImageWidth = firstImage.Width + secondImage.Width + thirdImage.Width + 2;
+
+            int outputImageHeight = firstImage.Height;
+
+            Bitmap outputImage = new Bitmap(outputImageWidth, outputImageHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+            using (Graphics graphics = Graphics.FromImage(outputImage))
+            {
+                graphics.DrawImage(firstImage, new Rectangle(0,0, firstImage.Width,firstImage.Height),
+                    new Rectangle(new Point(), firstImage.Size), GraphicsUnit.Pixel);
+                graphics.DrawImage(secondImage, new Rectangle(50, 0, secondImage.Width,secondImage.Height),
+                    new Rectangle(new Point(), secondImage.Size), GraphicsUnit.Pixel);
+                graphics.DrawImage(thirdImage, new Rectangle(100, 0, thirdImage.Width,thirdImage.Height),
+                    new Rectangle(new Point(), thirdImage.Size), GraphicsUnit.Pixel);
+            }
+
+            return outputImage;
+        }
         public enum pictocodes
         {
             Pikachu,
