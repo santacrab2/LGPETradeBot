@@ -114,7 +114,7 @@ namespace SysBot.Pokemon.Discord
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
                 await Context.Message.DeleteAsync();
-                await ReplyAsync($"{Context.User.Username} added you to the queue. There are {LetsGoTrades.discordname.Count} users in line");
+                await ReplyAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
                 await Context.User.SendMessageAsync("You have been added to the queue. I will message you here when the trade begins!");
             } catch
             {
@@ -224,7 +224,7 @@ namespace SysBot.Pokemon.Discord
             LetsGoTrades.Channel.Enqueue(Context.Channel);
             LetsGoTrades.tradepkm.Enqueue(pkm);
             await Context.Message.DeleteAsync();
-            await ReplyAsync($"{Context.User.Username} added you to the queue. There are {LetsGoTrades.discordname.Count} users in line");
+            await ReplyAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
             await Context.User.SendMessageAsync("You have been added to the queue. I will message you here when the trade begins!");
         }
         private static PB7? GetRequest(Download<PKM> dl)

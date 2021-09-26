@@ -111,18 +111,13 @@ namespace SysBot.Pokemon
                     code.Add((pictocodes)Util.Rand.Next(10));
 
                 }
-              //  System.Text.StringBuilder strbui = new System.Text.StringBuilder();
-                var pictoembed0 = new EmbedBuilder().WithTitle($"{code[0]}");
-                var pictoembed1 = new EmbedBuilder().WithTitle($"{code[1]}");
-                var pictoembed2 = new EmbedBuilder().WithTitle($"{code[2]}");
-                pictoembed0.ThumbnailUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[0].ToString().ToLower()}.gif";
-                pictoembed1.ThumbnailUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[1].ToString().ToLower()}.gif";
-                pictoembed2.ThumbnailUrl = $"https://play.pokemonshowdown.com/sprites/ani/{code[2].ToString().ToLower()}.gif";
+                TradebotSettings.generatebotsprites(code);
+                
                 var user = (IUser)discordname.Peek();
                 await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
-                await user.SendMessageAsync(embed: pictoembed0.Build());
-                await user.SendMessageAsync(embed: pictoembed1.Build());
-                await user.SendMessageAsync(embed: pictoembed2.Build());
+                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code0.png", $"{code[0]}");
+                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code1.png", $"{code[1]}");
+                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//code2.png", $"{code[2]}");
                 var pkm = (PB7)tradepkm.Peek();
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;
@@ -216,7 +211,7 @@ namespace SysBot.Pokemon
                 while (await LGIsInTrade(token))
                     await Task.Delay(25);
                 await Task.Delay(5000);
-                Log("Trade should be completed, backing out");
+                Log("Trade should be completed");
                 await Click(B, 200, token);
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
@@ -224,8 +219,9 @@ namespace SysBot.Pokemon
                Stopwatch btimeout = new();
                 btimeout.Restart();
                 int acount = 3;
-                while (btimeout.ElapsedMilliseconds < 30_000)
+                while (btimeout.ElapsedMilliseconds < 20_000)
                 {
+                    Log("spamming b to get back to overworld");
                    await Click(B, 200, token).ConfigureAwait(false);
                    await Task.Delay(1000).ConfigureAwait(false);
                     if(acount == 4)
@@ -237,6 +233,8 @@ namespace SysBot.Pokemon
                     }
                    acount++;
                 }
+                await Task.Delay(500);
+                await Click(B, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
                 await Click(B, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
