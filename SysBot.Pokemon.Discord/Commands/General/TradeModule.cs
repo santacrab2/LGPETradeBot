@@ -10,6 +10,7 @@ using PKHeX.Core.AutoMod;
 using PKHeX.Drawing;
 
 using System.Linq;
+using System.IO;
 
 namespace SysBot.Pokemon.Discord
 {
@@ -24,7 +25,7 @@ namespace SysBot.Pokemon.Discord
         [Command("Trade")]
         [Alias("t")]
         [Summary("Trades You a pokemon from showdown text in Lets Go games")]
-        public async Task Trade([Remainder]string Content)
+        public async Task Trade([Remainder]string ShowdownSet)
         {
             if (LetsGoTrades.discordname.Contains(Context.User))
             {
@@ -45,12 +46,12 @@ namespace SysBot.Pokemon.Discord
             APILegality.ForceSpecifiedBall = true;
             APILegality.SetMatchingBalls = true;
 
-            var set = new ShowdownSet(Content);
+            var set = new ShowdownSet(ShowdownSet);
      
            
            try
             {
-                string[] pset = Content.Split('\n');
+                string[] pset = ShowdownSet.Split('\n');
                 var pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
                 pkm.Stat_CP = pkm.CalcCP;
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
@@ -62,7 +63,7 @@ namespace SysBot.Pokemon.Discord
                     await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
                     return;
                 }
-                if (Content.Contains("OT:"))
+                if (ShowdownSet.Contains("OT:"))
                 {
                     int q = 0;
                     foreach (string b in pset)
@@ -76,7 +77,7 @@ namespace SysBot.Pokemon.Discord
                     pkm.OT_Name = "Pip";
                 if (pkm.OT_Name == "PKHeX")
                     pkm.OT_Name = LetsGoTrades.sav.OT;
-                if (Content.Contains("TID:"))
+                if (ShowdownSet.Contains("TID:"))
                 {
 
                     int h = 0;
@@ -91,7 +92,7 @@ namespace SysBot.Pokemon.Discord
                         h++;
                     }
                 }
-                if (Content.Contains("SID:"))
+                if (ShowdownSet.Contains("SID:"))
                 {
                     int h = 0;
                     foreach (string v in pset)
@@ -109,7 +110,7 @@ namespace SysBot.Pokemon.Discord
                     pkm.TrainerID7 = LetsGoTrades.sav.TrainerID7;
                 if (pkm.TrainerSID7 == 3559)
                     pkm.TrainerSID7 = LetsGoTrades.sav.TrainerSID7;
-                if (Content.ToLower().Contains("shiny: yes"))
+                if (ShowdownSet.ToLower().Contains("shiny: yes"))
                     pkm.SetShiny();
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
@@ -270,6 +271,99 @@ namespace SysBot.Pokemon.Discord
 
             });
             await ReplyAsync(embed: embed.Build());
+        }
+
+        [Command("convert")]
+        [Alias("c")]
+        [Summary("Makes a PB7 file for you from showdown text, great way to check legality.")]
+        public async Task pbjmaker([Remainder] string ShowdownSet)
+        {
+            if (!EncounterEvent.Initialized)
+                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
+            APILegality.AllowBatchCommands = true;
+            APILegality.AllowTrainerOverride = true;
+            APILegality.ForceSpecifiedBall = true;
+            APILegality.SetMatchingBalls = true;
+
+            var set = new ShowdownSet(ShowdownSet);
+
+            try
+            {
+                string[] pset = ShowdownSet.Split('\n');
+                var pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
+                pkm.Stat_CP = pkm.CalcCP;
+                if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
+                    pkm = EggTrade(pkm);
+                string temppokewait = Path.GetTempFileName().Replace(".tmp", $"{GameInfo.Strings.Species[pkm.Species]}.{pkm.Extension}").Replace("tmp", "");
+
+
+
+
+
+                if (ShowdownSet.Contains("OT:"))
+                {
+                    int q = 0;
+                    foreach (string b in pset)
+                    {
+                        if (pset[q].Contains("OT:"))
+                            pkm.OT_Name = pset[q].Replace("OT: ", "");
+                        q++;
+                    }
+                }
+                if (LegalityFormatting.GetLegalityReport(new LegalityAnalysis(pkm)).ToLower().Contains("ot name too long"))
+                    pkm.OT_Name = "Pip";
+                if (ShowdownSet.Contains("TID:"))
+                {
+
+                    int h = 0;
+                    foreach (string v in pset)
+                    {
+                        if (pset[h].Contains("TID:"))
+                        {
+                            int trid7 = Convert.ToInt32(pset[h].Replace("TID: ", ""));
+                            pkm.TrainerID7 = trid7;
+
+                        }
+                        h++;
+                    }
+                }
+                if (ShowdownSet.Contains("SID:"))
+                {
+                    int h = 0;
+                    foreach (string v in pset)
+                    {
+                        if (pset[h].Contains("SID:"))
+                        {
+                            int trsid7 = Convert.ToInt32(pset[h].Replace("SID: ", ""));
+                            pkm.TrainerSID7 = trsid7;
+
+                        }
+                        h++;
+                    }
+                }
+                if (ShowdownSet.ToLower().Contains("shiny: yes"))
+                {
+                    pkm.SetIsShiny(true);
+                }
+                if (!new LegalityAnalysis(pkm).Valid)
+                {
+                    await ReplyAsync("I could not legalize that set");
+                    File.Delete(temppokewait);
+                    return;
+                }
+
+
+                byte[] yre = pkm.DecryptedBoxData;
+                File.WriteAllBytes(temppokewait, yre);
+                await Context.Channel.SendFileAsync(temppokewait, "Here is your legalized pk file");
+                File.Delete(temppokewait);
+                return;
+
+            }
+            catch
+            {
+                await Context.Channel.SendMessageAsync("I wasn't able to make a file from that set");
+            }
         }
     }
 }
