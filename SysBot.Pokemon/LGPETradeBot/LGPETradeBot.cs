@@ -221,7 +221,7 @@ namespace SysBot.Pokemon
                Stopwatch btimeout = new();
                 btimeout.Restart();
                 int acount = 3;
-                while (btimeout.ElapsedMilliseconds <= 10_000)
+                while (btimeout.ElapsedMilliseconds <= 20_000)
                 {
                     Log("spamming b to get back to overworld");
                    await Click(B, 200, token).ConfigureAwait(false);
