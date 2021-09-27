@@ -119,7 +119,7 @@ namespace SysBot.Pokemon
                 finalpic.Save($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
                 var user = (IUser)discordname.Peek();
                 await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
-                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", $"{code[0]},{code[1]},{code[2]}");
+                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", $"{code[0]}, {code[1]}, {code[2]}");
                 var pkm = (PB7)tradepkm.Peek();
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;
