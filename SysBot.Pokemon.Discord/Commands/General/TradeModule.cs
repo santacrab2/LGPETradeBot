@@ -23,6 +23,7 @@ namespace SysBot.Pokemon.Discord
 
         [Command("Trade")]
         [Alias("t")]
+        [Summary("Trades You a pokemon from showdown text in Lets Go games")]
         public async Task Trade([Remainder]string Content)
         {
             if (LetsGoTrades.discordname.Contains(Context.User))
@@ -177,8 +178,9 @@ namespace SysBot.Pokemon.Discord
             return pk;
         }
 
-        [Command("trade")]
+        [Command("Trade")]
         [Alias("t")]
+       [Summary("Trades you a pokemon from a PB7 file in the Lets Go games")]
         public async Task filetrade()
         {
             
