@@ -41,7 +41,8 @@ namespace SysBot.Pokemon
         public const uint CatchingSpecies = 0x9A264598; //heap - Thanks Lincoln-LM!
         public const uint CatchCombo = 0x5E1CF500; //heap - Thanks Lincoln-LM!
         public const uint SpeciesCombo = 0x5E1CF4F8; //heap - Thanks Lincoln-LM!
-
+        public const uint waitingscreen = 0x160DC00;
+        public const uint tradingboxscreen = 0x51CF3000;
         //Lets Go Pointers:
         public const string SpeciesComboPointer = "[[[[main+160E410]+50]+770]+40]+298";
         public const string CatchComboPointer = "[[[[main+160E410]+50]+840]+20]+1D0";

@@ -84,6 +84,7 @@ namespace SysBot.Pokemon
         };
         public async Task DoTrades(CancellationToken token)
         {
+            Stopwatch btimeout = new();
             var BoxStart = 0x533675B0;
             var SlotSize = 260;
             var GapSize = 380;
@@ -109,7 +110,8 @@ namespace SysBot.Pokemon
                 for (int i = 0; i <= 2; i++)
                 {
                     code.Add((pictocodes)Util.Rand.Next(10));
-
+                    //code.Add(pictocodes.Pikachu);
+                    
                 }
                 TradebotSettings.generatebotsprites(code);
                 var code0 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code0.png");
@@ -130,15 +132,15 @@ namespace SysBot.Pokemon
                 await Task.Delay(1000).ConfigureAwait(false);
                await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT, 0, 0, 100, token).ConfigureAwait(false);
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(3000).ConfigureAwait(false);
+                await Task.Delay(5000).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT,0,-30000, 100, token).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(3000).ConfigureAwait(false);
+                await Task.Delay(10000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000).ConfigureAwait(false);
                 Log("Entering Link Code");
@@ -196,14 +198,36 @@ namespace SysBot.Pokemon
                     }
                 }
                 Log($"Searching for user {discordname.Peek()}");
-                await user.SendMessageAsync("searching for you now, you have 30 seconds to match").ConfigureAwait(false);
-                await Task.Delay(30_000).ConfigureAwait(false);
-                Log("30 seconds are up, hopefully weve matched");
+                await user.SendMessageAsync("searching for you now, you have 45 seconds to match").ConfigureAwait(false);
+                await Task.Delay(3000);
+                btimeout.Restart();
+            
+                var nofind = false;
+                while (await LGIsinwaitingScreen(token))
+                {
+                    await Task.Delay(100);
+                    if(btimeout.ElapsedMilliseconds >= 45_000)
+                    {
+                        Log("User not found");
+                        nofind = true;
+                        for(int m = 0; m < 10; m++)
+                        {
+                            await Click(B, 200, token);
+                            await Task.Delay(500);
+
+
+                        }
+                    }
+                }
+                if (nofind)
+                    continue;
+                Log("User Found");
+                await Task.Delay(2000);
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await user.SendMessageAsync("assuming we have matched,You have 15 seconds to select your trade pokemon");
+                await user.SendMessageAsync("You have 15 seconds to select your trade pokemon");
                 Log("waiting on trade screen");
                 await Task.Delay(15_000).ConfigureAwait(false);
                 await Click(A, 200, token).ConfigureAwait(false);
@@ -218,7 +242,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(500);
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(500);
-               Stopwatch btimeout = new();
+            
                 btimeout.Restart();
                 int acount = 3;
                 while (btimeout.ElapsedMilliseconds <= 20_000)

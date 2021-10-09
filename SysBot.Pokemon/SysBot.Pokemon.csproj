@@ -18,9 +18,6 @@
     <Folder Include="deps\" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PKHeX.Core.AutoMod">
-      <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
-    </Reference>
     <Reference Include="PKHeX.Drawing">
       <HintPath>..\..\PKHeX\PKHeX.Drawing\bin\Debug\net46\PKHeX.Drawing.dll</HintPath>
     </Reference>
