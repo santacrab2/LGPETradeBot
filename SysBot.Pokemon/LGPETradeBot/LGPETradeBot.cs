@@ -220,7 +220,15 @@ namespace SysBot.Pokemon
                     }
                 }
                 if (nofind)
+                {
+                    
+                    discordID.Dequeue();
+                    discordname.Dequeue();
+                    Channel.Dequeue();
+                    tradepkm.Dequeue();
                     continue;
+
+                }
                 Log("User Found");
                 await Task.Delay(2000);
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
@@ -245,9 +253,10 @@ namespace SysBot.Pokemon
             
                 btimeout.Restart();
                 int acount = 3;
+                Log("spamming b to get back to overworld");
                 while (btimeout.ElapsedMilliseconds <= 20_000)
                 {
-                    Log("spamming b to get back to overworld");
+                    
                    await Click(B, 200, token).ConfigureAwait(false);
                    await Task.Delay(1000).ConfigureAwait(false);
                     if(acount == 4)
