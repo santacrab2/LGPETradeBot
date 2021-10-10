@@ -206,11 +206,11 @@ namespace SysBot.Pokemon
                 while (await LGIsinwaitingScreen(token))
                 {
                     await Task.Delay(100);
-                    if(btimeout.ElapsedMilliseconds >= 45_000)
+                    if (btimeout.ElapsedMilliseconds >= 45_000)
                     {
                         Log("User not found");
                         nofind = true;
-                        for(int m = 0; m < 10; m++)
+                        for (int m = 0; m < 10; m++)
                         {
                             await Click(B, 200, token);
                             await Task.Delay(500);
@@ -221,7 +221,7 @@ namespace SysBot.Pokemon
                 }
                 if (nofind)
                 {
-                    
+
                     discordID.Dequeue();
                     discordname.Dequeue();
                     Channel.Dequeue();
@@ -229,6 +229,7 @@ namespace SysBot.Pokemon
                     continue;
 
                 }
+
                 Log("User Found");
                 await Task.Delay(10000);
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
