@@ -230,7 +230,7 @@ namespace SysBot.Pokemon
 
                 }
                 Log("User Found");
-                await Task.Delay(5000);
+                await Task.Delay(10000);
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000);
