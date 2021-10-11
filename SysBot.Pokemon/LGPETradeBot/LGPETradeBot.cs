@@ -208,6 +208,7 @@ namespace SysBot.Pokemon
                     await Task.Delay(100);
                     if (btimeout.ElapsedMilliseconds >= 45_000)
                     {
+                        await user.SendMessageAsync("I could not find you, please try again!");
                         Log("User not found");
                         nofind = true;
                         for (int m = 0; m < 10; m++)
@@ -231,7 +232,7 @@ namespace SysBot.Pokemon
                 }
 
                 Log("User Found");
-                await Task.Delay(10000);
+                await Task.Delay(5000);
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000);
