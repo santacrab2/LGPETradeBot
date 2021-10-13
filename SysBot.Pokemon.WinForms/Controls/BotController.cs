@@ -179,7 +179,7 @@ namespace SysBot.Pokemon.WinForms
                         if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅")
                             await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅");
                         var offembed = new EmbedBuilder();
-                        offembed.AddField("Articuno Bot Announcement", "LGPE Trade Bot is Online");
+                        offembed.AddField($"{Discord.SysCord._client.CurrentUser} Bot Announcement", "LGPE Trade Bot is Online");
                         await tradechan.SendMessageAsync(embed: offembed.Build());
                     }
                 }
@@ -194,7 +194,7 @@ namespace SysBot.Pokemon.WinForms
                     if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌")
                         await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌");
                     var offembed = new EmbedBuilder();
-                    offembed.AddField("Articuno Bot Announcement", "LGPE Trade Bot is Offline");
+                    offembed.AddField($"{Discord.SysCord._client.CurrentUser} Bot Announcement", "LGPE Trade Bot is Offline");
                     await tradechan.SendMessageAsync(embed: offembed.Build());
                 }
             }

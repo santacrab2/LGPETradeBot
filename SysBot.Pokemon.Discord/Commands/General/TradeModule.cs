@@ -32,7 +32,7 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync("you are already in queue");
                 return;
             }
-            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(' ');
+            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
             if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
             {
                 await ReplyAsync("You can not use that command in this channel");
@@ -190,7 +190,7 @@ namespace SysBot.Pokemon.Discord
                 await ReplyAsync("you are already in queue");
                 return;
             }
-            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(' ');
+            var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
             if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
             {
                 await ReplyAsync("You can not use that command in this channel");
