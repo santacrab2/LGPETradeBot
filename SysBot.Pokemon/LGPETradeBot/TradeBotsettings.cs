@@ -30,7 +30,7 @@ namespace SysBot.Pokemon
 
         [Category(TradeBot), Description("Turn this setting on to have the bot update discord channels for when it is online/offline when you press start or stop")]
 
-        public static bool channelchanger { get; set; } = false;
+        public bool channelchanger { get; set; } = false;
 
         [Category(TradeBot), Description("The name of your discord trade bot channel")]
         public string channelname { get; set; } = string.Empty;

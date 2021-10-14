@@ -166,7 +166,7 @@ namespace SysBot.Pokemon.WinForms
                     WinFormsUtil.Alert($"{cmd} is not a command that can be sent to the Bot.");
                     return;
             }
-            if (TradebotSettings.channelchanger)
+            if (Discord.TradeModule.Hub.Config.TradeBot.channelchanger)
             {
                 if (cmd == BotControlCommand.Start)
                 {
@@ -181,7 +181,7 @@ namespace SysBot.Pokemon.WinForms
                             if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅")
                                 await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅");
                             var offembed = new EmbedBuilder();
-                            offembed.AddField($"{Discord.SysCord._client.CurrentUser} Bot Announcement", "LGPE Trade Bot is Online");
+                            offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Online");
                             await tradechan.SendMessageAsync(embed: offembed.Build());
                         }
                     }
@@ -196,7 +196,7 @@ namespace SysBot.Pokemon.WinForms
                         if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌")
                             await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌");
                         var offembed = new EmbedBuilder();
-                        offembed.AddField($"{Discord.SysCord._client.CurrentUser} Bot Announcement", "LGPE Trade Bot is Offline");
+                        offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Offline");
                         await tradechan.SendMessageAsync(embed: offembed.Build());
                     }
                 }
