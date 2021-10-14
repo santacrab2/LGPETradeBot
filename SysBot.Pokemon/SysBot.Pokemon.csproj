@@ -18,6 +18,9 @@
     <Folder Include="deps\" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PKHeX.Core.AutoMod">
+      <HintPath>..\..\PKHeX-Plugins10.6.21\AutoLegalityMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
+    </Reference>
     <Reference Include="PKHeX.Drawing">
       <HintPath>..\..\PKHeX\PKHeX.Drawing\bin\Debug\net46\PKHeX.Drawing.dll</HintPath>
     </Reference>

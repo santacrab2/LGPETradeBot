@@ -37,7 +37,8 @@ namespace SysBot.Pokemon
 
         [Category(TradeBot), Description("MGDB folder path")]
         public string mgdbpath { get; set; } = string.Empty;
-
+        [Category(TradeBot), Description("Turn on to Distribute")]
+        public bool distribution { get; set; } = false;
 
         public static void generatebotsprites(List<LetsGoTrades.pictocodes> code)
         {

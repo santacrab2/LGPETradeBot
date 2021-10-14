@@ -1,5 +1,6 @@
 ﻿using PKHeX.Core;
 using PKHeX.Core.Searching;
+using PKHeX.Core.AutoMod;
 using SysBot.Base;
 using System;
 using System.Drawing;
@@ -92,10 +93,11 @@ namespace SysBot.Pokemon
          
             uint GetBoxOffset(int box) => 0x533675B0;
             uint GetSlotOffset(int box, int slot) => GetBoxOffset(box) + (uint)((SlotSize + GapSize) * slot);
+            Random dpoke = new Random();
             while (!token.IsCancellationRequested)
             {
                 int waitCounter = 0;
-                while (tradepkm.Count == 0)
+                while (tradepkm.Count == 0 && !Hub.Config.TradeBot.distribution)
                 {
                     
                    
@@ -103,7 +105,164 @@ namespace SysBot.Pokemon
                         Log("Nothing to check, waiting for new users...") ;
                     waitCounter++;
                     await Task.Delay(1_000, token).ConfigureAwait(false);
-                    
+
+                }
+                while (tradepkm.Count == 0 && Hub.Config.TradeBot.distribution)
+                {
+                    Log("Starting Distribution");
+                    var dcode = new List<pictocodes>();
+                    for (int i = 0; i <= 2; i++)
+                    {
+
+                        dcode.Add(pictocodes.Pikachu);
+
+                    }
+                    var dspecies = dpoke.Next(151);
+                    ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nShiny: Yes");
+                    var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
+                    dpkm.OT_Name = "Piplup.net";
+
+                    var dslotofs = GetSlotOffset(1, 0);
+                    var dStoredLength = SlotSize - 0x1C;
+                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.Slice(0, dStoredLength), BoxSlot1, token);
+                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.SliceEnd(dStoredLength), (uint)(dslotofs + dStoredLength + 0x70), token);
+
+
+                    await Click(X, 200, token).ConfigureAwait(false);
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                    await SetStick(SwitchStick.RIGHT, 0, 0, 100, token).ConfigureAwait(false);
+                    await Task.Delay(1000);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(1000);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(5000).ConfigureAwait(false);
+                    await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
+                    await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(10000).ConfigureAwait(false);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(1000).ConfigureAwait(false);
+                    Log("Entering distribution Link Code");
+
+                    foreach (pictocodes pc in dcode)
+                    {
+                        if ((int)pc > 4)
+                        {
+                            await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                        }
+                        if ((int)pc <= 4)
+                        {
+                            for (int i = (int)pc; i > 0; i--)
+                            {
+                                await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                                await Task.Delay(500).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = (int)pc - 5; i > 0; i--)
+                            {
+                                await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                                await Task.Delay(500).ConfigureAwait(false);
+                            }
+                        }
+                        await Click(A, 200, token).ConfigureAwait(false);
+                        await Task.Delay(500).ConfigureAwait(false);
+                        if ((int)pc <= 4)
+                        {
+                            for (int i = (int)pc; i > 0; i--)
+                            {
+                                await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                                await Task.Delay(500).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            for (int i = (int)pc - 5; i > 0; i--)
+                            {
+                                await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                                await Task.Delay(500).ConfigureAwait(false);
+                            }
+                        }
+
+                        if ((int)pc > 4)
+                        {
+                            await SetStick(SwitchStick.RIGHT, 0, 30000, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    Log("Searching for distribution user");
+                    btimeout.Restart();
+                    while (await LGIsinwaitingScreen(token))
+                    {
+                        await Task.Delay(100);
+                        if (btimeout.ElapsedMilliseconds >= 45_000)
+                        {
+                            
+                            Log("User not found");
+                            
+                            for (int m = 0; m < 10; m++)
+                            {
+                                await Click(B, 200, token);
+                                await Task.Delay(500);
+
+
+                            }
+                        }
+                    }
+
+                    await Task.Delay(10000);
+                   
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(1000);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                
+                    Log("waiting on trade screen");
+                    await Task.Delay(15_000).ConfigureAwait(false);
+                    await Click(A, 200, token).ConfigureAwait(false);
+               
+                    Log("trading...");
+                    await Task.Delay(10000);
+                    while (await LGIsInTrade(token))
+                        await Task.Delay(25);
+                    await Task.Delay(10000);
+                    Log("Trade should be completed");
+                    await Click(B, 200, token);
+                    await Task.Delay(500);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(500);
+
+                    btimeout.Restart();
+                    int dacount = 3;
+                    Log("spamming b to get back to overworld");
+                    while (btimeout.ElapsedMilliseconds <= 20_000)
+                    {
+
+                        await Click(B, 200, token).ConfigureAwait(false);
+                        await Task.Delay(1000).ConfigureAwait(false);
+                        if (dacount == 4)
+                        {
+                            await Click(A, 200, token);
+                            await Task.Delay(500);
+                            dacount = 0;
+                            continue;
+                        }
+                        dacount++;
+                    }
+                    await Task.Delay(500);
+                    await Click(B, 200, token).ConfigureAwait(false);
+                    await Task.Delay(500);
+                    await Click(B, 200, token).ConfigureAwait(false);
+                    await Task.Delay(500);
+                    await Click(B, 200, token).ConfigureAwait(false);
+                    continue;
                 }
                 Log("starting a trade sequence");
                 var code = new List<pictocodes>();
@@ -249,14 +408,17 @@ namespace SysBot.Pokemon
                 await Task.Delay(10000);
                 Log("Trade should be completed");
                 await Click(B, 200, token);
-                await Task.Delay(500);
+                await Task.Delay(1000);
                 await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(500);
-            
+                await Task.Delay(1000);
+                await Click(B, 200, token);
+                await Task.Delay(1000);
+                await Click(A, 200, token).ConfigureAwait(false);
+                await Task.Delay(1000);
                 btimeout.Restart();
                 int acount = 3;
                 Log("spamming b to get back to overworld");
-                while (btimeout.ElapsedMilliseconds <= 20_000)
+                while (btimeout.ElapsedMilliseconds <= 30_000)
                 {
                     
                    await Click(B, 200, token).ConfigureAwait(false);
@@ -264,7 +426,7 @@ namespace SysBot.Pokemon
                     if(acount == 4)
                     {
                         await Click(A, 200, token);
-                        await Task.Delay(500);
+                        await Task.Delay(1000);
                        acount = 0;
                         continue;
                     }
