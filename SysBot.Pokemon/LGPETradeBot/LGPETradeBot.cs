@@ -38,7 +38,14 @@ namespace SysBot.Pokemon
         }
         public override async Task MainLoop(CancellationToken token)
         {
-            
+            if (!EncounterEvent.Initialized)
+                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
+            APILegality.AllowBatchCommands = true;
+            APILegality.AllowTrainerOverride = true;
+            APILegality.ForceSpecifiedBall = true;
+            APILegality.SetMatchingBalls = true;
+            Legalizer.EnableEasterEggs = false;
+
             Log("Identifying trainer data of the host console.");
           sav = await LGIdentifyTrainer(token).ConfigureAwait(false);
 
@@ -200,6 +207,7 @@ namespace SysBot.Pokemon
 
                     Log("Searching for distribution user");
                     btimeout.Restart();
+                    var dnofind = false;
                     while (await LGIsinwaitingScreen(token))
                     {
                         await Task.Delay(100);
@@ -207,7 +215,7 @@ namespace SysBot.Pokemon
                         {
                             
                             Log("User not found");
-                            
+                            dnofind = true;
                             for (int m = 0; m < 10; m++)
                             {
                                 await Click(B, 200, token);
@@ -217,7 +225,8 @@ namespace SysBot.Pokemon
                             }
                         }
                     }
-
+                    if (dnofind == true)
+                        continue;
                     await Task.Delay(10000);
                    
                     await Click(A, 200, token).ConfigureAwait(false);
@@ -225,10 +234,12 @@ namespace SysBot.Pokemon
                     await Click(A, 200, token).ConfigureAwait(false);
                 
                     Log("waiting on trade screen");
-                    await Task.Delay(15_000).ConfigureAwait(false);
+                    await Task.Delay(3_000).ConfigureAwait(false);
+
+
+                    await Task.Delay(15_000);
                     await Click(A, 200, token).ConfigureAwait(false);
-               
-                    Log("trading...");
+                   
                     await Task.Delay(10000);
                     while (await LGIsInTrade(token))
                         await Task.Delay(25);
@@ -285,8 +296,8 @@ namespace SysBot.Pokemon
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1,token);
-                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70),token);
-              
+                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+
                 await Click(X, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000).ConfigureAwait(false);
                await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
@@ -398,7 +409,10 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("You have 15 seconds to select your trade pokemon");
                 Log("waiting on trade screen");
+     
                 await Task.Delay(15_000).ConfigureAwait(false);
+               
+      
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
                 Log("trading...");

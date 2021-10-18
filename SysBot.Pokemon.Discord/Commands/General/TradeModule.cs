@@ -45,7 +45,7 @@ namespace SysBot.Pokemon.Discord
             APILegality.AllowTrainerOverride = true;
             APILegality.ForceSpecifiedBall = true;
             APILegality.SetMatchingBalls = true;
-
+            Legalizer.EnableEasterEggs = false;
             var set = new ShowdownSet(ShowdownSet);
      
            
