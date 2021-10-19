@@ -63,14 +63,31 @@ namespace SysBot.Pokemon.Discord
                     await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
                     return;
                 }
+                if (ShowdownSet.Contains("AVs:"))
+                {
+                    
+                    foreach(string c in pset)
+                    {
+                        if (c.Contains("AVs:"))
+                        {
+                           var avstats = c.Split(' ');
+                            pkm.AV_HP = Convert.ToInt32(avstats[1]);
+                            pkm.AV_ATK = Convert.ToInt32(avstats[4]);
+                            pkm.AV_DEF = Convert.ToInt32(avstats[7]);
+                            pkm.AV_SPA = Convert.ToInt32(avstats[10]);
+                            pkm.AV_SPD = Convert.ToInt32(avstats[13]);
+                            pkm.AV_SPE = Convert.ToInt32(avstats[16]);
+                        }
+                    }
+                }
                 if (ShowdownSet.Contains("OT:"))
                 {
-                    int q = 0;
+                    
                     foreach (string b in pset)
                     {
-                        if (pset[q].Contains("OT:"))
-                            pkm.OT_Name = pset[q].Replace("OT: ", "");
-                        q++;
+                        if (b.Contains("OT:"))
+                            pkm.OT_Name = b.Replace("OT: ", "");
+                        
                     }
                 }
                 if (LegalityFormatting.GetLegalityReport(new LegalityAnalysis(pkm)).ToLower().Contains("ot name too long"))
@@ -80,30 +97,30 @@ namespace SysBot.Pokemon.Discord
                 if (ShowdownSet.Contains("TID:"))
                 {
 
-                    int h = 0;
+                   
                     foreach (string v in pset)
                     {
-                        if (pset[h].Contains("TID:"))
+                        if (v.Contains("TID:"))
                         {
-                            int trid7 = Convert.ToInt32(pset[h].Replace("TID: ", ""));
+                            int trid7 = Convert.ToInt32(v.Replace("TID: ", ""));
                             pkm.TrainerID7 = trid7;
 
                         }
-                        h++;
+                       
                     }
                 }
                 if (ShowdownSet.Contains("SID:"))
                 {
-                    int h = 0;
+                    
                     foreach (string v in pset)
                     {
-                        if (pset[h].Contains("SID:"))
+                        if (v.Contains("SID:"))
                         {
-                            int trsid7 = Convert.ToInt32(pset[h].Replace("SID: ", ""));
+                            int trsid7 = Convert.ToInt32(v.Replace("SID: ", ""));
                             pkm.TrainerSID7 = trsid7;
 
                         }
-                        h++;
+                        
                     }
                 }
                 if (pkm.TrainerID7 == 993401)
