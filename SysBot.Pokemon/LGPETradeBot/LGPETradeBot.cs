@@ -392,7 +392,7 @@ namespace SysBot.Pokemon
                 }
                 if (nofind)
                 {
-
+                    System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
                     discordID.Dequeue();
                     discordname.Dequeue();
                     Channel.Dequeue();
