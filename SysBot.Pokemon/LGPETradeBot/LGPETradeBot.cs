@@ -134,7 +134,7 @@ namespace SysBot.Pokemon
                     await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.Slice(0, dStoredLength), BoxSlot1, token);
                     await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.SliceEnd(dStoredLength), (uint)(dslotofs + dStoredLength + 0x70), token);
 
-
+                    System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//LGPEDistrib.txt", $"LGPE Giveaway: Shiny {(Species)dpkm.Species}");
                     await Click(X, 200, token).ConfigureAwait(false);
                     await Task.Delay(1000).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
@@ -239,26 +239,29 @@ namespace SysBot.Pokemon
 
                     await Task.Delay(15_000);
                     await Click(A, 200, token).ConfigureAwait(false);
-                   
+                    Log("Distribution trading...");
                     await Task.Delay(10000);
                     while (await LGIsInTrade(token))
                         await Task.Delay(25);
-                    await Task.Delay(10000);
+                    await Task.Delay(15000);
                     Log("Trade should be completed");
                     await Click(B, 200, token);
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(500);
-
+                    await Task.Delay(1000);
+                    await Click(B, 200, token);
+                    await Task.Delay(1000);
+                    await Click(A, 200, token).ConfigureAwait(false);
+                    await Task.Delay(1000);
                     btimeout.Restart();
-                    int dacount = 3;
+                    int dacount = 4;
                     Log("spamming b to get back to overworld");
                     while (btimeout.ElapsedMilliseconds <= 20_000)
                     {
 
                         await Click(B, 200, token).ConfigureAwait(false);
                         await Task.Delay(1000).ConfigureAwait(false);
-                        if (dacount == 4)
+                        if (dacount == 5)
                         {
                             await Click(A, 200, token);
                             await Task.Delay(500);
@@ -267,14 +270,17 @@ namespace SysBot.Pokemon
                         }
                         dacount++;
                     }
-                    await Task.Delay(500);
+                    
+                    await Task.Delay(1000);
                     await Click(B, 200, token).ConfigureAwait(false);
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     await Click(B, 200, token).ConfigureAwait(false);
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     await Click(B, 200, token).ConfigureAwait(false);
                     continue;
                 }
+                if (tradepkm.Count == 0)
+                    continue;
                 Log("starting a trade sequence");
                 var code = new List<pictocodes>();
                 for (int i = 0; i <= 2; i++)
@@ -419,7 +425,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(10000);
                 while (await LGIsInTrade(token))
                     await Task.Delay(25);
-                await Task.Delay(10000);
+                await Task.Delay(15000);
                 Log("Trade should be completed");
                 await Click(B, 200, token);
                 await Task.Delay(1000);
@@ -430,14 +436,14 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await Task.Delay(1000);
                 btimeout.Restart();
-                int acount = 3;
+                int acount = 4;
                 Log("spamming b to get back to overworld");
-                while (btimeout.ElapsedMilliseconds <= 30_000)
+                while (btimeout.ElapsedMilliseconds <= 20_000)
                 {
                     
                    await Click(B, 200, token).ConfigureAwait(false);
                    await Task.Delay(1000).ConfigureAwait(false);
-                    if(acount == 4)
+                    if(acount == 5)
                     {
                         await Click(A, 200, token);
                         await Task.Delay(1000);

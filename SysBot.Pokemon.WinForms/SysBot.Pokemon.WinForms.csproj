@@ -1,72 +1,72 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFrameworks>net47;net5.0-windows</TargetFrameworks>
-    <UseWindowsForms>true</UseWindowsForms>
-    <PackageId>SysBot.Pokemon.WinForms</PackageId>
-    <Company>Project Pokémon</Company>
-    <Authors>Santacrab420, Kaphotics, Architdate, Lusamine, SkyLink98</Authors>
-    <Product>SysBot.Pokemon.WinForms</Product>
-    <Description>Nintendo Switch Pokémon Bot Manager</Description>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
-    <StartupObject>SysBot.Pokemon.WinForms.Program</StartupObject>
-    <AssemblyName>ArticunoLGPEBot</AssemblyName>
-    <LangVersion>9</LangVersion>
-    <Version>01.00.00</Version>
-    <Nullable>enable</Nullable>
-    <Platforms>x64;x86</Platforms>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-  </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFrameworks>net47;net5.0-windows</TargetFrameworks>
+		<UseWindowsForms>true</UseWindowsForms>
+		<PackageId>SysBot.Pokemon.WinForms</PackageId>
+		<Company>Project Pokémon</Company>
+		<Authors>Santacrab420, Kaphotics, Architdate, Lusamine, SkyLink98</Authors>
+		<Product>SysBot.Pokemon.WinForms</Product>
+		<Description>Nintendo Switch Pokémon Bot Manager</Description>
+		<ApplicationIcon>icon.ico</ApplicationIcon>
+		<StartupObject>SysBot.Pokemon.WinForms.Program</StartupObject>
+		<AssemblyName>ArticunoLGPEBot</AssemblyName>
+		<LangVersion>9</LangVersion>
+		<Version>01.00.00</Version>
+		<Nullable>enable</Nullable>
+		<Platforms>x64;x86</Platforms>
+		<GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="PKHeX.Core" Version="21.8.6" />
-    <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+		<PackageReference Include="PKHeX.Core" Version="21.8.6" />
+		<PackageReference Include="System.Resources.Extensions" Version="5.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
-    <ProjectReference Include="..\SysBot.Pokemon.Discord\SysBot.Pokemon.Discord.csproj" />
-    <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
+		<ProjectReference Include="..\SysBot.Pokemon.Discord\SysBot.Pokemon.Discord.csproj" />
+		<ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
+	</ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4')) AND '$(Configuration)' == 'Release' ">
-    <PackageReference Include="Costura.Fody" Version="5.3.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; compile; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Fody" Version="6.5.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  </ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net4')) AND '$(Configuration)' == 'Release' ">
+		<PackageReference Include="Costura.Fody" Version="5.3.0">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; compile; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Fody" Version="6.5.1">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
 
-  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-    <Reference Include="PKHeX.Drawing">
-      <HintPath>deps\PKHeX.Drawing.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+		<Reference Include="PKHeX.Drawing">
+			<HintPath>deps\PKHeX.Drawing.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="PKHeX.Core.AutoMod">
-      <HintPath>..\..\PKHeX-Plugins8.14.21\AutoLegalityMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
-    </Reference>
-  </ItemGroup>
+	<ItemGroup>
+		<Reference Include="PKHeX.Core.AutoMod">
+			<HintPath>..\..\PKHeX-Plugins8.14.21\AutoLegalityMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
+		</Reference>
+	</ItemGroup>
 
-  <ItemGroup>
-    <Compile Update="Properties\Resources.Designer.cs">
-      <DesignTime>True</DesignTime>
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-  </ItemGroup>
+	<ItemGroup>
+		<Compile Update="Properties\Resources.Designer.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Resources.resx</DependentUpon>
+		</Compile>
+	</ItemGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
+	<ItemGroup>
+		<EmbeddedResource Update="Properties\Resources.resx">
+			<Generator>ResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</EmbeddedResource>
+	</ItemGroup>
 
 </Project>
