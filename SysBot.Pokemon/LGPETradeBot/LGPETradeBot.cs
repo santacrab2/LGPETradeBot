@@ -125,7 +125,7 @@ namespace SysBot.Pokemon
 
                     }
                     var dspecies = dpoke.Next(151);
-                    ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nShiny: Yes");
+                    ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nLevel: 90\nShiny: Yes");
                     var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
                     dpkm.OT_Name = "Piplup.net";
 
@@ -256,7 +256,7 @@ namespace SysBot.Pokemon
                     btimeout.Restart();
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
-                    while (btimeout.ElapsedMilliseconds <= 20_000)
+                    while (btimeout.ElapsedMilliseconds <= 30_000)
                     {
 
                         await Click(B, 200, token).ConfigureAwait(false);
