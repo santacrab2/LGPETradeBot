@@ -5,10 +5,7 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="PKHeX.Core.AutoMod.dll" />
-    <None Remove="PKHeX.Drawing.dll" />
-  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="2.4.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="5.0.0" />
@@ -18,19 +15,12 @@
     <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="PKHeX.Core.AutoMod">
-      <HintPath>..\..\PKHeX-Plugins10.6.21\PKHeX.Core.AutoMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
-    </Reference>
-    <Reference Include="PKHeX.Drawing">
-      <HintPath>..\..\PKHeX\PKHeX.Drawing\bin\Debug\net46\PKHeX.Drawing.dll</HintPath>
-    </Reference>
+	  <Reference Include="PKHeX.Core.AutoMod">
+		  <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
+	  </Reference>
+	  <Reference Include="PKHeX.Drawing">
+		  <HintPath>deps\PKHeX.Drawing.dll</HintPath>
+	  </Reference>
   </ItemGroup>
-  <ItemGroup>
-    <Resource Include="PKHeX.Core.AutoMod.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="PKHeX.Drawing.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
+
 </Project>

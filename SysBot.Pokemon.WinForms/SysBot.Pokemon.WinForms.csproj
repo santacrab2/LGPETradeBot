@@ -42,16 +42,13 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
-		<Reference Include="PKHeX.Drawing">
-			<HintPath>deps\PKHeX.Drawing.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-
 	<ItemGroup>
-		<Reference Include="PKHeX.Core.AutoMod">
-			<HintPath>..\..\PKHeX-Plugins8.14.21\AutoLegalityMod\bin\Release\net46\PKHeX.Core.AutoMod.dll</HintPath>
-		</Reference>
+	  <Reference Include="PKHeX.Core.AutoMod">
+	    <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.AutoMod.dll</HintPath>
+	  </Reference>
+	  <Reference Include="PKHeX.Drawing">
+	    <HintPath>..\SysBot.Pokemon\deps\PKHeX.Drawing.dll</HintPath>
+	  </Reference>
 	</ItemGroup>
 
 	<ItemGroup>
