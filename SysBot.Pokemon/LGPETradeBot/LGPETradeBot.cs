@@ -124,7 +124,7 @@ namespace SysBot.Pokemon
                         dcode.Add(pictocodes.Pikachu);
 
                     }
-                    var dspecies = dpoke.Next(151);
+                    var dspecies = dpoke.Next(150);
                     ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nLevel: 90\nShiny: Yes");
                     var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
                     dpkm.OT_Name = "Piplup.net";
@@ -474,6 +474,7 @@ namespace SysBot.Pokemon
                     tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
                     System.IO.File.WriteAllBytes(tpfile, writepoke);
                     await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
+                    System.IO.File.Delete(tpfile);
                     Log($"{discordname.Peek()} completed their trade");
                }
                 else
