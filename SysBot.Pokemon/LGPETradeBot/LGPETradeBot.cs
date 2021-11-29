@@ -127,8 +127,10 @@ namespace SysBot.Pokemon
                     var dspecies = dpoke.Next(150);
                     ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nLevel: 90\nShiny: Yes");
                     var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
+                    dpkm = (PB7)dpkm.Legalize();
                     dpkm.OT_Name = "Piplup.net";
-
+                    if (!new LegalityAnalysis(dpkm).Valid)
+                        continue;
                     var dslotofs = GetSlotOffset(1, 0);
                     var dStoredLength = SlotSize - 0x1C;
                     await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.Slice(0, dStoredLength), BoxSlot1, token);
@@ -143,7 +145,7 @@ namespace SysBot.Pokemon
                     await Click(A, 200, token).ConfigureAwait(false);
                     await Task.Delay(1000);
                     await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(5000).ConfigureAwait(false);
+                    await Task.Delay(10000).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     await Click(A, 200, token).ConfigureAwait(false);

@@ -80,6 +80,8 @@ namespace SysBot.Pokemon.Discord
                         }
                     }
                 }
+                if (!new LegalityAnalysis(pkm).Valid)
+                    pkm = (PB7)pkm.Legalize();
                 if (ShowdownSet.Contains("OT:"))
                 {
                     
@@ -129,6 +131,14 @@ namespace SysBot.Pokemon.Discord
                     pkm.TrainerSID7 = LetsGoTrades.sav.TrainerSID7;
                 if (ShowdownSet.ToLower().Contains("shiny: yes"))
                     pkm.SetShiny();
+
+                if(!new LegalityAnalysis(pkm).Valid)
+                {
+                    var imsg = $"Oops! I wasn't able to create something from that. Here's the legality report: ";
+                    await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
+                    return;
+                }
+
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
