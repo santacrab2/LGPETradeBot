@@ -422,12 +422,12 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
                 Log("trading...");
-                await Task.Delay(5000);
+                await Task.Delay(10000);
                 while (await LGIsInTrade(token))
                     await Click(A, 1000, token);
                
                 Log("Trade should be completed, exiting box");
-                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen )
+                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != SelectFarawayscreen)
                 {
                     await Click(B, 1500, token);
                     await Click(B, 1500, token);
