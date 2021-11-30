@@ -19,5 +19,7 @@
         /// sys-botbase Echoes the command request back after processing the command if this is set.
         /// </summary>
         echoCommands,
+
+        controllerType,
     }
 }

@@ -17,6 +17,8 @@ namespace SysBot.Base
             return Encoder.GetBytes(command);
         }
 
+
+        
         /// <summary>
         /// Removes the virtual controller from the bot. Allows physical controllers to control manually.
         /// </summary>

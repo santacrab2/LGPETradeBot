@@ -53,7 +53,11 @@ namespace SysBot.Base
         {
             await Connection.SendAsync(SwitchCommand.DetachController(UseCRLF), token).ConfigureAwait(false);
         }
-
+        public override async Task SetController(CancellationToken token)
+        {
+            var cmd = SwitchCommand.Configure(SwitchConfigureParameter.controllerType, 1);
+            await Connection.SendAsync(cmd, token).ConfigureAwait(false);
+        }
         public async Task EchoCommands(bool value, CancellationToken token)
         {
             var cmd = SwitchCommand.Configure(SwitchConfigureParameter.echoCommands, value ? 1 : 0, UseCRLF);

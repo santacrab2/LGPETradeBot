@@ -41,12 +41,15 @@ namespace SysBot.Base
             Connection.Connect();
             Log("Initializing connection with console...");
             await InitialStartup(token).ConfigureAwait(false);
+            await SetController(token);
             await MainLoop(token).ConfigureAwait(false);
             Connection.Disconnect();
         }
 
         public abstract Task MainLoop(CancellationToken token);
         public abstract Task InitialStartup(CancellationToken token);
+
+        public abstract Task SetController(CancellationToken token);
         public abstract void SoftStop();
     }
 }
