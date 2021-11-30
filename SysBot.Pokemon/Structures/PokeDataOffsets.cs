@@ -43,6 +43,13 @@ namespace SysBot.Pokemon
         public const uint SpeciesCombo = 0x5E1CF4F8; //heap - Thanks Lincoln-LM!
         public const uint waitingscreen = 0x15363d8;
         public const uint tradebuttons = 0x163bac0;
+        public const uint ScreenOff  = 0x1610E68;
+        public static uint overworldscreen = 0x2478;
+        public static uint menuscreen = 0xD080;
+        public static uint SelectFarawayscreen = 0xA080;
+        public static uint Boxscreen = 0xF080;
+        public static uint waitingtotradescreen = 0x0080;
+       
         //Lets Go Pointers:
         public const string SpeciesComboPointer = "[[[[main+160E410]+50]+770]+40]+298";
         public const string CatchComboPointer = "[[[[main+160E410]+50]+840]+20]+1D0";

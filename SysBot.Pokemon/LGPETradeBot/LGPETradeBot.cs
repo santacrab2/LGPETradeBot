@@ -31,6 +31,7 @@ namespace SysBot.Pokemon
         public static Queue Channel = new();
         public static Queue discordID = new();
         public static Queue tradepkm = new();
+        public static int initialloop = 0;
         public LetsGoTrades(PokeTradeHub<PK8> hub, PokeBotState cfg) : base(cfg)
         {
             Hub = hub;
@@ -117,6 +118,8 @@ namespace SysBot.Pokemon
                 while (tradepkm.Count == 0 && Hub.Config.TradeBot.distribution)
                 {
                     Log("Starting Distribution");
+
+                  
                     var dcode = new List<pictocodes>();
                     for (int i = 0; i <= 2; i++)
                     {
@@ -137,21 +140,27 @@ namespace SysBot.Pokemon
                     await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.SliceEnd(dStoredLength), (uint)(dslotofs + dStoredLength + 0x70), token);
 
                     System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//LGPEDistrib.txt", $"LGPE Giveaway: Shiny {(Species)dpkm.Species}");
-                    await Click(X, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000).ConfigureAwait(false);
-                    await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
-                    await SetStick(SwitchStick.RIGHT, 0, 0, 100, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(10000).ConfigureAwait(false);
-                    await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
+                    await Click(X, 1000, token).ConfigureAwait(false);
+                    Log("opening menu");
+             
+                    Log("selecting communicate");
+                    await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(10000).ConfigureAwait(false);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000).ConfigureAwait(false);
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == menuscreen)
+                    {
+                        await Click(A, 1000, token);
+
+                    }
+                    await Task.Delay(2500);
+                    Log("selecting faraway connection");
+                  
+                    
+                    await SetStick(SwitchStick.RIGHT, 0, -30000, 0, token).ConfigureAwait(false);
+                    await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                    await Click(A, 10000, token).ConfigureAwait(false);
+                   
+                    await Click(A, 1000, token).ConfigureAwait(false);
+                 
                     Log("Entering distribution Link Code");
 
                     foreach (pictocodes pc in dcode)
@@ -218,72 +227,58 @@ namespace SysBot.Pokemon
                             
                             Log("User not found");
                             dnofind = true;
-                            for (int m = 0; m < 10; m++)
-                            {
-                                await Click(B, 200, token);
-                                await Task.Delay(500);
-
-
-                            }
+                            while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != overworldscreen)
+                                await Click(B, 1000, token);
                         }
                     }
                     if (dnofind == true)
                         continue;
                     await Task.Delay(10000);
-                   
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                
+                    Log(string.Format("0x{0:X8}", BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0)));
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
+                    {
+                        await Click(A, 1000, token);
+                    }
                     Log("waiting on trade screen");
-                    await Task.Delay(3_000).ConfigureAwait(false);
+              
 
 
                     await Task.Delay(15_000);
                     await Click(A, 200, token).ConfigureAwait(false);
                     Log("Distribution trading...");
                     await Task.Delay(10000);
+
                     while (await LGIsInTrade(token))
-                        await Task.Delay(25);
-                    await Task.Delay(15000);
-                    Log("Trade should be completed");
-                    await Click(B, 200, token);
-                    await Task.Delay(1000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(B, 200, token);
-                    await Task.Delay(1000);
-                    await Click(A, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
+                        await Click(A, 1000, token);          
+                    Log("Trade should be completed, exiting box");
+                   
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
+                    {
+                        await Click(B, 1500, token);
+                        await Click(B, 1500, token);
+                        await Click(B, 1500, token);
+                        await Click(A, 1500, token);
+                    }
                     btimeout.Restart();
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
-                    while (btimeout.ElapsedMilliseconds <= 30_000)
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != overworldscreen)
                     {
+                        await Click(B, 1000, token);
+                        await Click(B, 1000, token);
+                        await Click(B, 1000, token);
+                        await Click(A, 1000, token);
 
-                        await Click(B, 200, token).ConfigureAwait(false);
-                        await Task.Delay(1000).ConfigureAwait(false);
-                        if (dacount == 5)
-                        {
-                            await Click(A, 200, token);
-                            await Task.Delay(500);
-                            dacount = 0;
-                            continue;
-                        }
-                        dacount++;
                     }
-                    
-                    await Task.Delay(1000);
-                    await Click(B, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(B, 200, token).ConfigureAwait(false);
-                    await Task.Delay(1000);
-                    await Click(B, 200, token).ConfigureAwait(false);
+                    Log("done spamming b");
+                    await Task.Delay(2500);
+                    initialloop++;
                     continue;
                 }
                 if (tradepkm.Count == 0)
                     continue;
                 Log("starting a trade sequence");
+               
                 var code = new List<pictocodes>();
                 for (int i = 0; i <= 2; i++)
                 {
@@ -307,34 +302,39 @@ namespace SysBot.Pokemon
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
 
                 await Click(X, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000).ConfigureAwait(false);
-               await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
-                await SetStick(SwitchStick.RIGHT, 0, 0, 100, token).ConfigureAwait(false);
-                await Task.Delay(1000);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(5000).ConfigureAwait(false);
-                await SetStick(SwitchStick.RIGHT,0,-30000, 100, token).ConfigureAwait(false);
+                Log("opening menu");
+           
+                Log("selecting communicate");
+                await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(10000).ConfigureAwait(false);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000).ConfigureAwait(false);
+               while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) == menuscreen)
+                {
+                    await Click(A, 1000, token);
+                   
+                }
+                await Task.Delay(2500);
+                Log("selecting faraway connection");
+
+                await SetStick(SwitchStick.RIGHT,0,-30000, 0, token).ConfigureAwait(false);
+                await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                await Click(A, 10000, token).ConfigureAwait(false);
+                
+                await Click(A, 1000, token).ConfigureAwait(false);
+               
                 Log("Entering Link Code");
                 System.IO.File.WriteAllBytes($"{System.IO.Directory.GetCurrentDirectory()}/Block.png", BlackPixel);
                 foreach (pictocodes pc in code)
                 {
                     if ((int)pc > 4)
                     {
-                        await SetStick(SwitchStick.RIGHT, 0, -30000, 100, token).ConfigureAwait(false);
+                        await SetStick(SwitchStick.RIGHT, 0, -30000, 0, token).ConfigureAwait(false);
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
                     if ((int)pc <= 4)
                     {
                         for (int i = (int)pc; i > 0; i--)
                         {
-                            await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
@@ -343,7 +343,7 @@ namespace SysBot.Pokemon
                     {
                         for (int i = (int)pc - 5; i > 0; i--)
                         {
-                            await SetStick(SwitchStick.RIGHT, 30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
@@ -354,7 +354,7 @@ namespace SysBot.Pokemon
                     {
                         for (int i = (int)pc; i > 0; i--)
                         {
-                            await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, -30000, 0, 0, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
@@ -363,7 +363,7 @@ namespace SysBot.Pokemon
                     {
                         for (int i = (int)pc - 5; i > 0; i--)
                         {
-                            await SetStick(SwitchStick.RIGHT, -30000, 0, 100, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, -30000, 0, 0, token).ConfigureAwait(false);
                             await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                             await Task.Delay(500).ConfigureAwait(false);
                         }
@@ -371,7 +371,7 @@ namespace SysBot.Pokemon
 
                     if ((int)pc > 4)
                     {
-                        await SetStick(SwitchStick.RIGHT, 0, 30000, 100, token).ConfigureAwait(false);
+                        await SetStick(SwitchStick.RIGHT, 0, 30000, 0, token).ConfigureAwait(false);
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
                 }
@@ -389,13 +389,8 @@ namespace SysBot.Pokemon
                         await user.SendMessageAsync("I could not find you, please try again!");
                         Log("User not found");
                         nofind = true;
-                        for (int m = 0; m < 10; m++)
-                        {
-                            await Click(B, 200, token);
-                            await Task.Delay(500);
-
-
-                        }
+                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != overworldscreen)
+                            await Click(B, 1000, token);
                     }
                 }
                 if (nofind)
@@ -411,10 +406,13 @@ namespace SysBot.Pokemon
 
                 Log("User Found");
                 await Task.Delay(10000);
+              
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000);
-                await Click(A, 200, token).ConfigureAwait(false);
+
+                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) == Boxscreen)
+                {
+                    await Click(A, 1000, token);
+                }
                 await user.SendMessageAsync("You have 15 seconds to select your trade pokemon");
                 Log("waiting on trade screen");
      
@@ -424,43 +422,26 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
                 Log("trading...");
-                await Task.Delay(10000);
+                await Task.Delay(5000);
                 while (await LGIsInTrade(token))
-                    await Task.Delay(25);
-                await Task.Delay(15000);
-                Log("Trade should be completed");
-                await Click(B, 200, token);
-                await Task.Delay(1000);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000);
-                await Click(B, 200, token);
-                await Task.Delay(1000);
-                await Click(A, 200, token).ConfigureAwait(false);
-                await Task.Delay(1000);
+                    await Click(A, 1000, token);
+               
+                Log("Trade should be completed, exiting box");
+                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) == Boxscreen )
+                {
+                    await Click(B, 1500, token);
+                    await Click(B, 1500, token);
+                    await Click(B, 1500, token);
+                    await Click(A, 1500, token);
+                }
                 btimeout.Restart();
                 int acount = 4;
                 Log("spamming b to get back to overworld");
-                while (btimeout.ElapsedMilliseconds <= 20_000)
+                while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != overworldscreen)
                 {
-                    
-                   await Click(B, 200, token).ConfigureAwait(false);
-                   await Task.Delay(1000).ConfigureAwait(false);
-                    if(acount == 5)
-                    {
-                        await Click(A, 200, token);
-                        await Task.Delay(1000);
-                       acount = 0;
-                        continue;
-                    }
-                   acount++;
+                    await Click(B, 1000, token);
                 }
-                await Task.Delay(500);
-                await Click(B, 200, token).ConfigureAwait(false);
-                await Task.Delay(500);
-                await Click(B, 200, token).ConfigureAwait(false);
-                await Task.Delay(500);
-                await Click(B, 200, token).ConfigureAwait(false);
-             
+                Log("done spamming b");
 
                 btimeout.Stop();
              
@@ -488,6 +469,8 @@ namespace SysBot.Pokemon
                 discordname.Dequeue();
                 Channel.Dequeue();
                 tradepkm.Dequeue();
+                initialloop++;
+                await Task.Delay(2500);
                 continue;
 
             }
