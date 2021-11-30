@@ -234,7 +234,7 @@ namespace SysBot.Pokemon
                     if (dnofind == true)
                         continue;
                     await Task.Delay(10000);
-                    Log(string.Format("0x{0:X8}", BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0)));
+                    
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
                         await Click(A, 1000, token);
