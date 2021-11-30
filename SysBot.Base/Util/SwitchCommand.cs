@@ -18,7 +18,7 @@ namespace SysBot.Base
         }
 
 
-        
+        public static byte[] charge(bool crlf = true) => Encode("charge", crlf);
         /// <summary>
         /// Removes the virtual controller from the bot. Allows physical controllers to control manually.
         /// </summary>

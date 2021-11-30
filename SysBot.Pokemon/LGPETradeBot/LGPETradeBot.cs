@@ -301,7 +301,7 @@ namespace SysBot.Pokemon
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1,token);
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
 
-                await Click(X, 200, token).ConfigureAwait(false);
+                await Click(X, 1000, token).ConfigureAwait(false);
                 Log("opening menu");
            
                 Log("selecting communicate");
