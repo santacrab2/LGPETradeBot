@@ -46,6 +46,7 @@ namespace SysBot.Pokemon
         public const uint ScreenOff  = 0x1610E68;
         public static uint overworldscreen = 0x2478;
         public static uint menuscreen = 0xD080;
+        public static uint overworldscreen2 = 0x3478;
         public static uint SelectFarawayscreen = 0xA080;
         public static uint Boxscreen = 0xF080;
         public static uint waitingtotradescreen = 0x0080;
