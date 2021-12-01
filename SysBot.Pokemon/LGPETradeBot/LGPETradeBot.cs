@@ -254,20 +254,25 @@ namespace SysBot.Pokemon
                    
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
                     {
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                            break;
                         await Click(B, 1500, token);
                         await Click(B, 1500, token);
                         await Click(B, 1500, token);
                         await Click(A, 1500, token);
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                            break;
                     }
                     btimeout.Restart();
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != overworldscreen)
                     {
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == overworldscreen)
+                            break;
                         await Click(B, 1000, token);
-                        await Click(B, 1000, token);
-                        await Click(B, 1000, token);
-                        await Click(A, 1000, token);
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == overworldscreen)
+                            break;
 
                     }
                     Log("done spamming b");
@@ -427,19 +432,27 @@ namespace SysBot.Pokemon
                     await Click(A, 1000, token);
                
                 Log("Trade should be completed, exiting box");
-                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != SelectFarawayscreen)
+                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen)
                 {
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                        break;
                     await Click(B, 1500, token);
                     await Click(B, 1500, token);
                     await Click(B, 1500, token);
                     await Click(A, 1500, token);
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                        break;
                 }
                 btimeout.Restart();
                 int acount = 4;
                 Log("spamming b to get back to overworld");
                 while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != overworldscreen)
                 {
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == overworldscreen)
+                        break;
                     await Click(B, 1000, token);
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == overworldscreen)
+                        break;
                 }
                 Log("done spamming b");
 
