@@ -246,7 +246,7 @@ namespace SysBot.Pokemon
                     await Task.Delay(15_000);
                     await Click(A, 200, token).ConfigureAwait(false);
                     Log("Distribution trading...");
-                    await Task.Delay(10000);
+                    await Task.Delay(15000);
 
                     while (await LGIsInTrade(token))
                         await Click(A, 1000, token);          
@@ -433,7 +433,7 @@ namespace SysBot.Pokemon
                 await Click(A, 200, token).ConfigureAwait(false);
                 await user.SendMessageAsync("trading...");
                 Log("trading...");
-                await Task.Delay(10000);
+                await Task.Delay(15000);
                 while (await LGIsInTrade(token))
                     await Click(A, 1000, token);
                
