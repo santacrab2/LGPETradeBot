@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
-    public static class ReusableActions
+    public static class ReusableActions 
     {
-
+       
         public static async Task RepostPKMAsShowdownAsync(this ISocketMessageChannel channel, IAttachment att)
         {
             if (!PKX.IsPKM(att.Size))
@@ -42,19 +42,31 @@ namespace SysBot.Pokemon.Discord
 
         public static string GetFormattedShowdownText(PKM pkm)
         {
-            int TID = (pkm.Gen7 || pkm.Gen8) ? pkm.TrainerID7 : pkm.TID;
-            int SID = (pkm.Gen7 || pkm.Gen8) ? pkm.TrainerSID7 : pkm.SID;
-            string showdowntext = ShowdownParsing.GetShowdownText(pkm);
-            if (pkm.IsShiny && pkm.ShinyXor == 0)
-                showdowntext = showdowntext.Replace("Shiny: Yes", "Shiny: Square");
-            else if (pkm.IsShiny)
-                showdowntext = showdowntext.Replace("Shiny: Yes", "Shiny: Star");
-           var IVs = pkm.IVs;
+
+            var newShowdown = new List<string>();
+            var showdown = ShowdownParsing.GetShowdownText(pkm);
+            foreach (var line in showdown.Split('\n'))
+                newShowdown.Add(line);
             var pb7conv = (PB7)pkm;
             int[] AVs = new int[] { pb7conv.AV_HP, pb7conv.AV_ATK, pb7conv.AV_DEF, pb7conv.AV_SPA, pb7conv.AV_SPD, pb7conv.AV_SPE };
-            showdowntext = showdowntext.Insert(showdowntext.Length, $"\nAVs: {AVs[0]} HP / {AVs[1]} Atk / {AVs[2]} Def / {AVs[3]} SpA / {AVs[4]} SpD / {AVs[5]} Spe");
-            string showdown = $"{showdowntext}\nOT: {pkm.OT_Name}\nTID: {TID}\nSID: {SID}";
-            return Format.Code(showdown);
+            newShowdown.Insert(1, $"\nAVs: {AVs[0]} HP / {AVs[1]} Atk / {AVs[2]} Def / {AVs[3]} SpA / {AVs[4]} SpD / {AVs[5]} Spe");
+            if (pkm.IsEgg)
+                newShowdown.Insert(1, "IsEgg: Yes");
+            if (pkm.Ball > (int)Ball.None)
+                newShowdown.Insert(newShowdown.FindIndex(z => z.Contains("Nature")), $"Ball: {(Ball)pkm.Ball} Ball");
+            if (pkm.IsShiny)
+            {
+                var index = newShowdown.FindIndex(x => x.Contains("Shiny: Yes"));
+                if (pkm.ShinyXor == 0 || pkm.FatefulEncounter)
+                    newShowdown[index] = "Shiny: Square\r";
+                else newShowdown[index] = "Shiny: Star\r";
+            }
+            var SID = string.Format("{0:0000}", pkm.DisplaySID);
+            var TID = string.Format("{0:000000}", pkm.DisplayTID);
+
+            newShowdown.InsertRange(1, new string[] { $"OT: {pkm.OT_Name}", $"TID: {TID}", $"SID: {SID}", $"OTGender: {(Gender)pkm.OT_Gender}", $"Language: {(LanguageID)pkm.Language}" });
+            return Format.Code(string.Join("\n", newShowdown).TrimEnd());
+      
         }
 
         public static List<string> GetListFromString(string str)

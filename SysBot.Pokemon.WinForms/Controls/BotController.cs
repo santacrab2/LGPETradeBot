@@ -179,10 +179,14 @@ namespace SysBot.Pokemon.WinForms
                             ulong.TryParse(i, out var tchan);
                             var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
                             if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅")
+                            {
+                                var role = tradechan.Guild.EveryoneRole;
+                                await tradechan.AddPermissionOverwriteAsync(role, new OverwritePermissions(sendMessages: PermValue.Allow));
                                 await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅");
-                            var offembed = new EmbedBuilder();
-                            offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Online");
-                            await tradechan.SendMessageAsync(embed: offembed.Build());
+                                var offembed = new EmbedBuilder();
+                                offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Online");
+                                await tradechan.SendMessageAsync(embed: offembed.Build());
+                            }
                         }
                     }
                 }
@@ -194,10 +198,14 @@ namespace SysBot.Pokemon.WinForms
                         ulong.TryParse(b, out var tchan);
                         var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
                         if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌")
+                        {
+                            var role = tradechan.Guild.EveryoneRole;
+                            await tradechan.AddPermissionOverwriteAsync(role, new OverwritePermissions(sendMessages: PermValue.Deny));
                             await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌");
-                        var offembed = new EmbedBuilder();
-                        offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Offline");
-                        await tradechan.SendMessageAsync(embed: offembed.Build());
+                            var offembed = new EmbedBuilder();
+                            offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Offline");
+                            await tradechan.SendMessageAsync(embed: offembed.Build());
+                        }
                     }
                 }
             }

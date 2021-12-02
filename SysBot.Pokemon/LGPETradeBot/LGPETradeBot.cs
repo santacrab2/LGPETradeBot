@@ -255,7 +255,9 @@ namespace SysBot.Pokemon
                     await Task.Delay(15000);
 
                     while (await LGIsInTrade(token))
-                        await Click(A, 1000, token);          
+                        await Click(A, 1000, token);
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
+                        await Click(A, 1000, token);
                     Log("Trade should be completed, exiting box");
                    
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
