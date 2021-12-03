@@ -144,16 +144,16 @@ namespace SysBot.Pokemon
                     System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//LGPEDistrib.txt", $"LGPE Giveaway: Shiny {(Species)dpkm.Species}");
                     await Click(X, 2000, token).ConfigureAwait(false);
                     Log("opening menu");
-             
+                  
                     Log("selecting communicate");
                     await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                     await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == menuscreen)
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == menuscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == waitingtotradescreen)
                     {
                         await Click(A, 1000, token);
 
                     }
-                    await Task.Delay(2500);
+                    await Task.Delay(2000);
                     Log("selecting faraway connection");
                   
                     
@@ -254,9 +254,10 @@ namespace SysBot.Pokemon
                     Log("Distribution trading...");
                     await Task.Delay(15000);
 
-                    while (await LGIsInTrade(token))
+                    while (await LGIsInTrade(token) && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
                         await Click(A, 1000, token);
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
+                    Log("trade animation complete, catching trade evolutions");
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen)
                         await Click(A, 1000, token);
                     Log("Trade should be completed, exiting box");
                    
@@ -329,7 +330,7 @@ namespace SysBot.Pokemon
 
                 await Click(X, 2000, token).ConfigureAwait(false);
                 Log("opening menu");
-           
+              
                 Log("selecting communicate");
                 await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
                 await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
@@ -338,7 +339,7 @@ namespace SysBot.Pokemon
                     await Click(A, 1000, token);
                    
                 }
-                await Task.Delay(2500);
+                await Task.Delay(2000);
                 Log("selecting faraway connection");
 
                 await SetStick(SwitchStick.RIGHT,0,-30000, 0, token).ConfigureAwait(false);
@@ -452,9 +453,13 @@ namespace SysBot.Pokemon
                 await user.SendMessageAsync("trading...");
                 Log("trading...");
                 await Task.Delay(15000);
-                while (await LGIsInTrade(token))
+                while (await LGIsInTrade(token) && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
                     await Click(A, 1000, token);
-               
+                Log("trade animation complete, catching trade evolutions");
+                while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen)
+                    await Click(A, 1000, token);
+
+
                 Log("Trade should be completed, exiting box");
                 while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen)
                 {
