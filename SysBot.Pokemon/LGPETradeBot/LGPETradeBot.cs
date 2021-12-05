@@ -236,7 +236,7 @@ namespace SysBot.Pokemon
                             
                             while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == SelectFarawayscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             {
-                                await Click(B, 1000, token);
+                                await Click(B, 5000, token);
                            
                             }
                         }
@@ -261,7 +261,7 @@ namespace SysBot.Pokemon
                     while (await LGIsInTrade(token) && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
                         await Click(A, 1000, token);
                     Log("trade animation complete, catching trade evolutions");
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != MysteryGiftscreen)
+                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != MysteryGiftscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != savescreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != savescreen2)
                         await Click(A, 1000, token);
                     Log("Trade should be completed, exiting box");
                    
@@ -426,7 +426,7 @@ namespace SysBot.Pokemon
                         nofind = true;
                         while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == SelectFarawayscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         {
-                            await Click(B, 1000, token);
+                            await Click(B, 5000, token);
 
                         }
                     }
