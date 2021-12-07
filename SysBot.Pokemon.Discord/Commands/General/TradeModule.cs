@@ -324,7 +324,25 @@ namespace SysBot.Pokemon.Discord
                 string temppokewait = Path.GetTempFileName().Replace(".tmp", $"{GameInfo.Strings.Species[pkm.Species]}.{pkm.Extension}").Replace("tmp", "");
 
 
+                if (ShowdownSet.Contains("AVs:"))
+                {
 
+                    foreach (string c in pset)
+                    {
+                        if (c.Contains("AVs:"))
+                        {
+                            var avstats = c.Split(' ');
+                            pkm.AV_HP = Convert.ToInt32(avstats[1]);
+                            pkm.AV_ATK = Convert.ToInt32(avstats[4]);
+                            pkm.AV_DEF = Convert.ToInt32(avstats[7]);
+                            pkm.AV_SPA = Convert.ToInt32(avstats[10]);
+                            pkm.AV_SPD = Convert.ToInt32(avstats[13]);
+                            pkm.AV_SPE = Convert.ToInt32(avstats[16]);
+                        }
+                    }
+                }
+                else
+                    pkm.AwakeningSetAllTo(200);
 
 
                 if (ShowdownSet.Contains("OT:"))
