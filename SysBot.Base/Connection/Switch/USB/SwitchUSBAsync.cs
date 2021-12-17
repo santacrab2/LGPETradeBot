@@ -56,5 +56,10 @@ namespace SysBot.Base
                 return BitConverter.ToUInt64(baseBytes, 0);
             }, token);
         }
+
+        public Task<byte[]> GetCharge(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

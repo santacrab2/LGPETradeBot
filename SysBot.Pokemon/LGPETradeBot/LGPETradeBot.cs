@@ -259,11 +259,10 @@ namespace SysBot.Pokemon
                     Log("Distribution trading...");
                     await Task.Delay(15000);
 
-                    while (await LGIsInTrade(token) && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
+                    while (await LGIsInTrade(token))
                         await Click(A, 1000, token);
-                    Log("trade animation complete, catching trade evolutions");
-                    while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
-                        await Click(A, 2000, token);
+                    
+                   
                     Log("Trade should be completed, exiting box");
                    
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
@@ -273,13 +272,13 @@ namespace SysBot.Pokemon
                         await Click(B, 2000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
-                        await Click(B, 2000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
-                        await Click(B, 2000, token);
-                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                            break;
                         await Click(A, 2000, token);
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                            break;
+                        await Click(B, 2000, token);
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                            break;
+                        await Click(B, 2000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
                     }
@@ -296,6 +295,7 @@ namespace SysBot.Pokemon
 
 
                     }
+                    await Click(B, 1000, token);
                     Log("done spamming b");
                     await Task.Delay(2500);
                     initialloop++;
@@ -458,12 +458,10 @@ namespace SysBot.Pokemon
                 await user.SendMessageAsync("trading...");
                 Log("trading...");
                 await Task.Delay(15000);
-                while (await LGIsInTrade(token) && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
-                    await Click(A, 1000, token);
-                Log("trade animation complete, catching trade evolutions");
-                while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen2 && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != waitingtotradescreen && BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
+                while (await LGIsInTrade(token))
                     await Click(A, 1000, token);
 
+                
 
                 Log("Trade should be completed, exiting box");
                 while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen)
@@ -473,13 +471,13 @@ namespace SysBot.Pokemon
                     await Click(B, 2000, token);
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         break;
-                    await Click(B, 2000, token);
-                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                        break;
-                    await Click(B, 2000, token);
-                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
-                        break;
                     await Click(A, 2000, token);
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                        break;
+                    await Click(B, 2000, token);
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
+                        break;
+                    await Click(B, 2000, token);
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         break;
                 }
@@ -496,6 +494,7 @@ namespace SysBot.Pokemon
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
 
                 }
+                await Click(B, 1000, token);
                 Log("done spamming b");
 
                 btimeout.Stop();

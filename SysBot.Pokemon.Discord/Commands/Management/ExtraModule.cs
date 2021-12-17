@@ -15,8 +15,19 @@ namespace SysBot.Pokemon.Discord
         [RequireOwner]
         public async Task GetChargeAsync([Remainder] string ip)
         {
-            var ch = await GetCharge(ip).ConfigureAwait(false);
-            await Context.Channel.SendMessageAsync(string.Format("{0:000}", ch));
+            var source = new CancellationTokenSource();
+            var token = source.Token;
+
+            var bot = GetBot(ip);
+            if (bot == null)
+            {
+                await ReplyAsync($"No bot found with the specified address ({ip}).").ConfigureAwait(false);
+                return;
+            }
+
+            var c = bot.Bot.Connection;
+            var chnumb = await c.GetCharge(token);
+            await Context.Channel.SendMessageAsync(BitConverter.ToInt32(chnumb,0).ToString());
         }
 
         [Command("test")]
@@ -26,19 +37,6 @@ namespace SysBot.Pokemon.Discord
             await ReplyAsync("test");
         }
 
-        public async Task<int> GetCharge(string ip)
-        {
-            var bot = GetBot(ip);
-            if (bot == null)
-            {
-                await ReplyAsync($"No bot has that IP address ({ip}).").ConfigureAwait(false);
-                return -1;
-            }
-            var b = bot.Bot;
-            var crlf = b is SwitchRoutineExecutor<PokeBotState> { UseCRLF: true };
-            var chnumb = await b.Connection.SendAsync(SwitchCommand.charge(crlf), CancellationToken.None).ConfigureAwait(false);
-            return chnumb;
-        }
 
         private static BotSource<PokeBotState>? GetBot(string ip)
         {

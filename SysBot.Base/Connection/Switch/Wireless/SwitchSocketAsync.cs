@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Text;
 using System.Net;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using static SysBot.Base.SwitchOffsetType;
+using System.Collections.Generic;
 
 namespace SysBot.Base
 {
@@ -171,6 +173,30 @@ namespace SysBot.Base
                 await SendAsync(cmd, token).ConfigureAwait(false);
                 await Task.Delay(MaximumTransferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
             }
+
+
         }
+        public async Task<byte[]> GetCharge(CancellationToken token)
+        {
+
+            List<byte> flexBuffer = new();
+            int received = 0;
+
+            await SendAsync(SwitchCommand.charge(), token).ConfigureAwait(false);
+            await Task.Delay(Connection.ReceiveBufferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
+          
+                byte[] buffer = new byte[Connection.ReceiveBufferSize];
+                received += Connection.Receive(buffer, 0, Connection.ReceiveBufferSize, SocketFlags.None);
+                flexBuffer.AddRange(buffer);
+                await Task.Delay(MaximumTransferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
+            
+
+            byte[] data = new byte[flexBuffer.Count];
+            flexBuffer.CopyTo(data);
+            var result = data.SliceSafe(0, received);
+            return Decoder.ConvertHexByteStringToBytes(result);
+         
+        }
+
     }
 }
