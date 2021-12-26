@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using SysBot.Base;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using PKHeX.Core;
@@ -26,8 +27,8 @@ namespace SysBot.Pokemon.Discord
             }
 
             var c = bot.Bot.Connection;
-            var chnumb = await c.GetCharge(token);
-            await Context.Channel.SendMessageAsync(BitConverter.ToInt32(chnumb,0).ToString());
+            var chnumb = c.GetCharge(token).Result;
+            await Context.Channel.SendMessageAsync(chnumb);
         }
 
         [Command("test")]

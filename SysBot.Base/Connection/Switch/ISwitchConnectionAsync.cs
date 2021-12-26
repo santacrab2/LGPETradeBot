@@ -13,6 +13,7 @@ namespace SysBot.Base
         Task<byte[]> ReadBytesLargeAsync(uint offset, int length, CancellationToken token);
         Task<byte[]> ReadBytesMainAsync(ulong offset, int length, CancellationToken token);
         Task<byte[]> ReadBytesAbsoluteAsync(ulong offset, int length, CancellationToken token);
+        Task<byte[]> ReadRaw(byte[] command, int length, CancellationToken token);
         Task WriteBytesMainAsync(byte[] data, ulong offset, CancellationToken token);
         Task WriteBytesAbsoluteAsync(byte[] data, ulong offset, CancellationToken token);
     }

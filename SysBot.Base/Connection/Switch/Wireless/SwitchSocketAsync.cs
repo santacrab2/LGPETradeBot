@@ -176,26 +176,19 @@ namespace SysBot.Base
 
 
         }
-        public async Task<byte[]> GetCharge(CancellationToken token)
+        public async Task<string> GetCharge(CancellationToken token)
         {
 
-            List<byte> flexBuffer = new();
-            int received = 0;
+            var bytes = await ReadRaw(SwitchCommand.charge(), 3, token).ConfigureAwait(false);
+            return Encoding.ASCII.GetString(bytes).Trim();
 
-            await SendAsync(SwitchCommand.charge(), token).ConfigureAwait(false);
-            await Task.Delay(Connection.ReceiveBufferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
-          
-                byte[] buffer = new byte[Connection.ReceiveBufferSize];
-                received += Connection.Receive(buffer, 0, Connection.ReceiveBufferSize, SocketFlags.None);
-                flexBuffer.AddRange(buffer);
-                await Task.Delay(MaximumTransferSize / DelayFactor + BaseDelay, token).ConfigureAwait(false);
-            
-
-            byte[] data = new byte[flexBuffer.Count];
-            flexBuffer.CopyTo(data);
-            var result = data.SliceSafe(0, received);
-            return Decoder.ConvertHexByteStringToBytes(result);
-         
+        }
+        public async Task<byte[]> ReadRaw(byte[] command, int length, CancellationToken token)
+        {
+            await SendAsync(command, token).ConfigureAwait(false);
+            var buffer = new byte[length];
+            var _ = Read(buffer);
+            return buffer;
         }
 
     }

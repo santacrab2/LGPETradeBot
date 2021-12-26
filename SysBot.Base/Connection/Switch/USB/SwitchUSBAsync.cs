@@ -57,7 +57,12 @@ namespace SysBot.Base
             }, token);
         }
 
-        public Task<byte[]> GetCharge(CancellationToken token)
+        public Task<string> GetCharge(CancellationToken token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<byte[]> ReadRaw(byte[] command, int length, CancellationToken token)
         {
             throw new NotImplementedException();
         }

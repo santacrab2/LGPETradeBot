@@ -32,6 +32,7 @@ namespace SysBot.Pokemon
         public static Queue discordID = new();
         public static Queue tradepkm = new();
         public static int initialloop = 0;
+        int passes = 0;
         public LetsGoTrades(PokeTradeHub<PK8> hub, PokeBotState cfg) : base(cfg)
         {
             Hub = hub;
@@ -286,15 +287,29 @@ namespace SysBot.Pokemon
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    while (read[0] != overworld)
+                    passes = 0;
+                    while (read[0] != overworld && passes <= 30)
                     {
 
-                 
+
+
                         await Click(B, 1000, token);
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-
-
+                        passes++;
                     }
+                    if (passes >= 30)
+                    {
+                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
+                        {
+                            await Click(A, 1000, token);
+                        }
+                        while (read[0] != overworld)
+                        {
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        }
+                    }
+                    await Click(B, 1000, token);
                     await Click(B, 1000, token);
                     Log("done spamming b");
                     await Task.Delay(2500);
@@ -485,15 +500,29 @@ namespace SysBot.Pokemon
                 int acount = 4;
                 Log("spamming b to get back to overworld");
                 read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                while (read[0] !=overworld)
+                passes = 0;
+                while (read[0] !=overworld && passes <=30)
                 {
                     
                    
                     
                     await Click(B, 1000, token);
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-
+                    passes++;
                 }
+                if(passes >= 30)
+                {
+                    while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
+                    {
+                        await Click(A, 1000, token);
+                    }
+                    while (read[0] != overworld)
+                    {
+                        await Click(B, 1000, token);
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                    }
+                }
+                await Click(B, 1000, token);
                 await Click(B, 1000, token);
                 Log("done spamming b");
 

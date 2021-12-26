@@ -63,11 +63,6 @@ namespace SysBot.Base
             var cmd = SwitchCommand.Configure(SwitchConfigureParameter.echoCommands, value ? 1 : 0, UseCRLF);
             await Connection.SendAsync(cmd, token).ConfigureAwait(false);
         }
-        public async Task<int> charge(bool value, CancellationToken token)
-        {
-            var cmd = SwitchCommand.charge(UseCRLF);
-            var ch = await Connection.SendAsync(cmd, token);
-            return ch;
-        }
+
     }
 }
