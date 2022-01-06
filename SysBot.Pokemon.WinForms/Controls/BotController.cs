@@ -185,7 +185,7 @@ namespace SysBot.Pokemon.WinForms
                                 await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}✅");
                                 var offembed = new EmbedBuilder();
                                 offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Online");
-                                await tradechan.SendMessageAsync(embed: offembed.Build());
+                                await tradechan.SendMessageAsync("<@&898901020678176839>",embed: offembed.Build());
                             }
                         }
                     }

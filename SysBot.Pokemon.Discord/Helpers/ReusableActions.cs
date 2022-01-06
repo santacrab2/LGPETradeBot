@@ -49,7 +49,7 @@ namespace SysBot.Pokemon.Discord
                 newShowdown.Add(line);
             var pb7conv = (PB7)pkm;
             int[] AVs = new int[] { pb7conv.AV_HP, pb7conv.AV_ATK, pb7conv.AV_DEF, pb7conv.AV_SPA, pb7conv.AV_SPD, pb7conv.AV_SPE };
-            newShowdown.Insert(1, $"\nAVs: {AVs[0]} HP / {AVs[1]} Atk / {AVs[2]} Def / {AVs[3]} SpA / {AVs[4]} SpD / {AVs[5]} Spe");
+            newShowdown.Insert(1, $"AVs: {AVs[0]} HP / {AVs[1]} Atk / {AVs[2]} Def / {AVs[3]} SpA / {AVs[4]} SpD / {AVs[5]} Spe");
             if (pkm.IsEgg)
                 newShowdown.Insert(1, "IsEgg: Yes");
             if (pkm.Ball > (int)Ball.None)
