@@ -39,105 +39,41 @@ namespace SysBot.Pokemon.Discord
                
                 return;
             }
-            if (!EncounterEvent.Initialized)
-                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
-            APILegality.AllowBatchCommands = true;
-            APILegality.AllowTrainerOverride = true;
-            APILegality.ForceSpecifiedBall = true;
-            APILegality.SetMatchingBalls = true;
-            Legalizer.EnableEasterEggs = false;
+            ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
             var set = new ShowdownSet(ShowdownSet);
-     
-           
-           try
+            var template = AutoLegalityWrapper.GetTemplate(set);
+            if (set.InvalidLines.Count != 0)
             {
-                string[] pset = ShowdownSet.Split('\n');
-                var pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
-                pkm.Stat_CP = pkm.CalcCP;
+                var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                await ReplyAsync(msg).ConfigureAwait(false);
+                return;
+            }
+
+            try
+            {
+                var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "piplup");
+                var pkm = sav.GetLegalFromSet(template, out var result);
+                var res = result.ToString();
+
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    pkm= EggTrade(pkm);
-                if (pkm is not PB7 || !new LegalityAnalysis(pkm).Valid)
+                    EggTrade((PB7)pkm);
+
+                var la = new LegalityAnalysis(pkm);
+                var spec = GameInfo.Strings.Species[template.Species];
+                PKMConverter.AllowIncompatibleConversion = true;
+                pkm = PKMConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
+
+
+                if (!la.Valid)
                 {
-                    var reason = result.ToString() == "Timeout" ? "That set took too long to generate." : "I wasn't able to create something from that.";
-                    var imsg = $"Oops! {reason} Here's the legality report: ";
-                    await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
+                    var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
+                    var imsg = $"Oops! {reason}";
+                    if (res == "Failed")
+                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+                    await ReplyAsync(imsg).ConfigureAwait(false);
                     return;
                 }
-                if (ShowdownSet.Contains("AVs:"))
-                {
-                    
-                    foreach(string c in pset)
-                    {
-                        if (c.Contains("AVs:"))
-                        {
-                           var avstats = c.Split(' ');
-                            pkm.AV_HP = Convert.ToInt32(avstats[1]);
-                            pkm.AV_ATK = Convert.ToInt32(avstats[4]);
-                            pkm.AV_DEF = Convert.ToInt32(avstats[7]);
-                            pkm.AV_SPA = Convert.ToInt32(avstats[10]);
-                            pkm.AV_SPD = Convert.ToInt32(avstats[13]);
-                            pkm.AV_SPE = Convert.ToInt32(avstats[16]);
-                        }
-                    }
-                }
-                if (!new LegalityAnalysis(pkm).Valid)
-                    pkm = (PB7)pkm.Legalize();
-                if (ShowdownSet.Contains("OT:"))
-                {
-                    
-                    foreach (string b in pset)
-                    {
-                        if (b.Contains("OT:"))
-                            pkm.OT_Name = b.Replace("OT: ", "");
-                        
-                    }
-                }
-                if (LegalityFormatting.GetLegalityReport(new LegalityAnalysis(pkm)).ToLower().Contains("ot name too long"))
-                    pkm.OT_Name = "Pip";
-                if (pkm.OT_Name == "PKHeX")
-                    pkm.OT_Name = LetsGoTrades.sav.OT;
-                if (ShowdownSet.Contains("TID:"))
-                {
-
-                   
-                    foreach (string v in pset)
-                    {
-                        if (v.Contains("TID:"))
-                        {
-                            int trid7 = Convert.ToInt32(v.Replace("TID: ", ""));
-                            pkm.TrainerID7 = trid7;
-
-                        }
-                       
-                    }
-                }
-                if (ShowdownSet.Contains("SID:"))
-                {
-                    
-                    foreach (string v in pset)
-                    {
-                        if (v.Contains("SID:"))
-                        {
-                            int trsid7 = Convert.ToInt32(v.Replace("SID: ", ""));
-                            pkm.TrainerSID7 = trsid7;
-
-                        }
-                        
-                    }
-                }
-                if (pkm.TrainerID7 == 993401)
-                    pkm.TrainerID7 = LetsGoTrades.sav.TrainerID7;
-                if (pkm.TrainerSID7 == 3559)
-                    pkm.TrainerSID7 = LetsGoTrades.sav.TrainerSID7;
-                if (ShowdownSet.ToLower().Contains("shiny: yes"))
-                    pkm.SetShiny();
-
-                if(!new LegalityAnalysis(pkm).Valid)
-                {
-                    var imsg = $"Oops! I wasn't able to create something from that. Here's the legality report: ";
-                    await Context.Channel.SendMessageAsync(imsg + new LegalityAnalysis(pkm).Report()).ConfigureAwait(false);
-                    return;
-                }
+                pkm.ResetPartyStats();
 
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
