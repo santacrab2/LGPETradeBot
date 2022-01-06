@@ -305,99 +305,42 @@ namespace SysBot.Pokemon.Discord
         [Summary("Makes a PB7 file for you from showdown text, great way to check legality.")]
         public async Task pbjmaker([Remainder] string ShowdownSet)
         {
-            if (!EncounterEvent.Initialized)
-                EncounterEvent.RefreshMGDB(Hub.Config.TradeBot.mgdbpath);
-            APILegality.AllowBatchCommands = true;
-            APILegality.AllowTrainerOverride = true;
-            APILegality.ForceSpecifiedBall = true;
-            APILegality.SetMatchingBalls = true;
-
+            ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
             var set = new ShowdownSet(ShowdownSet);
+           var template = AutoLegalityWrapper.GetTemplate(set);
+            if (set.InvalidLines.Count != 0)
+            {
+                var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
+                await ReplyAsync(msg).ConfigureAwait(false);
+                return;
+            }
 
             try
             {
-                string[] pset = ShowdownSet.Split('\n');
-                var pkm = (PB7)LetsGoTrades.sav.GetLegalFromSet(set, out var result);
-                pkm.Stat_CP = pkm.CalcCP;
+                var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "piplup");
+                var pkm = sav.GetLegalFromSet(template, out var result);
+               var res = result.ToString();
+
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    pkm = EggTrade(pkm);
-                string temppokewait = Path.GetTempFileName().Replace(".tmp", $"{GameInfo.Strings.Species[pkm.Species]}.{pkm.Extension}").Replace("tmp", "");
+                    EggTrade((PB7)pkm);
 
+                var la = new LegalityAnalysis(pkm);
+                var spec = GameInfo.Strings.Species[template.Species];
+                PKMConverter.AllowIncompatibleConversion = true;
+                pkm = PKMConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
+              
 
-                if (ShowdownSet.Contains("AVs:"))
+                if (!la.Valid)
                 {
-
-                    foreach (string c in pset)
-                    {
-                        if (c.Contains("AVs:"))
-                        {
-                            var avstats = c.Split(' ');
-                            pkm.AV_HP = Convert.ToInt32(avstats[1]);
-                            pkm.AV_ATK = Convert.ToInt32(avstats[4]);
-                            pkm.AV_DEF = Convert.ToInt32(avstats[7]);
-                            pkm.AV_SPA = Convert.ToInt32(avstats[10]);
-                            pkm.AV_SPD = Convert.ToInt32(avstats[13]);
-                            pkm.AV_SPE = Convert.ToInt32(avstats[16]);
-                        }
-                    }
-                }
-                else
-                    pkm.AwakeningSetAllTo(200);
-
-
-                if (ShowdownSet.Contains("OT:"))
-                {
-                    int q = 0;
-                    foreach (string b in pset)
-                    {
-                        if (pset[q].Contains("OT:"))
-                            pkm.OT_Name = pset[q].Replace("OT: ", "");
-                        q++;
-                    }
-                }
-                if (LegalityFormatting.GetLegalityReport(new LegalityAnalysis(pkm)).ToLower().Contains("ot name too long"))
-                    pkm.OT_Name = "Pip";
-                if (ShowdownSet.Contains("TID:"))
-                {
-
-                    int h = 0;
-                    foreach (string v in pset)
-                    {
-                        if (pset[h].Contains("TID:"))
-                        {
-                            int trid7 = Convert.ToInt32(pset[h].Replace("TID: ", ""));
-                            pkm.TrainerID7 = trid7;
-
-                        }
-                        h++;
-                    }
-                }
-                if (ShowdownSet.Contains("SID:"))
-                {
-                    int h = 0;
-                    foreach (string v in pset)
-                    {
-                        if (pset[h].Contains("SID:"))
-                        {
-                            int trsid7 = Convert.ToInt32(pset[h].Replace("SID: ", ""));
-                            pkm.TrainerSID7 = trsid7;
-
-                        }
-                        h++;
-                    }
-                }
-                if (ShowdownSet.ToLower().Contains("shiny: yes"))
-                {
-                    pkm.SetIsShiny(true);
-                }
-                if (!new LegalityAnalysis(pkm).Valid)
-                {
-                    await ReplyAsync("I could not legalize that set");
-                    File.Delete(temppokewait);
+                    var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
+                    var imsg = $"Oops! {reason}";
+                    if (res == "Failed")
+                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+                    await ReplyAsync(imsg).ConfigureAwait(false);
                     return;
                 }
-
-
+                pkm.ResetPartyStats();
+                string temppokewait = Path.GetTempFileName().Replace(".tmp", $"{GameInfo.Strings.Species[pkm.Species]}.{pkm.Extension}").Replace("tmp", "");
                 byte[] yre = pkm.DecryptedBoxData;
                 File.WriteAllBytes(temppokewait, yre);
                 await Context.Channel.SendFileAsync(temppokewait, "Here is your legalized pk file");
@@ -405,10 +348,18 @@ namespace SysBot.Pokemon.Discord
                 return;
 
             }
-            catch
+#pragma warning disable CA1031 // Do not catch general exception types
+            catch (Exception ex)
+#pragma warning restore CA1031 // Do not catch general exception types
             {
-                await Context.Channel.SendMessageAsync("I wasn't able to make a file from that set");
+               
+                var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
+                await ReplyAsync(msg).ConfigureAwait(false);
             }
+
+      
+
+        
         }
     }
 }

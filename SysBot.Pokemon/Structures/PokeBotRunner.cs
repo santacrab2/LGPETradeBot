@@ -36,7 +36,7 @@ namespace SysBot.Pokemon
             Hub.Counts.LoadCountsFromConfig(); // if user modified them prior to start
             if (RunOnce)
                 return;
-
+            AutoLegalityWrapper.EnsureInitialized(Hub.Config.Legalitysettings);
             AddIntegrations();
 
             base.InitializeStart();

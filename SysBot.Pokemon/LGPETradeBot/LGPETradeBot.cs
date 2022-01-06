@@ -265,49 +265,44 @@ namespace SysBot.Pokemon
                     
                    
                     Log("Trade should be completed, exiting box");
-                   
+                    passes = 0;
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != menuscreen)
                     {
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
-                        await Click(B, 2000, token);
+                        await Click(B, 1000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
-                        await Click(A, 2000, token);
+                        await Click(A, 1000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
-                        await Click(B, 2000, token);
+                        await Click(B, 1000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
-                        await Click(B, 2000, token);
+                        await Click(B, 1000, token);
                         if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                             break;
+                       
+                        if (passes == 30)
+                        {
+                            for (int i = 0; i < 7; i++)
+                            {
+                                await Click(A, 1000, token);
+                            }
+                        }
+                        passes++;
                     }
-                    btimeout.Restart();
+         
+                        btimeout.Restart();
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    passes = 0;
-                    while (read[0] != overworld && passes <= 30)
+
+                    while (read[0] != overworld)
                     {
-
-
-
                         await Click(B, 1000, token);
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        passes++;
-                    }
-                    if (passes >= 30)
-                    {
-                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
-                        {
-                            await Click(A, 1000, token);
-                        }
-                        while (read[0] != overworld)
-                        {
-                            await Click(B, 1000, token);
-                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        }
+                       
                     }
                     await Click(B, 1000, token);
                     await Click(B, 1000, token);
@@ -479,6 +474,7 @@ namespace SysBot.Pokemon
                 
 
                 Log("Trade should be completed, exiting box");
+                passes = 0;
                 while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) != menuscreen)
                 {
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
@@ -495,32 +491,26 @@ namespace SysBot.Pokemon
                     await Click(B, 2000, token);
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         break;
+                    if (passes == 30)
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            await Click(A, 1000, token);
+                        }
+                    }
+                    passes++;
                 }
                 btimeout.Restart();
                 int acount = 4;
                 Log("spamming b to get back to overworld");
                 read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                passes = 0;
-                while (read[0] !=overworld && passes <=30)
+           
+                while (read[0] !=overworld)
                 {
-                    
-                   
-                    
+
                     await Click(B, 1000, token);
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    passes++;
-                }
-                if(passes >= 30)
-                {
-                    while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) != Boxscreen)
-                    {
-                        await Click(A, 1000, token);
-                    }
-                    while (read[0] != overworld)
-                    {
-                        await Click(B, 1000, token);
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    }
+                  
                 }
                 await Click(B, 1000, token);
                 await Click(B, 1000, token);
@@ -606,5 +596,6 @@ namespace SysBot.Pokemon
             Jigglypuff,
             Diglett
         }
+        public static string GetLegalizationHint(IBattleTemplate set, ITrainerInfo sav, PKM pk) => set.SetAnalysis(sav, pk);
     }
 }
