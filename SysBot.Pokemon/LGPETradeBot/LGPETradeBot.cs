@@ -499,7 +499,7 @@ namespace SysBot.Pokemon
                     await Click(B, 2000, token);
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         break;
-                    if (passes == 30)
+                    if (passes == 15)
                     {
                         for (int i = 0; i < 7; i++)
                         {
