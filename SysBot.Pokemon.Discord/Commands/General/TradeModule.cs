@@ -233,7 +233,14 @@ namespace SysBot.Pokemon.Discord
 
 
             });
-            await ReplyAsync(embed: embed.Build());
+            try
+            {
+                await Context.User.SendMessageAsync(embed: embed.Build());
+            }
+            catch
+            {
+                await Context.Channel.SendMessageAsync("Turn on DMs to see the queue.");
+            }
         }
 
         [Command("convert")]

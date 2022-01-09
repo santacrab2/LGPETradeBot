@@ -297,12 +297,20 @@ namespace SysBot.Pokemon
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-
+                    passes = 0;
                     while (read[0] != overworld)
                     {
                         await Click(B, 1000, token);
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                       
+                        if (passes == 30)
+                        {
+                            for (int i = 0; i < 7; i++)
+                            {
+                                await Click(A, 1000, token);
+                            }
+                        }
+                        passes++;
+
                     }
                     await Click(B, 1000, token);
                     await Click(B, 1000, token);
@@ -504,13 +512,20 @@ namespace SysBot.Pokemon
                 int acount = 4;
                 Log("spamming b to get back to overworld");
                 read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-           
+                passes = 0;
                 while (read[0] !=overworld)
                 {
 
                     await Click(B, 1000, token);
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                  
+                    if (passes == 30)
+                    {
+                        for (int i = 0; i < 7; i++)
+                        {
+                            await Click(A, 1000, token);
+                        }
+                    }
+                    passes++;
                 }
                 await Click(B, 1000, token);
                 await Click(B, 1000, token);
