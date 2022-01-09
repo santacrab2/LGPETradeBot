@@ -1,17 +1,14 @@
-# Santa's Lets Go Trade Bot
+# Santa's Lets Go Trade Bot Based on Manu's Encounter Bot
 
 ## Disclaimer: 
-I am lazy. Offset hunting sucks. This is basically done all through over-estimated average timings for the button pushes. Its sloppy, im not super duper proud of it but hey now the genning community has a trade bot for every single game from generations 6-8 mission accomplished. 
+This is a hobby personal side project. There are no releases, you will need to build yourself builds exactly the same way as standard sysbot. It has been updated with screen offsets. It has a trade evolution catch. There is one outstanding issue and that is occasionally it finds its way into "go for a stroll" and it kills the connection to botbase. This will be fixed once I figure out the pattern, feel free to open up jnoexes and see if you can figure out the pattern. Support for this Fork will not be given on the main PKHeX development server. 
 
-You need Manu's custom sysbot base for this work. setting it up after that is basically the same as sysbot. Also its timing based, so its slow and wont be as fast as gen 8 sysbot, just let your users know to just go through the trade and wait for the bot to catch up hahah
+If you need help setting up this bot you can head to https://wwww.piplup.net 
 
-any further questions can be answered at [The Ice Den Discord](https://www.piplup.net)
-
-I imagine those bits will get updated frequently i am always coming up with new ideas for things and just adding them and pushing so keep an eye out for that.
+There is a charge command that will tell you the charge of your switch, good for those not wanting their switch to be plugged in all the time.
 
 
-
-
+# Base Fork Credits:
 
 
 # Sys-EncounterBot.NET
