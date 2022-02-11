@@ -499,8 +499,9 @@ namespace SysBot.Pokemon
                     await Click(B, 2000, token);
                     if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == menuscreen)
                         break;
-                    if (passes == 15)
+                    if (passes >= 15)
                     {
+                        Log("handling trade evolution");
                         for (int i = 0; i < 7; i++)
                         {
                             await Click(A, 1000, token);
@@ -518,8 +519,9 @@ namespace SysBot.Pokemon
 
                     await Click(B, 1000, token);
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    if (passes == 30)
+                    if (passes >= 20)
                     {
+                        Log("handling trade evolution");
                         for (int i = 0; i < 7; i++)
                         {
                             await Click(A, 1000, token);
