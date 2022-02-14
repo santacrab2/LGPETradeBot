@@ -157,7 +157,26 @@ namespace SysBot.Pokemon
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == menuscreen)
                     {
                         await Click(A, 1000, token);
+                        if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen2)
+                        {
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                            while (read[0] != overworld)
+                            {
 
+                                await Click(B, 1000, token);
+                                read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                            }
+                            await Click(X, 2000, token).ConfigureAwait(false);
+                            Log("opening menu");
+                            while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) != menuscreen)
+                            {
+                                await Click(B, 2000, token);
+                                await Click(X, 2000, token);
+                            }
+                            Log("selecting communicate");
+                            await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
+                            await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                        }
                     }
                     await Task.Delay(2000);
                     Log("selecting faraway connection");
@@ -358,8 +377,30 @@ namespace SysBot.Pokemon
                 await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                while(BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff,2,token),0) == menuscreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) == waitingtotradescreen)
                 {
+                    
                     await Click(A, 1000, token);
-                   
+                    if (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen || BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == savescreen2)
+                    {
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        while (read[0] != overworld)
+                        {
+
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        }
+                        await Click(X, 2000, token).ConfigureAwait(false);
+                        Log("opening menu");
+                        while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) != menuscreen)
+                        {
+                            await Click(B, 2000, token);
+                            await Click(X, 2000, token);
+                        }
+                        Log("selecting communicate");
+                        await SetStick(SwitchStick.RIGHT, 30000, 0, 0, token).ConfigureAwait(false);
+                        await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
+                    }
+
+
                 }
                 await Task.Delay(2000);
                 Log("selecting faraway connection");
