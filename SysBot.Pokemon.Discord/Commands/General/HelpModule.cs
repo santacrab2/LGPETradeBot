@@ -15,8 +15,6 @@ namespace SysBot.Pokemon.Discord
             _service = service;
         }
 
-        [Command("help")]
-        [Summary("Lists available commands.")]
         public async Task HelpAsync()
         {
             var builder = new EmbedBuilder

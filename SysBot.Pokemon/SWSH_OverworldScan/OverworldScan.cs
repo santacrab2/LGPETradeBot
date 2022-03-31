@@ -57,7 +57,7 @@ namespace SysBot.Pokemon
         private async Task Overworld(CancellationToken token)
         {
             await ResetStick(token).ConfigureAwait(false);
-            SAV8 sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
+            SAV8SWSH sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
             List<int[]> movementslist = ParseMovements();
             byte[] KCoordinates;
             List<PK8> PK8s;
@@ -141,7 +141,7 @@ namespace SysBot.Pokemon
         private async Task DoSeededEncounter(CancellationToken token)
         {
             ScanMode type = Hub.Config.SWSH_OverworldScan.EncounteringType;
-            SAV8 sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
+            SAV8SWSH sav = await GetFakeTrainerSAV(token).ConfigureAwait(false);
             Species dexn = 0;
             uint offset = 0x00;
             if (type == ScanMode.G_Articuno)

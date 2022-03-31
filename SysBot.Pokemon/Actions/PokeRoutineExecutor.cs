@@ -56,7 +56,7 @@ namespace SysBot.Pokemon
             return new PB7(data);
         }
 
-        public async Task SetBoxPokemon(PK8 pkm, int box, int slot, CancellationToken token, SAV8? sav = null)
+        public async Task SetBoxPokemon(PK8 pkm, int box, int slot, CancellationToken token, SAV8SWSH? sav = null)
         {
             if (sav != null)
             {
@@ -144,7 +144,7 @@ namespace SysBot.Pokemon
 
         public async Task<byte[]> ReadKCoordinates(CancellationToken token) => await SwitchConnection.ReadBytesLargeAsync(KCoordinatesBlock, 24592, token).ConfigureAwait(false);
         
-        public async Task<List<PK8>> ReadOwPokemonFromBlock(byte[] KCoordinates, SAV8 sav, CancellationToken token)
+        public async Task<List<PK8>> ReadOwPokemonFromBlock(byte[] KCoordinates, SAV8SWSH sav, CancellationToken token)
         {
             List<PK8> PK8s = new List<PK8>();
 
@@ -197,7 +197,7 @@ namespace SysBot.Pokemon
             return PK8s;
         }
 
-        public async Task<PK8?> ReadOwPokemon(Species target, uint startoffset, byte[]? mondata, SAV8 TrainerData, CancellationToken token)
+        public async Task<PK8?> ReadOwPokemon(Species target, uint startoffset, byte[]? mondata, SAV8SWSH TrainerData, CancellationToken token)
         {
             byte[]? data = null;
             Species species = 0;

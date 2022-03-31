@@ -1,18 +1,18 @@
 ﻿using Discord.Commands;
+using Discord.Interactions;
 using System.Threading.Tasks;
 
 namespace SysBot.Pokemon.Discord
 {
-    public class HelloModule : ModuleBase<SocketCommandContext>
+    public class HelloModule : InteractionModuleBase<SocketInteractionContext>
     {
-        [Command("hello")]
-        [Alias("hi")]
-        [Summary("Say hello to the bot and get a response.")]
+        [SlashCommand("hello","say hello to the bot")]
+        
         public async Task PingAsync()
         {
             var str = SysCordInstance.Settings.HelloResponse;
             var msg = string.Format(str, Context.User.Mention);
-            await ReplyAsync(msg).ConfigureAwait(false);
+            await RespondAsync(msg).ConfigureAwait(false);
         }
     }
 }

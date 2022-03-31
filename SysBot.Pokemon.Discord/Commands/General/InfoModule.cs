@@ -19,8 +19,6 @@ namespace SysBot.Pokemon.Discord
         private const string detail = "I am an open source Discord bot powered by PKHeX.Core and other open source software. This Fork of SysBot.NET was created by: Santacrab420 and BewearHugs";
         private const string repo = "https://github.com/santacrab2/LGPETradeBot";
 
-        [Command("info")]
-        [Alias("about", "whoami", "owner")]
         public async Task InfoAsync()
         {
             var app = await Context.Client.GetApplicationInfoAsync().ConfigureAwait(false);
