@@ -22,8 +22,8 @@ namespace SysBot.Pokemon
 
     public class LetsGoTrades : PokeRoutineExecutor
     {
-        
-        
+
+        public static CancellationTokenSource wtpsource = new CancellationTokenSource();
         public static SAV7b sav = new();
         public static PB7 pkm = new();
         public static PokeTradeHub<PK8> Hub;

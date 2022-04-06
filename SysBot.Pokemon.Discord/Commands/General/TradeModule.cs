@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Text;
-using Discord.Commands;
 using Discord.Interactions;
 using System.Threading.Tasks;
 using Discord;
@@ -25,7 +24,7 @@ namespace SysBot.Pokemon.Discord
 
         [SlashCommand("trade", "Trades You a pokemon from showdown text in Lets Go games")]
 
-        public async Task Trade(string ShowdownSet = "", Attachment Pb7 = default)
+        public async Task Trade([Summary("PokemonText","put your copied showdown text here")]string ShowdownSet = "", Attachment Pb7 = default)
         {
             if (ShowdownSet != "")
             {
@@ -241,7 +240,7 @@ namespace SysBot.Pokemon.Discord
 
         [SlashCommand("convert","makes a pb7 file from showdown text")]
 
-        public async Task pbjmaker(string ShowdownSet)
+        public async Task pbjmaker([Summary("PokemonText")]string ShowdownSet)
         {
             ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
             var set = ConvertToShowdown(ShowdownSet);

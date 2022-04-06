@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.WinForms
                     foreach (string c in chanarray)
                     {
                         ulong.TryParse(c, out var tchan);
-                        var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
+                        var tradechan = (ITextChannel)Discord.SysCord._client.GetChannelAsync(tchan).Result;
                         if (!tradechan.Name.Contains("❌"))
                         {
                             var role = tradechan.Guild.EveryoneRole;
@@ -103,8 +103,10 @@ namespace SysBot.Pokemon.WinForms
                             await tradechan.SendMessageAsync(embed: offembed.Build());
                         }
                     }
-                
-           
+                var wtpchan = (ITextChannel)Discord.SysCord._client.GetChannelAsync(961071583747776532).Result;
+                if (wtpchan.Name.Contains("✅"))
+                    await wtpchan.ModifyAsync(x => x.Name = wtpchan.Name.Replace("✅", "❌"));
+
                 PB_Lamp.BackColor = System.Drawing.Color.Transparent;
                 return;
             }
