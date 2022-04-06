@@ -153,6 +153,25 @@ namespace SysBot.Pokemon.Discord
 
             // Subscribe a handler to see if a message invokes a command.
             _client.MessageReceived += HandleMessageAsync;
+            _client.ButtonExecuted += handlebuttonpress;
+        }
+        private async Task handlebuttonpress(SocketMessageComponent arg)
+        {
+
+            if (arg.Data.CustomId == "wtpyes")
+            {
+                WTPSB.buttonpressed = true;
+                WTPSB.tradepokemon = true;
+                await arg.Message.DeleteAsync();
+                return;
+            }
+            if (arg.Data.CustomId == "wtpno")
+            {
+                WTPSB.buttonpressed = true;
+                WTPSB.tradepokemon = false;
+                await arg.Message.DeleteAsync();
+                return;
+            }
         }
         private async Task ready()
         {
