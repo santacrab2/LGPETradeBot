@@ -116,10 +116,11 @@ namespace SysBot.Pokemon.Discord
 
         public async Task MainAsync(string apiToken, CancellationToken token)
         {
+            
             _client.Ready += ready;
             // Centralize the logic for commands into a separate method.
             await InitCommands().ConfigureAwait(false);
-            
+           
             // Login and connect.
             await _client.LoginAsync(TokenType.Bot, apiToken).ConfigureAwait(false);
             await _client.StartAsync().ConfigureAwait(false);
@@ -153,9 +154,9 @@ namespace SysBot.Pokemon.Discord
 
             // Subscribe a handler to see if a message invokes a command.
             _client.MessageReceived += HandleMessageAsync;
-            _client.ButtonExecuted += handlebuttonpress;
+         
         }
-        private async Task handlebuttonpress(SocketMessageComponent arg)
+        public async Task handlebuttonpress(SocketMessageComponent arg)
         {
 
             if (arg.Data.CustomId == "wtpyes")
@@ -185,6 +186,7 @@ namespace SysBot.Pokemon.Discord
                 var result = await _interactionService.ExecuteCommandAsync(ctx, null);
             };
             _client.SlashCommandExecuted += slashtask;
+            _client.ButtonExecuted += handlebuttonpress;
         }
         public Task slashtask(SocketSlashCommand arg1)
         {

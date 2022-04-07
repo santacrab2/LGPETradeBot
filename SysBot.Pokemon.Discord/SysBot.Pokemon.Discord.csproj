@@ -5,6 +5,14 @@
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="DexFlavor.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="DexFlavor.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Discord.Net" Version="3.4.1" />

@@ -68,7 +68,7 @@ namespace SysBot.Pokemon.Discord
                     var compmessage = new ComponentBuilder().WithButton("Yes", "wtpyes",ButtonStyle.Success).WithButton("No", "wtpno", ButtonStyle.Danger);
                     var embedmes = new EmbedBuilder();
                     embedmes.AddField("Receive Pokemon?", $"Would you like to receive {(Species)randspecies} in your game?");
-                    await ReplyAsync($"<@{usr.Id}>",embed: embedmes.Build(), components: compmessage.Build());
+                    await Context.Channel.SendMessageAsync($"<@{usr.Id}>",embed: embedmes.Build(), components: compmessage.Build());
 
                     while (!buttonpressed)
                     {
