@@ -104,6 +104,7 @@ namespace SysBot.Pokemon.Discord
                         LetsGoTrades.discordID.Enqueue(Context.User.Id);
                         LetsGoTrades.Channel.Enqueue(Context.Channel);
                         LetsGoTrades.tradepkm.Enqueue(pk);
+                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Format))}");
                     }
                     usr = null;
                     guess = "";
