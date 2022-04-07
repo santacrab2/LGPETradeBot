@@ -376,7 +376,16 @@ namespace SysBot.Pokemon
                 var StoredLength = SlotSize- 0x1C;
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1,token);
                 await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+                await SetController(token);
+                for (int i = 0; i < 3; i++)
+                    await Click(A, 1000, token);
+                read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                while (read[0] != overworld)
+                {
 
+                    await Click(B, 1000, token);
+                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                }
                 await Click(X, 2000, token).ConfigureAwait(false);
                 Log("opening menu");
                 while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) != menuscreen)
