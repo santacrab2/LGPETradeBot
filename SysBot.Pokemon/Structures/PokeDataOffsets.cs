@@ -53,6 +53,7 @@ namespace SysBot.Pokemon
         public static uint waitingtotradescreen = 0x0080;
         public static uint waitingtotradescreen2 = 0x1080;
         public static uint overworld = 0x78;
+        public static uint scrollscreen = 0xB080;
         //Lets Go Pointers:
         public const string SpeciesComboPointer = "[[[[main+160E410]+50]+770]+40]+298";
         public const string CatchComboPointer = "[[[[main+160E410]+50]+840]+20]+1D0";
