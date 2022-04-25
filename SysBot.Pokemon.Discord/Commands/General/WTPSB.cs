@@ -76,7 +76,7 @@ namespace SysBot.Pokemon.Discord
                     }
                     if (tradepokemon)
                     {
-                        var set = new ShowdownSet(((Species)randspecies).ToString() + "\nShiny: Yes");
+                        var set = new ShowdownSet($"{(Species)randspecies}\nShiny: Yes");
                         var template = AutoLegalityWrapper.GetTemplate(set);
                         var sav = SaveUtil.GetBlankSAV(GameVersion.GE,"Piplup");
                         var pk = sav.GetLegalFromSet(template, out var result);
@@ -88,11 +88,6 @@ namespace SysBot.Pokemon.Discord
                             pk = sav.GetLegalFromSet(template, out result);
                         }
                         pk.Ball = BallApplicator.ApplyBallLegalByColor(pk);
-                        pk.CurrentLevel = random.Next(100);
-                        while (new LegalityAnalysis(pk).Report().Contains("Evolution not valid"))
-                        {
-                            pk.CurrentLevel = random.Next(100);
-                        }
                         int[] sugmov = MoveSetApplicator.GetMoveSet(pk, true);
                         pk.SetMoves(sugmov);
                         int natue = random.Next(24);

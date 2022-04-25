@@ -132,7 +132,7 @@ namespace SysBot.Pokemon
 
                     }
                     var dspecies = dpoke.Next(150);
-                    ShowdownSet set = new ShowdownSet($"{(Species)dspecies}\nLevel: 90\nShiny: Yes");
+                    ShowdownSet set = new ShowdownSet($"Piplup.net({(Species)dspecies})\nLevel: 90\nShiny: Yes");
                     var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
                     dpkm = (PB7)dpkm.Legalize();
                     dpkm.OT_Name = "Piplup.net";
@@ -369,8 +369,9 @@ namespace SysBot.Pokemon
                 var finalpic = Merge(code0, code1, code2);
                 finalpic.Save($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
                 var user = (IUser)discordname.Peek();
-                await user.SendMessageAsync($"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:");
-                await user.SendFileAsync($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png", $"{code[0]}, {code[1]}, {code[2]}");
+                var filename = System.IO.Path.GetFileName($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
+                var lgpeemb = new EmbedBuilder().WithTitle($"{code[0]}, {code[1]}, {code[2]}").WithImageUrl($"attachment://{filename}").Build();
+                await user.SendFileAsync(filename,text: $"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:", embed: lgpeemb);
                 var pkm = (PB7)tradepkm.Peek();
                 var slotofs = GetSlotOffset(1, 0);
                 var StoredLength = SlotSize- 0x1C;

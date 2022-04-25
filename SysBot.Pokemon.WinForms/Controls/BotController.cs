@@ -105,7 +105,10 @@ namespace SysBot.Pokemon.WinForms
                     }
                 var wtpchan = (ITextChannel)Discord.SysCord._client.GetChannelAsync(961071583747776532).Result;
                 if (wtpchan.Name.Contains("✅"))
+                {
                     await wtpchan.ModifyAsync(x => x.Name = wtpchan.Name.Replace("✅", "❌"));
+                    LetsGoTrades.wtpsource.Cancel();
+                }
 
                 PB_Lamp.BackColor = System.Drawing.Color.Transparent;
                 return;

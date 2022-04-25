@@ -61,8 +61,8 @@ namespace SysBot.Pokemon.Discord
 
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[template.Species];
-                   PKMConverter.AllowIncompatibleConversion = true;
-                    pkm = PKMConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
+                   EntityConverter.AllowIncompatibleConversion = true;
+                    pkm = EntityConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
 
 
                     if (!la.Valid)
@@ -202,7 +202,7 @@ namespace SysBot.Pokemon.Discord
             {
                 null => null,
                 PB7 pkm => pkm,
-                _ => PKMConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
+                _ => EntityConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
             };
         }
 
@@ -263,8 +263,8 @@ namespace SysBot.Pokemon.Discord
 
                 var la = new LegalityAnalysis(pkm);
                 var spec = GameInfo.Strings.Species[template.Species];
-                PKMConverter.AllowIncompatibleConversion = true;
-                pkm = PKMConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
+                EntityConverter.AllowIncompatibleConversion = true;
+                pkm = EntityConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
               
 
                 if (!la.Valid)
