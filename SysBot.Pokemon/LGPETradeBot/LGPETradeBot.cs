@@ -645,19 +645,19 @@ namespace SysBot.Pokemon
                 throw new ArgumentNullException("thirdImage");
             }
 
-            int outputImageWidth = firstImage.Width + secondImage.Width + thirdImage.Width + 2;
+            int outputImageWidth = firstImage.Width + 20;
 
-            int outputImageHeight = firstImage.Height;
+            int outputImageHeight = firstImage.Height - 65;
 
             Bitmap outputImage = new Bitmap(outputImageWidth, outputImageHeight, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             using (Graphics graphics = Graphics.FromImage(outputImage))
             {
-                graphics.DrawImage(firstImage, new Rectangle(0,0, firstImage.Width,firstImage.Height),
+                graphics.DrawImage(firstImage, new Rectangle(0, 0, firstImage.Width, firstImage.Height),
                     new Rectangle(new Point(), firstImage.Size), GraphicsUnit.Pixel);
-                graphics.DrawImage(secondImage, new Rectangle(50, 0, secondImage.Width,secondImage.Height),
+                graphics.DrawImage(secondImage, new Rectangle(50, 0, secondImage.Width, secondImage.Height),
                     new Rectangle(new Point(), secondImage.Size), GraphicsUnit.Pixel);
-                graphics.DrawImage(thirdImage, new Rectangle(100, 0, thirdImage.Width,thirdImage.Height),
+                graphics.DrawImage(thirdImage, new Rectangle(100, 0, thirdImage.Width, thirdImage.Height),
                     new Rectangle(new Point(), thirdImage.Size), GraphicsUnit.Pixel);
             }
 

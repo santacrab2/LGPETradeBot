@@ -75,7 +75,8 @@ namespace SysBot.Pokemon.Discord
                         return;
                     }
                     pkm.ResetPartyStats();
-
+                    try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting.")}
+                    catch { await RespondAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
                     LetsGoTrades.discordname.Enqueue(Context.User);
                     LetsGoTrades.discordID.Enqueue(Context.User.Id);
                     LetsGoTrades.Channel.Enqueue(Context.Channel);
@@ -129,7 +130,8 @@ namespace SysBot.Pokemon.Discord
                     await RespondAsync(imsg + new LegalityAnalysis(pkm).Report(),ephemeral:true).ConfigureAwait(false);
                     return;
                 }
-
+                try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting.")}
+                catch { await RespondAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
