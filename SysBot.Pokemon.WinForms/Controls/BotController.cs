@@ -107,6 +107,7 @@ namespace SysBot.Pokemon.WinForms
                 if (wtpchan.Name.Contains("✅"))
                 {
                     await wtpchan.ModifyAsync(x => x.Name = wtpchan.Name.Replace("✅", "❌"));
+                    await wtpchan.AddPermissionOverwriteAsync(wtpchan.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Deny));
                     LetsGoTrades.wtpsource.Cancel();
                 }
 

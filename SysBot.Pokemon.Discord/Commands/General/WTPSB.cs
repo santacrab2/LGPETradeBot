@@ -32,6 +32,7 @@ namespace SysBot.Pokemon.Discord
         {
             ITextChannel wtpchannel = (ITextChannel)Context.Channel;
             await wtpchannel.ModifyAsync(newname => newname.Name = wtpchannel.Name.Replace("❌", "✅"));
+            await wtpchannel.AddPermissionOverwriteAsync(wtpchannel.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Allow));
             await RespondAsync("\"who's that pokemon\" mode started!",ephemeral:true);
             while (!LetsGoTrades.wtpsource.IsCancellationRequested)
             {
@@ -133,6 +134,7 @@ namespace SysBot.Pokemon.Discord
             await RespondAsync("\"Who's That Pokemon\" mode stopped.",ephemeral:true);
             ITextChannel wtpchannel = (ITextChannel)Context.Channel;
             await wtpchannel.ModifyAsync(newname => newname.Name = wtpchannel.Name.Replace("✅","❌"));
+            await wtpchannel.AddPermissionOverwriteAsync(wtpchannel.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Deny));
         }
 
         private int[] GetPokedex()

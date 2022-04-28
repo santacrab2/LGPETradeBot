@@ -60,11 +60,7 @@ namespace SysBot.Pokemon.WinForms
                 graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel);
                 
             }
-
-            var cutimg = new Bitmap(destImage.Width-40,destImage.Height-65);
-            var g = Graphics.FromImage(cutimg);
-            g.DrawImage(destImage, 0, 0);
-            return cutimg;
+            return destImage;
         }
 
 

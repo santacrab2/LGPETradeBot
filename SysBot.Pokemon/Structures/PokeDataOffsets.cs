@@ -33,6 +33,7 @@ namespace SysBot.Pokemon
         public const uint EGeneratingFunction6 = 0x739944; //main
         public const uint EGeneratingFunction7 = 0x739948; //main
         public const uint TrainerData = 0x53582030; //heap
+        public const uint TradePartnerData = 0x41A28078;//heap
         public const uint BoxSlot1 = 0x533675B0; //heap
         public const uint Money = 0x53324108; //heap
         public const uint NatureTellerEnabled = 0x53405CF8; //heap, 0 random nature, 4 set nature

@@ -277,7 +277,10 @@ namespace SysBot.Pokemon
                     if (dnofind == true)
                         continue;
                     await Task.Delay(10000);
-                    
+                    var tradepartnersav = new SAV7b();
+                    var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
+                    tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                    Log($"{tradepartnersav.DisplayTID},{tradepartnersav.DisplaySID},{tradepartnersav.OT}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
                         await Click(A, 1000, token);
@@ -507,6 +510,7 @@ namespace SysBot.Pokemon
                             await Click(B, 1000, token);
                             read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                         }
+                        break;
                     }
                 }
                 if (nofind)
