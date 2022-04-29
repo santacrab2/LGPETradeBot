@@ -397,12 +397,12 @@ namespace SysBot.Pokemon
                 for (int i = 0; i < 3; i++)
                     await Click(A, 1000, token);
                 read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                while (read[0] != overworld)
-                {
+                //while (read[0] != overworld)
+                //{
 
-                    await Click(B, 1000, token);
-                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                }
+                    //await Click(B, 1000, token);
+                    //read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+               // }
                 await Click(X, 2000, token).ConfigureAwait(false);
                 Log("opening menu");
                 while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 4, token), 0) != menuscreen)
