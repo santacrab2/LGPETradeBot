@@ -281,6 +281,14 @@ namespace SysBot.Pokemon
                     var tradepartnersav = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                    int waittime = 0;
+                    while(tradepartnersav.OT == sav.OT && waittime <= 20)
+                    {
+                        await Task.Delay(1000);
+                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
+                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                        waittime++;
+                    }
                     Log($"{tradepartnersav.DisplayTID},{tradepartnersav.DisplaySID},{tradepartnersav.OT},{(GameVersion)tradepartnersav.Blocks.Status.Game}, {tradepartnersav.Blocks.Status.StarterChoice}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
@@ -537,6 +545,14 @@ namespace SysBot.Pokemon
                     var tradepartnersav = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                    int waittime = 0;
+                    while (tradepartnersav.OT == sav.OT && waittime <= 20)
+                    {
+                        await Task.Delay(1000);
+                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
+                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                        waittime++;
+                    }
                     Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
@@ -646,6 +662,14 @@ namespace SysBot.Pokemon
                     var tradepartnersav = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                    int waittime = 0;
+                    while (tradepartnersav.OT == sav.OT && waittime <= 20)
+                    {
+                        await Task.Delay(1000);
+                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
+                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
+                        waittime++;
+                    }
                     Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     var offereddata = await SwitchConnection.ReadBytesAsync(OfferedPokemon, 0x104, token);
