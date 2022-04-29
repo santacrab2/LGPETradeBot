@@ -136,6 +136,7 @@ namespace SysBot.Pokemon.Discord
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
+                LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
              
                 await RespondAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
 
@@ -207,7 +208,20 @@ namespace SysBot.Pokemon.Discord
                 _ => EntityConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
             };
         }
+        [SlashCommand("dump","get pb7 of pokemon in your box without trading")]
+        public async Task dump()
+        {
+            try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
+            catch { await RespondAsync("Please enable direct messages from server members to be queued", ephemeral: true); return; };
+            LetsGoTrades.discordname.Enqueue(Context.User);
+            LetsGoTrades.discordID.Enqueue(Context.User.Id);
+            LetsGoTrades.Channel.Enqueue(Context.Channel);
+            LetsGoTrades.tradepkm.Enqueue(new PB7());
+            LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.dump);
 
+            await RespondAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.discordID.Count}.");
+
+        }
         [SlashCommand("queue","shows the queue")]
         
         public async Task queue()
