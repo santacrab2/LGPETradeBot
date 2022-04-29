@@ -289,6 +289,18 @@ namespace SysBot.Pokemon
                         tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
                         waittime++;
                     }
+                    if (tradepartnersav.OT == sav.OT)
+                    {
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        await Click(B, 1000, token);
+                        await Click(A, 1000, token);
+                        while (read[0] != overworld)
+                        {
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        }
+                        continue;
+                    }
                     Log($"{tradepartnersav.DisplayTID},{tradepartnersav.DisplaySID},{tradepartnersav.OT},{(GameVersion)tradepartnersav.Blocks.Status.Game}, {tradepartnersav.Blocks.Status.StarterChoice}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
@@ -553,6 +565,26 @@ namespace SysBot.Pokemon
                         tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
                         waittime++;
                     }
+                    if(tradepartnersav.OT == sav.OT)
+                    {
+                        await user.SendMessageAsync("I could not find you, please try again!");
+                        Log("User not found");
+                        await Click(B, 1000, token);
+                        await Click(A, 1000, token);
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        while (read[0] != overworld)
+                        {
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        }
+                       
+                        discordID.Dequeue();
+                        discordname.Dequeue();
+                        Channel.Dequeue();
+                        tradepkm.Dequeue();
+                        Commandtypequ.Dequeue();
+                        continue;
+                    }
                     Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
@@ -669,6 +701,26 @@ namespace SysBot.Pokemon
                         tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                         tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
                         waittime++;
+                    }
+                    if (tradepartnersav.OT == sav.OT)
+                    {
+                        await user.SendMessageAsync("I could not find you, please try again!");
+                        Log("User not found");
+                        await Click(B, 1000, token);
+                        await Click(A, 1000, token);
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        while (read[0] != overworld)
+                        {
+                            await Click(B, 1000, token);
+                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                        }
+
+                        discordID.Dequeue();
+                        discordname.Dequeue();
+                        Channel.Dequeue();
+                        tradepkm.Dequeue();
+                        Commandtypequ.Dequeue();
+                        continue;
                     }
                     Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
