@@ -34,6 +34,7 @@ namespace SysBot.Pokemon
         public const uint EGeneratingFunction7 = 0x739948; //main
         public const uint TrainerData = 0x53582030; //heap
         public const uint TradePartnerData = 0x41A28240;//heap
+        public const uint TradePartnerData2 = 0x41A28078;//heap
         public const uint OfferedPokemon = 0x41A22858;//heap
         public const uint BoxSlot1 = 0x533675B0; //heap
         public const uint Money = 0x53324108; //heap

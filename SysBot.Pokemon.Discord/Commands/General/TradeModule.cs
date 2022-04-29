@@ -216,7 +216,7 @@ namespace SysBot.Pokemon.Discord
             LetsGoTrades.discordname.Enqueue(Context.User);
             LetsGoTrades.discordID.Enqueue(Context.User.Id);
             LetsGoTrades.Channel.Enqueue(Context.Channel);
-            LetsGoTrades.tradepkm.Enqueue(new PB7());
+            LetsGoTrades.tradepkm.Enqueue(null);
             LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.dump);
 
             await RespondAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.discordID.Count}.");

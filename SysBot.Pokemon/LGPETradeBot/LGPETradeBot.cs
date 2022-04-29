@@ -149,13 +149,14 @@ namespace SysBot.Pokemon
                     await SetController(token);
                     for (int i = 0; i < 3; i++)
                         await Click(A, 1000, token);
-                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    while (read[0] != overworld)
-                    {
+                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token);
+                   
+                    //while (read[0] != overworld)
+                   // {
 
-                        await Click(B, 1000, token);
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    }
+                        //await Click(B, 1000, token);
+                       // read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token);
+                   // }
 
                     await Click(X, 2000, token).ConfigureAwait(false);
                     Log("opening menu");
@@ -279,29 +280,16 @@ namespace SysBot.Pokemon
                         continue;
                     await Task.Delay(10000);
                     var tradepartnersav = new SAV7b();
+                    var tradepartnersav2 = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
+                    var tpsarray2 = await SwitchConnection.ReadBytesAsync(TradePartnerData2, 0x168, token);
+                    tpsarray2.CopyTo(tradepartnersav2.Blocks.Status.Data, tradepartnersav2.Blocks.Status.Offset);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                    int waittime = 0;
-                    while(tradepartnersav.OT == sav.OT && waittime <= 20)
-                    {
-                        await Task.Delay(1000);
-                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
-                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                        waittime++;
-                    }
-                    if (tradepartnersav.OT == sav.OT)
-                    {
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        await Click(B, 1000, token);
-                        await Click(A, 1000, token);
-                        while (read[0] != overworld)
-                        {
-                            await Click(B, 1000, token);
-                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        }
-                        continue;
-                    }
-                    Log($"{tradepartnersav.DisplayTID},{tradepartnersav.DisplaySID},{tradepartnersav.OT},{(GameVersion)tradepartnersav.Blocks.Status.Game}, {tradepartnersav.Blocks.Status.StarterChoice}");
+                
+                    if(tradepartnersav.OT != sav.OT) 
+                        Log($"{tradepartnersav.DisplayTID},{tradepartnersav.DisplaySID},{tradepartnersav.OT},{(GameVersion)tradepartnersav.Blocks.Status.Game}");
+                    if (tradepartnersav2.OT != sav.OT)
+                        Log($"{tradepartnersav2.DisplayTID},{tradepartnersav2.DisplaySID},{tradepartnersav2.OT},{(GameVersion)tradepartnersav2.Blocks.Status.Game}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
                         await Click(A, 1000, token);
@@ -349,7 +337,7 @@ namespace SysBot.Pokemon
                         passes++;
                     }
          
-                        btimeout.Restart();
+                    btimeout.Restart();
                     int dacount = 4;
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
@@ -398,10 +386,13 @@ namespace SysBot.Pokemon
                 var lgpeemb = new EmbedBuilder().WithTitle($"{code[0]}, {code[1]}, {code[2]}").WithImageUrl($"attachment://{filename}").Build();
                 await user.SendFileAsync(filename,text: $"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:", embed: lgpeemb);
                 try { var pkm = (PB7)tradepkm.Peek(); } catch { var pkm = new PB7(); };
-                var slotofs = GetSlotOffset(1, 0);
-                var StoredLength = SlotSize- 0x1C;
-                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1,token);
-                await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+                if (pkm != null)
+                {
+                    var slotofs = GetSlotOffset(1, 0);
+                    var StoredLength = SlotSize - 0x1C;
+                    await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1, token);
+                    await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+                }
                 await SetController(token);
                 for (int i = 0; i < 3; i++)
                     await Click(A, 1000, token);
@@ -555,38 +546,21 @@ namespace SysBot.Pokemon
                 if (command == commandtype.trade)
                 {
                     var tradepartnersav = new SAV7b();
+                    var tradepartnersav2 = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                    int waittime = 0;
-                    while (tradepartnersav.OT == sav.OT && waittime <= 20)
+                    var tpsarray2 = await SwitchConnection.ReadBytesAsync(TradePartnerData2, 0x168, token);
+                    tpsarray2.CopyTo(tradepartnersav2.Blocks.Status.Data, tradepartnersav2.Blocks.Status.Offset);
+                    if (tradepartnersav.OT != sav.OT)
                     {
-                        await Task.Delay(1000);
-                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
-                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                        waittime++;
+                        Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
                     }
-                    if(tradepartnersav.OT == sav.OT)
+                    if(tradepartnersav2.OT == sav.OT)
                     {
-                        await user.SendMessageAsync("I could not find you, please try again!");
-                        Log("User not found");
-                        await Click(B, 1000, token);
-                        await Click(A, 1000, token);
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        while (read[0] != overworld)
-                        {
-                            await Click(B, 1000, token);
-                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        }
-                       
-                        discordID.Dequeue();
-                        discordname.Dequeue();
-                        Channel.Dequeue();
-                        tradepkm.Dequeue();
-                        Commandtypequ.Dequeue();
-                        continue;
+                        Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
                     }
-                    Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
-                    await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
                         await Click(A, 1000, token);
@@ -692,55 +666,50 @@ namespace SysBot.Pokemon
                 if(command == commandtype.dump)
                 {
                     var tradepartnersav = new SAV7b();
+                    var tradepartnersav2 = new SAV7b();
                     var tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
                     tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                    int waittime = 0;
-                    while (tradepartnersav.OT == sav.OT && waittime <= 20)
+                    var tpsarray2 = await SwitchConnection.ReadBytesAsync(TradePartnerData2, 0x168, token);
+                    tpsarray2.CopyTo(tradepartnersav2.Blocks.Status.Data, tradepartnersav2.Blocks.Status.Offset);
+                    if (tradepartnersav.OT != sav.OT)
                     {
-                        await Task.Delay(1000);
-                        tpsarray = await SwitchConnection.ReadBytesAsync(TradePartnerData, 0x168, token);
-                        tpsarray.CopyTo(tradepartnersav.Blocks.Status.Data, tradepartnersav.Blocks.Status.Offset);
-                        waittime++;
+                        Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
                     }
-                    if (tradepartnersav.OT == sav.OT)
+                    if (tradepartnersav2.OT != sav.OT)
                     {
-                        await user.SendMessageAsync("I could not find you, please try again!");
-                        Log("User not found");
-                        await Click(B, 1000, token);
-                        await Click(A, 1000, token);
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        while (read[0] != overworld)
-                        {
-                            await Click(B, 1000, token);
-                            read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                        }
-
-                        discordID.Dequeue();
-                        discordname.Dequeue();
-                        Channel.Dequeue();
-                        tradepkm.Dequeue();
-                        Commandtypequ.Dequeue();
-                        continue;
+                        Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
                     }
-                    Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
-                    await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}");
+                    await user.SendMessageAsync("Highlight the Pokemon in your box, you have 30 seconds");
                     var offereddata = await SwitchConnection.ReadBytesAsync(OfferedPokemon, 0x104, token);
                     var offeredpbm = new PB7(offereddata);
-                    await user.SendFileAsync($"attachment://{offeredpbm.FileName}");
-         
+                    byte[] writepoke = offeredpbm.EncryptedBoxData;
+                    var tpfile = $"{System.IO.Path.GetTempPath()}//{offeredpbm.FileName}";
+                    System.IO.File.WriteAllBytes(tpfile, writepoke);
+                    await user.SendFileAsync(tpfile, "here is the pokemon you showed me");
+                    System.IO.File.Delete(tpfile);
+
                     var quicktime = new Stopwatch();
                     quicktime.Restart();
-                    while(quicktime.ElapsedMilliseconds <= 20_000)
+                    while(quicktime.ElapsedMilliseconds <= 30_000)
                     {
                         var newoffereddata = await SwitchConnection.ReadBytesAsync(OfferedPokemon, 0x104, token);
                         var newofferedpbm = new PB7(newoffereddata);
                         if(SearchUtil.HashByDetails(offeredpbm) != SearchUtil.HashByDetails(newofferedpbm))
                         {
-                            await user.SendFileAsync($"attachment://{newofferedpbm.FileName}");
+                            writepoke = newofferedpbm.EncryptedBoxData;
+                            tpfile = $"{System.IO.Path.GetTempPath()}//{newofferedpbm.FileName}";
+                            System.IO.File.WriteAllBytes(tpfile, writepoke);
+                            await user.SendFileAsync(tpfile, "here is the pokemon you showed me");
+                            System.IO.File.Delete(tpfile);
                             offeredpbm = newofferedpbm;
                         }
 
                     }
+                    await user.SendMessageAsync("Time is up!");
+                    await Click(B, 1000, token);
+                    await Click(A, 1000, token);
                     Log("spamming b to get back to overworld");
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                    
