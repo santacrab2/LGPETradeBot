@@ -21,7 +21,7 @@ namespace SysBot.Pokemon
             foreach (var file in files)
             {
                 var data = File.ReadAllBytes(file);
-                var pkm = EntityFormat.GetFromBytes(data);
+                var pkm = PKMConverter.GetPKMfromBytes(data);
                 if (pkm is T dest)
                     yield return dest;
             }

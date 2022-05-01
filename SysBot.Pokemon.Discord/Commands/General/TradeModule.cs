@@ -61,8 +61,7 @@ namespace SysBot.Pokemon.Discord
 
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[template.Species];
-                   EntityConverter.AllowIncompatibleConversion = true;
-                    pkm = EntityConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
+            
 
 
                     if (!la.Valid)
@@ -205,7 +204,7 @@ namespace SysBot.Pokemon.Discord
             {
                 null => null,
                 PB7 pkm => pkm,
-                _ => EntityConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
+                _ => PKMConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
             };
         }
         [SlashCommand("dump","get pb7 of pokemon in your box without trading")]
@@ -258,9 +257,9 @@ namespace SysBot.Pokemon.Discord
 
         public async Task pbjmaker([Summary("PokemonText")]string ShowdownSet)
         {
-            ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
+            //ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
             var set = ConvertToShowdown(ShowdownSet);
-           var template = AutoLegalityWrapper.GetTemplate(set);
+      
             if (set.InvalidLines.Count != 0)
             {
                 var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
@@ -270,32 +269,29 @@ namespace SysBot.Pokemon.Discord
 
             try
             {
-                var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "piplup");
-                var pkm = sav.GetLegalFromSet(template, out var result);
+                var sav = SaveUtil.GetBlankSAV(GameVersion.GE,"piplup");
+                var pkm = (PB7)sav.GetLegalFromSet(set, out var result);
+                pkm = (PB7)pkm.Legalize();
                var res = result.ToString();
 
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                     EggTrade((PB7)pkm);
 
                 var la = new LegalityAnalysis(pkm);
-                var spec = GameInfo.Strings.Species[template.Species];
-                EntityConverter.AllowIncompatibleConversion = true;
-                pkm = EntityConverter.ConvertToType(pkm, typeof(PB7), out _) ?? pkm;
-              
+                var spec = GameInfo.Strings.Species[set.Species];
 
                 if (!la.Valid)
                 {
                     var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                     var imsg = $"Oops! {reason}";
                     if (res == "Failed")
-                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+                        imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
                     await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
                     return;
                 }
                 pkm.ResetPartyStats();
-                string temppokewait = Path.GetTempFileName().Replace(".tmp", $"{GameInfo.Strings.Species[pkm.Species]}.{pkm.Extension}").Replace("tmp", "");
-                byte[] yre = pkm.DecryptedBoxData;
-                File.WriteAllBytes(temppokewait, yre);
+                string temppokewait = $"{Path.GetTempPath()}//{pkm.FileName}";
+                File.WriteAllBytes(temppokewait, pkm.EncryptedBoxData);
                 await RespondWithFileAsync(temppokewait, text:"Here is your legalized pk file");
                 File.Delete(temppokewait);
                 return;
