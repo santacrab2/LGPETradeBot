@@ -554,12 +554,12 @@ namespace SysBot.Pokemon
                     if (tradepartnersav.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
-                    if(tradepartnersav2.OT == sav.OT)
+                    if(tradepartnersav2.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
@@ -679,7 +679,7 @@ namespace SysBot.Pokemon
                     if (tradepartnersav2.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
+                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
                     await user.SendMessageAsync("Highlight the Pokemon in your box, you have 30 seconds");
                     var offereddata = await SwitchConnection.ReadBytesAsync(OfferedPokemon, 0x104, token);
