@@ -73,7 +73,8 @@ namespace SysBot.Pokemon.Discord
                         await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
                         return;
                     }
-                    pkm.ResetPartyStats();
+                    if(pkm.PartyStatsPresent)
+                        pkm.ResetPartyStats();
                     try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
                     catch { await RespondAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
                     LetsGoTrades.discordname.Enqueue(Context.User);
@@ -257,7 +258,7 @@ namespace SysBot.Pokemon.Discord
 
         public async Task pbjmaker([Summary("PokemonText")]string ShowdownSet)
         {
-            //ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
+            ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
             var set = ConvertToShowdown(ShowdownSet);
       
             if (set.InvalidLines.Count != 0)
@@ -269,9 +270,10 @@ namespace SysBot.Pokemon.Discord
 
             try
             {
-                var sav = SaveUtil.GetBlankSAV(GameVersion.GE,"piplup");
-                var pkm = (PB7)sav.GetLegalFromSet(set, out var result);
-                pkm = (PB7)pkm.Legalize();
+                var pb7 = new PB7();
+                var sav = SaveUtil.GetBlankSAV(GameVersion. GE,"piplup");
+                var pkm = sav.GetLegalFromSet(set, out var result);
+               
                var res = result.ToString();
 
                 if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
@@ -289,11 +291,13 @@ namespace SysBot.Pokemon.Discord
                     await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
                     return;
                 }
-                pkm.ResetPartyStats();
+                if (pkm.PartyStatsPresent)
+                    pkm.ResetPartyStats();
                 string temppokewait = $"{Path.GetTempPath()}//{pkm.FileName}";
-                File.WriteAllBytes(temppokewait, pkm.EncryptedBoxData);
+                File.WriteAllBytes(temppokewait, pkm.DecryptedBoxData);
                 await RespondWithFileAsync(temppokewait, text:"Here is your legalized pk file");
                 File.Delete(temppokewait);
+               
                 return;
 
             }
