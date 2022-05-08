@@ -385,13 +385,29 @@ namespace SysBot.Pokemon
                 var filename = System.IO.Path.GetFileName($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
                 var lgpeemb = new EmbedBuilder().WithTitle($"{code[0]}, {code[1]}, {code[2]}").WithImageUrl($"attachment://{filename}").Build();
                 await user.SendFileAsync(filename,text: $"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:", embed: lgpeemb);
-                try { var pkm = (PB7)tradepkm.Peek(); } catch { var pkm = new PB7(); };
+                var pkm =(PB7)tradepkm.Peek();
                 if (pkm != null)
                 {
                     var slotofs = GetSlotOffset(1, 0);
                     var StoredLength = SlotSize - 0x1C;
                     await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1, token);
                     await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+                }
+                else
+                {
+                   await user.SendMessageAsync("something went wrong contact santacrab and tell him to fix the code lol");
+                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                    while (read[0] != overworld)
+                    {
+                        await Click(B, 1000, token);
+                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
+                    }
+                    discordID.Dequeue();
+                    discordname.Dequeue();
+                    Channel.Dequeue();
+                    tradepkm.Dequeue();
+                    Commandtypequ.Dequeue();
+                    continue;
                 }
                 await SetController(token);
                 for (int i = 0; i < 3; i++)
