@@ -72,7 +72,7 @@ namespace SysBot.Pokemon
             }
 
             var trainer = TrainerSettings.GetSavedTrainerData(PKX.Generation);
-            PKMConverter.SetPrimaryTrainer(trainer);
+            RecentTrainerCache.SetRecentTrainer(trainer);
         }
 
         private static void InitializeCoreStrings()

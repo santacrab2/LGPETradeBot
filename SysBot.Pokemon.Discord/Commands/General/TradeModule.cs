@@ -204,7 +204,7 @@ namespace SysBot.Pokemon.Discord
             {
                 null => null,
                 PB7 pkm => pkm,
-                _ => PKMConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
+                _ => EntityConverter.ConvertToType(dl.Data, typeof(PB7), out _) as PB7
             };
         }
         [SlashCommand("dump","get pb7 of pokemon in your box without trading")]

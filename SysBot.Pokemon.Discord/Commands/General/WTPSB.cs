@@ -93,13 +93,13 @@ namespace SysBot.Pokemon.Discord
                         pk.SetMoves(sugmov);
                         int natue = random.Next(24);
                         pk.Nature = natue;
-                        var randevs = PKX.GetRandomEVs(7);
-                        pk.EVs = randevs;
+                        EffortValues.SetRandom(pk.EVs, 7);
 
                         LetsGoTrades.discordname.Enqueue(Context.User);
                         LetsGoTrades.discordID.Enqueue(Context.User.Id);
                         LetsGoTrades.Channel.Enqueue(Context.Channel);
                         LetsGoTrades.tradepkm.Enqueue(pk);
+                        LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
                         await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Format))}");
                     }
                     usr = null;
