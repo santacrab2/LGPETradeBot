@@ -42,7 +42,7 @@ namespace SysBot.Pokemon.Discord
                 }
                 
                 var set = ConvertToShowdown(ShowdownSet);
-                var template = AutoLegalityWrapper.GetTemplate(set);
+              
                 if (set.InvalidLines.Count != 0)
                 {
                     var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
@@ -53,14 +53,14 @@ namespace SysBot.Pokemon.Discord
                 try
                 {
                     var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "piplup");
-                    var pkm = sav.GetLegalFromSet(template, out var result);
+                    var pkm = (PB7)sav.GetLegalFromSet(set, out var result);
                     var res = result.ToString();
-                 
+                    
                     if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
                         EggTrade((PB7)pkm);
 
                     var la = new LegalityAnalysis(pkm);
-                    var spec = GameInfo.Strings.Species[template.Species];
+                    var spec = GameInfo.Strings.Species[set.Species];
             
 
 
@@ -69,7 +69,7 @@ namespace SysBot.Pokemon.Discord
                         var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                         var imsg = $"Oops! {reason}";
                         if (res == "Failed")
-                            imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(template, sav, pkm)}";
+                            imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
                         await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
                         return;
                     }

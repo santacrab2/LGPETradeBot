@@ -95,12 +95,12 @@ namespace SysBot.Pokemon.Discord
                         pk.Nature = natue;
                         EffortValues.SetRandom(pk.EVs, 7);
 
-                        LetsGoTrades.discordname.Enqueue(Context.User);
-                        LetsGoTrades.discordID.Enqueue(Context.User.Id);
-                        LetsGoTrades.Channel.Enqueue(Context.Channel);
+                        LetsGoTrades.discordname.Enqueue(con.User);
+                        LetsGoTrades.discordID.Enqueue(con.User.Id);
+                        LetsGoTrades.Channel.Enqueue(con.Channel);
                         LetsGoTrades.tradepkm.Enqueue(pk);
                         LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Format))}");
+                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{con.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Format))}");
                     }
                     usr = null;
                     guess = "";
@@ -116,6 +116,11 @@ namespace SysBot.Pokemon.Discord
        
         public async Task WTPguess([Summary("pokemon","put the pokemon name here")]string userguess)
         {
+            if (LetsGoTrades.discordID.Contains(Context.User.Id))
+            {
+                await RespondAsync("please wait until you are out of queue to guess to avoid double queueing.");
+                return;
+            }
             if (userguess.ToLower() == ((Species)randspecies).ToString().ToLower())
             {
                 await RespondAsync($"{Context.User.Username} You are correct! It's {userguess}");
