@@ -15,6 +15,8 @@ using System.Reflection;
 
 namespace SysBot.Pokemon.Discord
 {
+    [EnabledInDm(false)]
+    [DefaultMemberPermissions(GuildPermission.ViewChannel)]
     public class WTPSB : InteractionModuleBase<SocketInteractionContext>
     {
         
@@ -116,20 +118,21 @@ namespace SysBot.Pokemon.Discord
        
         public async Task WTPguess([Summary("pokemon","put the pokemon name here")]string userguess)
         {
+            await DeferAsync();
             if (LetsGoTrades.discordID.Contains(Context.User.Id))
             {
-                await RespondAsync("please wait until you are out of queue to guess to avoid double queueing.");
+                await FollowupAsync("please wait until you are out of queue to guess to avoid double queueing.");
                 return;
             }
             if (userguess.ToLower() == ((Species)randspecies).ToString().ToLower())
             {
-                await RespondAsync($"{Context.User.Username} You are correct! It's {userguess}");
+                await FollowupAsync($"{Context.User.Username} You are correct! It's {userguess}");
                 guess = userguess;
                 usr = Context.User;
                 con = Context;
             }
             else
-                await RespondAsync($"{Context.User.Username} You are incorrect. It is not {userguess}");
+                await FollowupAsync($"{Context.User.Username} You are incorrect. It is not {userguess}");
         }
         [SlashCommand("wtpcancel","owner only")]
         [RequireOwner]

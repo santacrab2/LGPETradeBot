@@ -74,7 +74,7 @@ namespace SysBot.Pokemon
             }
 
             int[] pkIVList = pk.IVs;
-            PKX.ReorderSpeedLast(pkIVList);
+            
 
             for (int i = 0; i < 6; i++)
             {

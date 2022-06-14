@@ -53,9 +53,8 @@ namespace SysBot.Pokemon
             if (!string.IsNullOrWhiteSpace(externalSource) && Directory.Exists(externalSource))
                 TrainerSettings.LoadTrainerDatabaseFromPath(externalSource);
 
-            for (int i = 1; i < PKX.Generation + 1; i++)
-            {
-                var versions = GameUtil.GetVersionsInGeneration(i, PKX.Generation);
+            var test = new PB7();
+                var versions = GameUtil.GetVersionsInGeneration(8,test.Version );
                 foreach (var v in versions)
                 {
                     var fallback = new SimpleTrainerInfo(v)
@@ -65,13 +64,13 @@ namespace SysBot.Pokemon
                         SID = SID,
                         OT = OT,
                     };
-                    var exist = TrainerSettings.GetSavedTrainerData(v, i, fallback);
+                    var exist = TrainerSettings.GetSavedTrainerData(v, 7, fallback);
                     if (exist is SimpleTrainerInfo) // not anything from files; this assumes ALM returns SimpleTrainerInfo for non-user-provided fake templates.
                         TrainerSettings.Register(fallback);
                 }
-            }
+            
 
-            var trainer = TrainerSettings.GetSavedTrainerData(PKX.Generation);
+            var trainer = TrainerSettings.GetSavedTrainerData(7);
             RecentTrainerCache.SetRecentTrainer(trainer);
         }
 
@@ -110,7 +109,7 @@ namespace SysBot.Pokemon
           //  if (typeof(T) == typeof(PB8))
           //      return TrainerSettings.GetSavedTrainerData(GameVersion.BDSP, 8);
             if (typeof(T) == typeof(PB7))
-                return TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
+                return TrainerSettings.GetSavedTrainerData(GameVersion.GG, 7);
 
             throw new ArgumentException("Type does not have a recognized trainer fetch.", typeof(T).Name);
         }

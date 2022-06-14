@@ -14,8 +14,9 @@ using System.IO;
 
 namespace SysBot.Pokemon.Discord
 {
-    
 
+    [EnabledInDm(false)]
+    [DefaultMemberPermissions(GuildPermission.ViewChannel)]
    public class TradeModule : InteractionModuleBase<SocketInteractionContext>
     {
         public static PokeTradeHub<PK8> Hub = SysCordInstance.Self.Hub;
@@ -26,38 +27,46 @@ namespace SysBot.Pokemon.Discord
 
         public async Task Trade([Summary("PokemonText","put your copied showdown text here")]string ShowdownSet = "", Attachment Pb7 = default)
         {
+            await DeferAsync();
             if (ShowdownSet != "")
             {
                 if (LetsGoTrades.discordID.Contains(Context.User.Id))
                 {
-                    await RespondAsync("you are already in queue",ephemeral:true);
+                    await FollowupAsync("you are already in queue",ephemeral:true);
                     return;
                 }
                 var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
                 if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
                 {
-                    await RespondAsync("You can not use that command in this channel",ephemeral:true);
+                    await FollowupAsync("You can not use that command in this channel",ephemeral:true);
 
                     return;
                 }
                 
-                var set = ConvertToShowdown(ShowdownSet);
+                var set = await ConvertToShowdown(ShowdownSet);
               
-                if (set.InvalidLines.Count != 0)
-                {
-                    var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
-                    await RespondAsync(msg,ephemeral:true).ConfigureAwait(false);
-                    return;
-                }
+           
 
                 try
                 {
-                    var sav = SaveUtil.GetBlankSAV(GameVersion.GE, "piplup");
-                    var pkm = (PB7)sav.GetLegalFromSet(set, out var result);
+                    var pb7 = new PB7();
+                    var sav = AutoLegalityWrapper.GetTrainerInfo<PB7>();
+                    var pkm = sav.GetLegalFromTemplate(pb7, set, out var result);
+                    foreach (var i in set.InvalidLines)
+                    {
+                        if (i.Contains("Ball:"))
+                        {
+
+                            var ball = i;
+                            ball = ball.Replace("Ball: ", "");
+                            var ball2 = (Ball)Enum.Parse(typeof(Ball), ball);
+                            pkm.Ball = (byte)ball2;
+
+                        }
+                    }
                     var res = result.ToString();
                     
-                    if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                        EggTrade((PB7)pkm);
+                   
 
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[set.Species];
@@ -70,38 +79,38 @@ namespace SysBot.Pokemon.Discord
                         var imsg = $"Oops! {reason}";
                         if (res == "Failed")
                             imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
-                        await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
+                        await FollowupAsync(imsg,ephemeral:true).ConfigureAwait(false);
                         return;
                     }
                     if(pkm.PartyStatsPresent)
                         pkm.ResetPartyStats();
                     try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
-                    catch { await RespondAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
+                    catch { await FollowupAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
                     LetsGoTrades.discordname.Enqueue(Context.User);
                     LetsGoTrades.discordID.Enqueue(Context.User.Id);
                     LetsGoTrades.Channel.Enqueue(Context.Channel);
                     LetsGoTrades.tradepkm.Enqueue(pkm);
                     LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                    await RespondAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
+                    await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
 
                 }
                 catch
                 {
                     var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
-                    await RespondAsync(msg,ephemeral:true).ConfigureAwait(false);
+                    await FollowupAsync(msg,ephemeral:true).ConfigureAwait(false);
                 }
             }
             if(Pb7 != default)
             {
                 if (LetsGoTrades.discordID.Contains(Context.User.Id))
                 {
-                    await RespondAsync("you are already in queue",ephemeral:true);
+                    await FollowupAsync("you are already in queue",ephemeral:true);
                     return;
                 }
                 var correctchannelcheck = Hub.Config.TradeBot.tradebotchannel.Split(',');
                 if (!correctchannelcheck.Contains(Context.Channel.Id.ToString()))
                 {
-                    await RespondAsync("You can not use that command in this channel",ephemeral:true);
+                    await FollowupAsync("You can not use that command in this channel",ephemeral:true);
                     return;
                 }
                 if (!EncounterEvent.Initialized)
@@ -109,7 +118,7 @@ namespace SysBot.Pokemon.Discord
                 var attachment = Pb7;
                 if (attachment == default)
                 {
-                    await RespondAsync("No attachment provided!",ephemeral:true).ConfigureAwait(false);
+                    await FollowupAsync("No attachment provided!",ephemeral:true).ConfigureAwait(false);
                     return;
                 }
 
@@ -117,7 +126,7 @@ namespace SysBot.Pokemon.Discord
 
                 if (att == null)
                 {
-                    await RespondAsync("something went wrong with grabbing your attachment",ephemeral:true);
+                    await FollowupAsync("something went wrong with grabbing your attachment",ephemeral:true);
                     return;
                 }
                 var pkm = GetRequest(att);
@@ -127,75 +136,24 @@ namespace SysBot.Pokemon.Discord
                 {
 
                     var imsg = $"Oops! This file is illegal Here's the legality report: ";
-                    await RespondAsync(imsg + new LegalityAnalysis(pkm).Report(),ephemeral:true).ConfigureAwait(false);
+                    await FollowupAsync(imsg + new LegalityAnalysis(pkm).Report(),ephemeral:true).ConfigureAwait(false);
                     return;
                 }
                 try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
-                catch { await RespondAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
+                catch { await FollowupAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
                 LetsGoTrades.discordname.Enqueue(Context.User);
                 LetsGoTrades.discordID.Enqueue(Context.User.Id);
                 LetsGoTrades.Channel.Enqueue(Context.Channel);
                 LetsGoTrades.tradepkm.Enqueue(pkm);
                 LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
              
-                await RespondAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
+                await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
 
             
             }
         }
   
-        public static PB7 EggTrade(PB7 pk)
-        {
-           
-            pk.IsNicknamed = true;
-            pk.Nickname = pk.Language switch
-            {
-                1 => "タマゴ",
-                3 => "Œuf",
-                4 => "Uovo",
-                5 => "Ei",
-                7 => "Huevo",
-                8 => "알",
-                9 or 10 => "蛋",
-                _ => "Egg",
-            };
-
-            pk.IsEgg = true;
-            pk.Egg_Location = 60002;
-            pk.MetDate = DateTime.Parse("2020/10/20");
-            pk.EggMetDate = pk.MetDate;
-            pk.HeldItem = 0;
-            pk.CurrentLevel = 1;
-            pk.EXP = 0;
-           
-            pk.Met_Level = 1;
-            pk.Met_Location = 30002;
-            pk.CurrentHandler = 0;
-            pk.OT_Friendship = 1;
-            pk.HT_Name = "";
-            pk.HT_Friendship = 0;
-           
-            pk.HT_Gender = 0;
-            pk.HT_Memory = 0;
-            pk.HT_Feeling = 0;
-            pk.HT_Intensity = 0;
-            pk.StatNature = pk.Nature;
-            pk.EVs = new int[] { 0, 0, 0, 0, 0, 0 };
-            pk.Markings = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
-            
-            pk.ClearRelearnMoves();
-            pk.Moves = new int[] { 0, 0, 0, 0 };
-            var la = new LegalityAnalysis(pk);
-            var enc = la.EncounterMatch;
-            pk.CurrentFriendship = enc is EncounterStatic s ? s.EggCycles : pk.PersonalInfo.HatchCycles;
-            pk.RelearnMoves = MoveBreed.GetExpectedMoves(pk.RelearnMoves, la.EncounterMatch);
-            pk.Moves = pk.RelearnMoves;
-            pk.Move1_PPUps = pk.Move2_PPUps = pk.Move3_PPUps = pk.Move4_PPUps = 0;
-            pk.SetMaximumPPCurrent(pk.Moves);
-            pk.SetSuggestedHyperTrainingData();
-            pk.SetSuggestedRibbons(la.EncounterMatch);
-            return pk;
-        }
+       
 
         private static PB7? GetRequest(Download<PKM> dl)
         {
@@ -211,27 +169,29 @@ namespace SysBot.Pokemon.Discord
         [SlashCommand("dump","get pb7 of pokemon in your box without trading")]
         public async Task dump()
         {
+            await DeferAsync();
             try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
-            catch { await RespondAsync("Please enable direct messages from server members to be queued", ephemeral: true); return; };
+            catch { await FollowupAsync("Please enable direct messages from server members to be queued", ephemeral: true); return; };
             LetsGoTrades.discordname.Enqueue(Context.User);
             LetsGoTrades.discordID.Enqueue(Context.User.Id);
             LetsGoTrades.Channel.Enqueue(Context.Channel);
             LetsGoTrades.tradepkm.Enqueue(null);
             LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.dump);
 
-            await RespondAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.discordID.Count}.");
+            await FollowupAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.discordID.Count}.");
 
         }
         [SlashCommand("queue","shows the queue")]
         
         public async Task queue()
         {
+            await DeferAsync();
             Object[] arr = LetsGoTrades.discordname.ToArray();
             var sb = new System.Text.StringBuilder();
             var embed = new EmbedBuilder();
             if (arr.Length == 0)
             {
-                await RespondAsync("queue is empty",ephemeral:true);
+                await FollowupAsync("queue is empty",ephemeral:true);
             }
             int r = 0;
             foreach (object i in arr)
@@ -250,7 +210,7 @@ namespace SysBot.Pokemon.Discord
 
             });
             
-                await RespondAsync(embed: embed.Build(),ephemeral:true);
+                await FollowupAsync(embed: embed.Build(),ephemeral:true);
         
         }
 
@@ -258,44 +218,51 @@ namespace SysBot.Pokemon.Discord
 
         public async Task pbjmaker([Summary("PokemonText")]string ShowdownSet)
         {
-            ShowdownSet = ReusableActions.StripCodeBlock(ShowdownSet);
-            var set = ConvertToShowdown(ShowdownSet);
-      
-            if (set.InvalidLines.Count != 0)
-            {
-                var msg = $"Unable to parse Showdown Set:\n{string.Join("\n", set.InvalidLines)}";
-                await RespondAsync(msg,ephemeral:true).ConfigureAwait(false);
-                return;
-            }
+            await DeferAsync();
+           
+            var set = await ConvertToShowdown(ShowdownSet);
+           
+             
+  
 
             try
             {
                 var pb7 = new PB7();
-                var sav = SaveUtil.GetBlankSAV(GameVersion. GE,"piplup");
-                var pkm = sav.GetLegalFromSet(set, out var result);
-               
-               var res = result.ToString();
+                var sav = AutoLegalityWrapper.GetTrainerInfo<PB7>();
+                var pkm = sav.GetLegalFromTemplate(pb7,set,out var result);
+                foreach (var i in set.InvalidLines)
+                {
+                    if (i.Contains("Ball:"))
+                    {
+                        
+                        var ball = i;
+                        ball = ball.Replace("Ball: ", "");
+                        var ball2 = (Ball)Enum.Parse(typeof(Ball), ball);
+                        pkm.Ball = (byte)ball2;
 
-                if (pkm.Nickname.ToLower() == "egg" && Breeding.CanHatchAsEgg(pkm.Species))
-                    EggTrade((PB7)pkm);
+                    }
+                }
+                var res = result;
+
+       
 
                 var la = new LegalityAnalysis(pkm);
                 var spec = GameInfo.Strings.Species[set.Species];
 
                 if (!la.Valid)
                 {
-                    var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
+                    var reason = res == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                     var imsg = $"Oops! {reason}";
-                    if (res == "Failed")
+                    if (res == LegalizationResult.Failed)
                         imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
-                    await RespondAsync(imsg,ephemeral:true).ConfigureAwait(false);
+                    await FollowupAsync(imsg,ephemeral:true).ConfigureAwait(false);
                     return;
                 }
                 if (pkm.PartyStatsPresent)
                     pkm.ResetPartyStats();
                 string temppokewait = $"{Path.GetTempPath()}//{pkm.FileName}";
                 File.WriteAllBytes(temppokewait, pkm.DecryptedBoxData);
-                await RespondWithFileAsync(temppokewait, text:"Here is your legalized pk file");
+                await FollowupWithFileAsync(temppokewait, text:"Here is your legalized pk file");
                 File.Delete(temppokewait);
                
                 return;
@@ -307,14 +274,14 @@ namespace SysBot.Pokemon.Discord
             {
                
                 var msg = $"Oops! An unexpected problem happened with this Showdown Set:\n```{string.Join("\n", set.GetSetLines())}```";
-                await RespondAsync(msg,ephemeral:true).ConfigureAwait(false);
+                await FollowupAsync(msg,ephemeral:true).ConfigureAwait(false);
             }
 
             
 
         
         }
-        public static ShowdownSet? ConvertToShowdown(string setstring)
+        public static async Task<ShowdownSet> ConvertToShowdown(string setstring)
         {
             // LiveStreams remove new lines, so we are left with a single line set
             var restorenick = string.Empty;
@@ -333,8 +300,9 @@ namespace SysBot.Pokemon.Discord
                 if (setstring.Contains(i))
                     setstring = setstring.Replace(i, $"\r\n{i}");
             }
-
+         
             var finalset = restorenick + setstring;
+          
             return new ShowdownSet(finalset);
         }
 
@@ -346,7 +314,7 @@ namespace SysBot.Pokemon.Discord
             "Careful Nature", "Docile Nature", "Gentle Nature", "Hardy Nature", "Hasty Nature",
             "Impish Nature", "Jolly Nature", "Lax Nature", "Lonely Nature", "Mild Nature",
             "Modest Nature", "Naive Nature", "Naughty Nature", "Quiet Nature", "Quirky Nature",
-            "Rash Nature", "Relaxed Nature", "Sassy Nature", "Serious Nature", "Timid Nature",
+            "Rash Nature", "Relaxed Nature", "Sassy Nature", "Serious Nature", "Timid Nature","."
         };
     }
 }
