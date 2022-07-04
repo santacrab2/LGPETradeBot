@@ -49,23 +49,9 @@ namespace SysBot.Pokemon.Discord
 
                 try
                 {
-                    var pb7 = new PB7();
-                    var sav = AutoLegalityWrapper.GetTrainerInfo<PB7>();
-                    var pkm = sav.GetLegalFromTemplate(pb7, set, out var result);
-                    foreach (var i in set.InvalidLines)
-                    {
-                        if (i.Contains("Ball:"))
-                        {
-
-                            var ball = i;
-                            ball = ball.Replace("Ball: ", "");
-                            var ball2 = (Ball)Enum.Parse(typeof(Ball), ball);
-                            pkm.Ball = (byte)ball2;
-
-                        }
-                    }
-                    var res = result.ToString();
-                    
+                    var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
+                    var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
+                    var pkm = sav.GetLegalFromSet(set, out var res);
                    
 
                     var la = new LegalityAnalysis(pkm);
@@ -75,9 +61,9 @@ namespace SysBot.Pokemon.Discord
 
                     if (!la.Valid)
                     {
-                        var reason = res == "Timeout" ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
+                        var reason = res == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                         var imsg = $"Oops! {reason}";
-                        if (res == "Failed")
+                        if (res == LegalizationResult.Failed)
                             imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
                         await FollowupAsync(imsg,ephemeral:true).ConfigureAwait(false);
                         return;
@@ -227,42 +213,26 @@ namespace SysBot.Pokemon.Discord
 
             try
             {
-                var pb7 = new PB7();
-                var sav = AutoLegalityWrapper.GetTrainerInfo<PB7>();
-                var pkm = sav.GetLegalFromTemplate(pb7,set,out var result);
-                foreach (var i in set.InvalidLines)
-                {
-                    if (i.Contains("Ball:"))
-                    {
-                        
-                        var ball = i;
-                        ball = ball.Replace("Ball: ", "");
-                        var ball2 = (Ball)Enum.Parse(typeof(Ball), ball);
-                        pkm.Ball = (byte)ball2;
-
-                    }
-                }
-                var res = result;
-
-       
-
+                var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE,7);
+                var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
+                var pkm = sav.GetLegalFromSet(set, out var result);
                 var la = new LegalityAnalysis(pkm);
                 var spec = GameInfo.Strings.Species[set.Species];
-
-                if (!la.Valid)
+             
+                if ( !la.Valid)
                 {
-                    var reason = res == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
+                    var reason = result == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                     var imsg = $"Oops! {reason}";
-                    if (res == LegalizationResult.Failed)
+                    if (result == LegalizationResult.Failed)
                         imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
-                    await FollowupAsync(imsg,ephemeral:true).ConfigureAwait(false);
+                    await FollowupAsync(imsg).ConfigureAwait(false);
                     return;
                 }
                 if (pkm.PartyStatsPresent)
                     pkm.ResetPartyStats();
                 string temppokewait = $"{Path.GetTempPath()}//{pkm.FileName}";
                 File.WriteAllBytes(temppokewait, pkm.DecryptedBoxData);
-                await FollowupWithFileAsync(temppokewait, text:"Here is your legalized pk file");
+                await FollowupWithFileAsync(temppokewait,pkm.FileName,"Here is your legalized pk file");
                 File.Delete(temppokewait);
                
                 return;

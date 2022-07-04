@@ -53,8 +53,9 @@ namespace SysBot.Pokemon
             if (!string.IsNullOrWhiteSpace(externalSource) && Directory.Exists(externalSource))
                 TrainerSettings.LoadTrainerDatabaseFromPath(externalSource);
 
-            var test = new PB7();
-                var versions = GameUtil.GetVersionsInGeneration(8,test.Version );
+            for (int i = 1; i <= 7; i++)
+            {
+                var versions = GameUtil.GetVersionsInGeneration(i, 7);
                 foreach (var v in versions)
                 {
                     var fallback = new SimpleTrainerInfo(v)
@@ -64,16 +65,15 @@ namespace SysBot.Pokemon
                         SID = SID,
                         OT = OT,
                     };
-                    var exist = TrainerSettings.GetSavedTrainerData(v, 7, fallback);
+                    var exist = TrainerSettings.GetSavedTrainerData(v, i, fallback);
                     if (exist is SimpleTrainerInfo) // not anything from files; this assumes ALM returns SimpleTrainerInfo for non-user-provided fake templates.
                         TrainerSettings.Register(fallback);
                 }
-            
+            }
 
             var trainer = TrainerSettings.GetSavedTrainerData(7);
             RecentTrainerCache.SetRecentTrainer(trainer);
         }
-
         private static void InitializeCoreStrings()
         {
             var lang = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName[..2];

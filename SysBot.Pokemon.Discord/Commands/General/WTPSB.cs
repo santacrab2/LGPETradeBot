@@ -79,13 +79,13 @@ namespace SysBot.Pokemon.Discord
                     }
                     if (tradepokemon)
                     {
-                        var set = new ShowdownSet($"{(Species)randspecies}\nShiny: Yes");
+                        var set = new ShowdownSet($"{SpeciesName.GetSpeciesNameGeneration(randspecies,2,7)}\nShiny: Yes");
                         var template = AutoLegalityWrapper.GetTemplate(set);
                         var sav = SaveUtil.GetBlankSAV(GameVersion.GE,"Piplup");
                         var pk = sav.GetLegalFromSet(template, out var result);
                         if (!new LegalityAnalysis(pk).Valid)
                         {
-                            set = new ShowdownSet(((Species)randspecies).ToString());
+                            set = new ShowdownSet(SpeciesName.GetSpeciesNameGeneration(randspecies, 2, 7));
                             template = AutoLegalityWrapper.GetTemplate(set);
                             sav = SaveUtil.GetBlankSAV(GameVersion.GE, "Piplup");
                             pk = sav.GetLegalFromSet(template, out result);
@@ -95,7 +95,7 @@ namespace SysBot.Pokemon.Discord
                         pk.SetMoves(sugmov);
                         int natue = random.Next(24);
                         pk.Nature = natue;
-                        EffortValues.SetRandom(pk.EVs, 7);
+                       
 
                         LetsGoTrades.discordname.Enqueue(con.User);
                         LetsGoTrades.discordID.Enqueue(con.User.Id);

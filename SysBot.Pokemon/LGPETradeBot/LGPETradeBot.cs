@@ -142,7 +142,7 @@ namespace SysBot.Pokemon
                     var dslotofs = GetSlotOffset(1, 0);
                     var dStoredLength = SlotSize - 0x1C;
                     await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.Slice(0, dStoredLength), BoxSlot1, token);
-                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.SliceEnd(dStoredLength), (uint)(dslotofs + dStoredLength + 0x70), token);
+                    await Connection.WriteBytesAsync(dpkm.EncryptedBoxData.AsSpan(dStoredLength).ToArray(), (uint)(dslotofs + dStoredLength + 0x70), token);
 
                     System.IO.File.WriteAllText($"{System.IO.Directory.GetCurrentDirectory()}//LGPEDistrib.txt", $"LGPE Giveaway: Shiny {(Species)dpkm.Species}");
             
@@ -391,7 +391,7 @@ namespace SysBot.Pokemon
                     var slotofs = GetSlotOffset(1, 0);
                     var StoredLength = SlotSize - 0x1C;
                     await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1, token);
-                    await Connection.WriteBytesAsync(pkm.EncryptedBoxData.SliceEnd(StoredLength), (uint)(slotofs + StoredLength + 0x70), token);
+                    await Connection.WriteBytesAsync(pkm.EncryptedBoxData.AsSpan(StoredLength).ToArray(), (uint)(slotofs + StoredLength + 0x70), token);
                 }
                 else
                 {
