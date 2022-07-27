@@ -4,7 +4,7 @@
 This is a hobby personal side project. There are no releases, you will need to build yourself builds exactly the same way as standard sysbot. It has been updated with screen offsets. It has a trade evolution catch. There is one outstanding issue and that is occasionally it finds its way into "go for a stroll" and it kills the connection to botbase. This will be fixed once I figure out the pattern, feel free to open up jnoexes and see if you can figure out the pattern. Support for this Fork will not be given on the main PKHeX development server. 
 
 
-If you need help setting up this bot you can head to https://wwww.piplup.net 
+If you need help setting up this bot you can head to https://www.piplup.net 
 
 There is a charge command that will tell you the charge of your switch, good for those not wanting their switch to be plugged in all the time.
 
