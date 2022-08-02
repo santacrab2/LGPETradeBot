@@ -213,7 +213,7 @@ namespace SysBot.Pokemon.Discord
 
             try
             {
-                var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE,7);
+                var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GG,7);
                 var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                 var pkm = sav.GetLegalFromSet(set, out var result);
                 pkm = pkm.Legalize();

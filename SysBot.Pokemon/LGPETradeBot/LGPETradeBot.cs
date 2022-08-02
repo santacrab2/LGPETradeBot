@@ -134,9 +134,14 @@ namespace SysBot.Pokemon
                     }
                     var dspecies = dpoke.Next(150);
                     ShowdownSet set = new ShowdownSet($"Piplup.net({(Species)dspecies})\nLevel: 90\nShiny: Yes");
-                    var dpkm = (PB7)sav.GetLegalFromSet(set, out _);
-                    dpkm = (PB7)dpkm.Legalize();
-                    dpkm.OT_Name = "Piplup.net";
+                    var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GG, 7);
+                    var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
+                    var dpkm = sav.GetLegalFromSet(set, out var result);
+                    try
+                    {
+                        dpkm = dpkm.Legalize();
+                    }
+                    catch(Exception ex) { continue; }
                     if (!new LegalityAnalysis(dpkm).Valid)
                         continue;
                     var dslotofs = GetSlotOffset(1, 0);
