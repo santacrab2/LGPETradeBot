@@ -52,7 +52,7 @@ namespace SysBot.Pokemon.Discord
                     var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
                     var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                     var pkm = sav.GetLegalFromSet(set, out var res);
-                   
+                    pkm = pkm.Legalize();
 
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[set.Species];
@@ -216,6 +216,7 @@ namespace SysBot.Pokemon.Discord
                 var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE,7);
                 var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                 var pkm = sav.GetLegalFromSet(set, out var result);
+                pkm = pkm.Legalize();
                 var la = new LegalityAnalysis(pkm);
                 var spec = GameInfo.Strings.Species[set.Species];
              
@@ -284,7 +285,7 @@ namespace SysBot.Pokemon.Discord
             "Careful Nature", "Docile Nature", "Gentle Nature", "Hardy Nature", "Hasty Nature",
             "Impish Nature", "Jolly Nature", "Lax Nature", "Lonely Nature", "Mild Nature",
             "Modest Nature", "Naive Nature", "Naughty Nature", "Quiet Nature", "Quirky Nature",
-            "Rash Nature", "Relaxed Nature", "Sassy Nature", "Serious Nature", "Timid Nature","."
+            "Rash Nature", "Relaxed Nature", "Sassy Nature", "Serious Nature", "Timid Nature",
         };
     }
 }

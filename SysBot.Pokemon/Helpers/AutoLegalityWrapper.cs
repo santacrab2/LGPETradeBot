@@ -39,6 +39,7 @@ namespace SysBot.Pokemon
             APILegality.AllowTrainerOverride = cfg.AllowTrainerDataOverride;
             APILegality.AllowBatchCommands = cfg.AllowBatchCommands;
             APILegality.Timeout = cfg.Timeout;
+
         }
 
         private static void InitializeTrainerDatabase(LegalitySettings cfg)

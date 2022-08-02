@@ -395,7 +395,7 @@ namespace SysBot.Pokemon
                 }
                 else
                 {
-                   await user.SendMessageAsync("something went wrong contact santacrab and tell him to fix the code lol");
+                   
                     read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
                     while (read[0] != overworld)
                     {
