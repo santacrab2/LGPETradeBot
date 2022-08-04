@@ -77,7 +77,7 @@ namespace SysBot.Pokemon.Discord
                     LetsGoTrades.Channel.Enqueue(Context.Channel);
                     LetsGoTrades.tradepkm.Enqueue(pkm);
                     LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                    await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
+                    await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
 
                 }
                 catch
@@ -133,7 +133,7 @@ namespace SysBot.Pokemon.Discord
                 LetsGoTrades.tradepkm.Enqueue(pkm);
                 LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
              
-                await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Format))}");
+                await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
 
             
             }

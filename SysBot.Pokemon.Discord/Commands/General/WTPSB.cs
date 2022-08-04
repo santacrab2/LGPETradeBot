@@ -104,7 +104,7 @@ namespace SysBot.Pokemon.Discord
                         LetsGoTrades.Channel.Enqueue(con.Channel);
                         LetsGoTrades.tradepkm.Enqueue(pk);
                         LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{con.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Format))}");
+                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{con.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Context))}");
                     }
                     usr = null;
                     guess = "";
@@ -150,10 +150,10 @@ namespace SysBot.Pokemon.Discord
         private int[] GetPokedex()
         {
             List<int> dex = new();
-            for (int i = 1; i < (Game == GameVersion.BDSP ? 494 : Game == GameVersion.SWSH? 899:Game == GameVersion.GE? 154:906); i++)
+            for (int i = 1; i < (Game == GameVersion.BDSP ? 494 : Game == GameVersion.SWSH? 899:Game == GameVersion.GE? 152:906); i++)
             {
-                var entry =Game == GameVersion.GE? PersonalTable.GG.GetFormEntry(i,0): Game == GameVersion.SWSH ? PersonalTable.SWSH.GetFormEntry(i, 0) : Game == GameVersion.BDSP ? PersonalTable.BDSP.GetFormEntry(i, 0) : PersonalTable.LA.GetFormEntry(i, 0);
-                if ((Game == GameVersion.SWSH && entry is PersonalInfoSWSH { IsPresentInGame: false }) || (Game == GameVersion.BDSP && entry is PersonalInfoBDSP { IsPresentInGame: false }) || (Game == GameVersion.PLA && entry is PersonalInfoLA { IsPresentInGame: false }))
+                
+                if (!PersonalTable.GG.IsPresentInGame(i, 0))
                     continue;
 
                 var species = SpeciesName.GetSpeciesNameGeneration(i, 2,Game == GameVersion.GE? 7: 8);
