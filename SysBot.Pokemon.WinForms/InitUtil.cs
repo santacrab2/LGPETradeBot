@@ -1,7 +1,8 @@
-#if NETFRAMEWORK
+
 using PKHeX.Core;
 using PKHeX.Core.AutoMod;
 using PKHeX.Drawing;
+using PKHeX.Drawing.PokeSprite;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -24,11 +25,11 @@ namespace SysBot.Pokemon.WinForms
                 int codecount = 0;
                 foreach(LetsGoTrades.pictocodes cd in code)
                 {
-                    SpriteUtil.UseLargeAlways = true;
+                    
                   
                     var showdown = new ShowdownSet(cd.ToString());
                     PKM pk = LetsGoTrades.sav.GetLegalFromSet(showdown, out _);
-                    Image png = SpriteUtil.GetSprite(pk.Species, 0, 0, 0, 0, false, false,-1,true);
+                    Image png = SpriteUtil.GetSprite(pk.Species, 0, 0, 0, 0, false, Shiny.Never,-1,SpriteBuilderTweak.None);
                     png = ResizeImage(png, 137, 130);
                   png.Save($"{System.IO.Directory.GetCurrentDirectory()}//code{codecount}.png");
                    codecount++;
@@ -66,4 +67,4 @@ namespace SysBot.Pokemon.WinForms
 
     }
 }
-#endif
+

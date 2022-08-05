@@ -53,7 +53,8 @@ namespace SysBot.Pokemon.Discord
                     var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                     var pkm = sav.GetLegalFromSet(set, out var res);
                     pkm = pkm.Legalize();
-
+                    if (pkm.Species == 151)
+                        pkm.SetAwakenedValues(set, true);
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[set.Species];
             
@@ -217,14 +218,16 @@ namespace SysBot.Pokemon.Discord
                 var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                 var pkm = sav.GetLegalFromSet(set, out var result);
                 pkm = pkm.Legalize();
-                var la = new LegalityAnalysis(pkm);
+                if (pkm.Species == 151)
+                    pkm.SetAwakenedValues(set, true);
+               
                 var spec = GameInfo.Strings.Species[set.Species];
-             
-                if ( !la.Valid)
+          
+                if (!new LegalityAnalysis(pkm).Valid) 
                 {
                     var reason = result == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                     var imsg = $"Oops! {reason}";
-                    if (result == LegalizationResult.Failed)
+                    if (result == LegalizationResult.Failed || !new LegalityAnalysis(pkm).Valid)
                         imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
                     await FollowupAsync(imsg).ConfigureAwait(false);
                     return;

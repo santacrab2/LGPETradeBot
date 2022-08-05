@@ -15,9 +15,9 @@ namespace SysBot.Pokemon.WinForms
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
 #endif
 
-#if NETFRAMEWORK
+
             InitUtil.InitializeStubs();
-#endif
+
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
