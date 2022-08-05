@@ -64,7 +64,7 @@ namespace SysBot.Pokemon.Discord
                     {
                         var reason = res == LegalizationResult.Timeout ? $"That {spec} set took too long to generate." : $"I wasn't able to create a {spec} from that set.";
                         var imsg = $"Oops! {reason}";
-                        if (res == LegalizationResult.Failed)
+                        if (res == LegalizationResult.Failed || !la.Valid)
                             imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
                         await FollowupAsync(imsg,ephemeral:true).ConfigureAwait(false);
                         return;
