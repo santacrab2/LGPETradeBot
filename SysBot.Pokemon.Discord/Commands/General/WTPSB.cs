@@ -22,20 +22,19 @@ namespace SysBot.Pokemon.Discord
         
         public static bool buttonpressed = false;
         public static bool tradepokemon = false;
-     
+        public static PokeTradeHub<PK8> Hub = SysCordInstance.Self.Hub;
         public static GameVersion Game = GameVersion.GE;
         public static string guess = "";
         public static SocketUser usr;
         public static int randspecies;
         public static SocketInteractionContext con;
-        [SlashCommand("wtpstart","owner only")]
-        [RequireOwner]
-        public async Task WhoseThatPokemon()
+     
+        public static async Task WhoseThatPokemon()
         {
-            ITextChannel wtpchannel = (ITextChannel)Context.Channel;
+            ITextChannel wtpchannel = (ITextChannel)SysCord._client.GetChannelAsync(Hub.Config.Discord.wtpchannelid).Result;
             await wtpchannel.ModifyAsync(newname => newname.Name = wtpchannel.Name.Replace("❌", "✅"));
             await wtpchannel.AddPermissionOverwriteAsync(wtpchannel.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Allow));
-            await RespondAsync("\"who's that pokemon\" mode started!",ephemeral:true);
+            await wtpchannel.SendMessageAsync("\"who's that pokemon\" mode started!");
             while (!LetsGoTrades.wtpsource.IsCancellationRequested)
             {
                 Stopwatch sw = new();
@@ -51,7 +50,7 @@ namespace SysBot.Pokemon.Discord
                     embed.ImageUrl = $"https://logoassetsgame.s3.us-east-2.amazonaws.com/wtp/pokemon/{randspecies}q.png";
                 else
                     embed.ImageUrl = $"https://raw.githubusercontent.com/santacrab2/SysBot.NET/RNGstuff/finalimages/{randspecies}q.png";
-                await Context.Channel.SendMessageAsync(embed: embed.Build());
+                await wtpchannel.SendMessageAsync(embed: embed.Build());
                 while (guess.ToLower() != ((Species)randspecies).ToString().ToLower() && sw.ElapsedMilliseconds / 1000 < 600)
                 {
                     await Task.Delay(25);
@@ -64,14 +63,14 @@ namespace SysBot.Pokemon.Discord
                     embed.ImageUrl = $"https://logoassetsgame.s3.us-east-2.amazonaws.com/wtp/pokemon/{randspecies}a.png";
                 else
                     embed.ImageUrl = $"https://raw.githubusercontent.com/santacrab2/SysBot.NET/RNGstuff/finalimages/{randspecies}a.png";
-                await Context.Channel.SendMessageAsync(embed: embed.Build());
+                await wtpchannel.SendMessageAsync(embed: embed.Build());
               
                 if (guess.ToLower() == ((Species)randspecies).ToString().ToLower())
                 {
                     var compmessage = new ComponentBuilder().WithButton("Yes", "wtpyes",ButtonStyle.Success).WithButton("No", "wtpno", ButtonStyle.Danger);
                     var embedmes = new EmbedBuilder();
                     embedmes.AddField("Receive Pokemon?", $"Would you like to receive {(Species)randspecies} in your game?");
-                    await Context.Channel.SendMessageAsync($"<@{usr.Id}>",embed: embedmes.Build(), components: compmessage.Build());
+                    await wtpchannel.SendMessageAsync($"<@{usr.Id}>",embed: embedmes.Build(), components: compmessage.Build());
 
                     while (!buttonpressed)
                     {
@@ -147,7 +146,7 @@ namespace SysBot.Pokemon.Discord
             await wtpchannel.AddPermissionOverwriteAsync(wtpchannel.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Deny));
         }
 
-        private int[] GetPokedex()
+        public static int[] GetPokedex()
         {
             List<int> dex = new();
             for (int i = 1; i < (Game == GameVersion.BDSP ? 494 : Game == GameVersion.SWSH? 899:Game == GameVersion.GE? 152:906); i++)

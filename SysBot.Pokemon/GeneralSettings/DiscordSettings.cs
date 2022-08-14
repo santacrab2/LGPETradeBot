@@ -45,5 +45,9 @@ namespace SysBot.Pokemon
 
         [Category(Operation), Description("Comma separated channel IDs that will echo the log bot data.")]
         public string LoggingChannels { get; set; } = string.Empty;
+        [Category(Operation), Description("wtp bool")]
+        public bool wtpbool { get; set; } = true;
+        [Category(Operation), Description("wtp channel")]
+        public ulong wtpchannelid { get; set; } = 0;
     }
 }

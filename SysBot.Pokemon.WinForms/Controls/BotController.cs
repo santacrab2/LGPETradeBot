@@ -213,6 +213,8 @@ namespace SysBot.Pokemon.WinForms
                                 await tradechan.SendMessageAsync("<@&898901020678176839>",embed: offembed.Build());
                             }
                         }
+                        if (Discord.TradeModule.Hub.Config.Discord.wtpbool)
+                            Discord.WTPSB.WhoseThatPokemon();
                     }
                 }
                 if (cmd == BotControlCommand.Stop)

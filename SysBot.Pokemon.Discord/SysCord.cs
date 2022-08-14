@@ -25,7 +25,7 @@ namespace SysBot.Pokemon.Discord
     {
        
         public static DiscordSocketClient _client;
-        public readonly PokeTradeHub<PK8> Hub;
+        public  PokeTradeHub<PK8> Hub;
 
         // Keep the CommandService and DI container around for use with commands.
         // These two types require you install the Discord.Net.Commands package.
