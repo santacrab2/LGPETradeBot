@@ -214,11 +214,11 @@ namespace SysBot.Pokemon.Discord
 
             try
             {
-                var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GG,7);
+                var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE,7);
                 var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
                 var pkm = sav.GetLegalFromSet(set, out var result);
                 pkm = pkm.Legalize();
-                if (pkm.Species == 151)
+                if (pkm.Species == 151 || pkm.Species == 150)
                     pkm.SetAwakenedValues(set, true);
                
                 var spec = GameInfo.Strings.Species[set.Species];
@@ -229,7 +229,10 @@ namespace SysBot.Pokemon.Discord
                     var imsg = $"Oops! {reason}";
                     if (result == LegalizationResult.Failed || !new LegalityAnalysis(pkm).Valid)
                         imsg += $"\n{AutoLegalityWrapper.GetLegalizationHint(set, sav, pkm)}";
-                    await FollowupAsync(imsg).ConfigureAwait(false);
+                    string temppokewait2 = $"{Path.GetTempPath()}//{pkm.FileName}";
+                    File.WriteAllBytes(temppokewait2, pkm.DecryptedBoxData);
+                    await FollowupWithFileAsync(temppokewait2, pkm.FileName, "Here is your illegal pk file");
+                    File.Delete(temppokewait2);
                     return;
                 }
                 if (pkm.PartyStatsPresent)
