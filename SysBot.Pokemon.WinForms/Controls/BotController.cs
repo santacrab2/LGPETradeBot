@@ -88,28 +88,7 @@ namespace SysBot.Pokemon.WinForms
             if (!b.IsRunning)
             {
                
-                    var chanarray = Discord.TradeModule.Hub.Config.TradeBot.tradebotchannel.Split(',');
-                    foreach (string c in chanarray)
-                    {
-                        ulong.TryParse(c, out var tchan);
-                        var tradechan = (ITextChannel)Discord.SysCord._client.GetChannelAsync(tchan).Result;
-                        if (!tradechan.Name.Contains("❌"))
-                        {
-                            var role = tradechan.Guild.EveryoneRole;
-                            await tradechan.AddPermissionOverwriteAsync(role, new OverwritePermissions(sendMessages: PermValue.Deny));
-                            await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌");
-                            var offembed = new EmbedBuilder();
-                            offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Offline");
-                            await tradechan.SendMessageAsync(embed: offembed.Build());
-                        }
-                    }
-                var wtpchan = (ITextChannel)Discord.SysCord._client.GetChannelAsync(961071583747776532).Result;
-                if (wtpchan.Name.Contains("✅"))
-                {
-                    await wtpchan.ModifyAsync(x => x.Name = wtpchan.Name.Replace("✅", "❌"));
-                    await wtpchan.AddPermissionOverwriteAsync(wtpchan.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Deny));
-                    LetsGoTrades.wtpsource.Cancel();
-                }
+                   
 
                 PB_Lamp.BackColor = System.Drawing.Color.Transparent;
                 return;
