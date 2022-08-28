@@ -226,7 +226,7 @@ namespace SysBot.Pokemon
             {
                 PK8 pk = new PK8
                 {
-                    Species = (int)species,
+                    Species = (ushort)species,
                     Form = data[2],
                     CurrentLevel = data[4],
                     Met_Level = data[4],

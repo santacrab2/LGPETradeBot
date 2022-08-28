@@ -74,10 +74,10 @@ namespace SysBot.Pokemon
                 speciescombo = await LGReadSpeciesCombo(token).ConfigureAwait(false);
                 if ((speciescombo != (uint)Hub.Config.LGPE_OverworldScan.ChainSpecies) && (Hub.Config.LGPE_OverworldScan.ChainSpecies != 0))
                 {
-                    Log($"Current catch combo being on {(speciescombo == 0 ? "None" : SpeciesName.GetSpeciesName((int)speciescombo, 2))}, changing to {Hub.Config.LGPE_OverworldScan.ChainSpecies}.");
+                    Log($"Current catch combo being on {(speciescombo == 0 ? "None" : SpeciesName.GetSpeciesName((ushort)speciescombo, 2))}, changing to {Hub.Config.LGPE_OverworldScan.ChainSpecies}.");
                     await LGEditSpeciesCombo((uint)Hub.Config.LGPE_OverworldScan.ChainSpecies, token).ConfigureAwait(false);
                     speciescombo = await LGReadSpeciesCombo(token).ConfigureAwait(false);
-                    Log($"Current catch combo being now on {(speciescombo == 0 ? "None" : SpeciesName.GetSpeciesName((int)speciescombo, 2))}.");
+                    Log($"Current catch combo being now on {(speciescombo == 0 ? "None" : SpeciesName.GetSpeciesName((ushort)speciescombo, 2))}.");
                 }
             }
                 
@@ -143,7 +143,7 @@ namespace SysBot.Pokemon
                                     Counts.AddLGPELegendaryScans();
                                 else
                                     Counts.AddLGPEOverworldScans();
-                                Log($"New spawn ({encounterCount}): {newspawn} {SpeciesName.GetSpeciesName((int)newspawn, 4)}");
+                                Log($"New spawn ({encounterCount}): {newspawn} {SpeciesName.GetSpeciesName((ushort)newspawn, 4)}");
                             }
                             prev = newspawn;
                             if (!searchforshiny &&
@@ -185,14 +185,14 @@ namespace SysBot.Pokemon
                     Counts.AddLGPEOverworldScans();
 
                 if (!found && !token.IsCancellationRequested)
-                    Log($"New spawn ({encounterCount}): {newspawn} Shiny {SpeciesName.GetSpeciesName((int)newspawn, 4)}");
+                    Log($"New spawn ({encounterCount}): {newspawn} Shiny {SpeciesName.GetSpeciesName((ushort)newspawn, 4)}");
                 else if (found && !token.IsCancellationRequested)
                 {
                     await ResetStick(token).ConfigureAwait(false);
                     if (!String.IsNullOrEmpty(Hub.Config.Discord.UserTag))
-                        Log($"<@{Hub.Config.Discord.UserTag}> Shiny Target {SpeciesName.GetSpeciesName((int)newspawn, 4)} found!");
+                        Log($"<@{Hub.Config.Discord.UserTag}> Shiny Target {SpeciesName.GetSpeciesName((ushort)newspawn, 4)} found!");
                     else
-                        Log($"Shiny Target {SpeciesName.GetSpeciesName((int)newspawn, 4)} found!");
+                        Log($"Shiny Target {SpeciesName.GetSpeciesName((ushort)newspawn, 4)} found!");
                     await Click(X, 1_000, token).ConfigureAwait(false);
                     await Click(HOME, 1_000, token).ConfigureAwait(false);
                     return;

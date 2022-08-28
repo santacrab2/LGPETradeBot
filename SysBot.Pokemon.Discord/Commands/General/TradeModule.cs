@@ -54,7 +54,7 @@ namespace SysBot.Pokemon.Discord
                     var pkm = sav.GetLegalFromSet(set, out var res);
                     pkm = pkm.Legalize();
                     if (pkm.Species == 151)
-                        pkm.SetAwakenedValues(set, true);
+                        pkm.SetAwakenedValues(set);
                     var la = new LegalityAnalysis(pkm);
                     var spec = GameInfo.Strings.Species[set.Species];
             
@@ -219,7 +219,7 @@ namespace SysBot.Pokemon.Discord
                 var pkm = sav.GetLegalFromSet(set, out var result);
                 pkm = pkm.Legalize();
                 if (pkm.Species == 151 || pkm.Species == 150)
-                    pkm.SetAwakenedValues(set, true);
+                    pkm.SetAwakenedValues(set);
                
                 var spec = GameInfo.Strings.Species[set.Species];
           

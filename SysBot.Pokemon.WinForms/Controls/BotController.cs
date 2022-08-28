@@ -87,8 +87,22 @@ namespace SysBot.Pokemon.WinForms
             var lastTime = bot.LastTime;
             if (!b.IsRunning)
             {
-               
-                   
+                var chanarray = Discord.TradeModule.Hub.Config.TradeBot.tradebotchannel.Split(',');
+                foreach (string c in chanarray)
+                {
+                    ulong.TryParse(c, out var tchan);
+                    var tradechan = (ITextChannel)Discord.SysCord._client.GetChannel(tchan);
+                    if (tradechan.Name != $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌")
+                    {
+                        var role = tradechan.Guild.EveryoneRole;
+                        await tradechan.AddPermissionOverwriteAsync(role, new OverwritePermissions(sendMessages: PermValue.Deny));
+                        await tradechan.ModifyAsync(prop => prop.Name = $"{Discord.TradeModule.Hub.Config.TradeBot.channelname}❌");
+                        var offembed = new EmbedBuilder();
+                        offembed.AddField($"{Discord.SysCord._client.CurrentUser.Username} Bot Announcement", "LGPE Trade Bot is Offline");
+                        await tradechan.SendMessageAsync(embed: offembed.Build());
+                    }
+                }
+
 
                 PB_Lamp.BackColor = System.Drawing.Color.Transparent;
                 return;

@@ -21,13 +21,17 @@
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
     <ProjectReference Include="..\SysBot.Pokemon\SysBot.Pokemon.csproj" />
   </ItemGroup>
+
   <ItemGroup>
-	  <Reference Include="PKHeX.Core.AutoMod">
-		  <HintPath>deps\PKHeX.Core.AutoMod.dll</HintPath>
-	  </Reference>
-	  <Reference Include="PKHeX.Drawing">
-		  <HintPath>deps\PKHeX.Drawing.dll</HintPath>
-	  </Reference>
+    <Reference Include="PKHeX.Core.AutoMod">
+      <HintPath>..\SysBot.Pokemon\deps\PKHeX.Core.AutoMod.dll</HintPath>
+    </Reference>
+    <Reference Include="PKHeX.Drawing">
+      <HintPath>..\SysBot.Pokemon\deps\PKHeX.Drawing.dll</HintPath>
+    </Reference>
+    <Reference Include="PKHeX.Drawing.PokeSprite">
+      <HintPath>..\SysBot.Pokemon\deps\PKHeX.Drawing.PokeSprite.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

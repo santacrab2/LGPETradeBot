@@ -8,8 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="deps\PKHeX.Core.AutoMod.dll" />
     <None Remove="PKHeX.Core.AutoMod.dll" />
     <None Remove="PKHeX.Drawing.dll" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="deps\PKHeX.Core.AutoMod.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -17,10 +24,6 @@
     <PackageReference Include="PKHeX.Core" Version="22.6.26" />
     <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
     <ProjectReference Include="..\SysBot.Base\SysBot.Base.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="deps\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,11 +39,6 @@
     <Resource Include="PKHeX.Drawing.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Update="deps\PKHeX.Core.AutoMod.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

@@ -26,7 +26,7 @@ namespace SysBot.Pokemon.Discord
         public static GameVersion Game = GameVersion.GE;
         public static string guess = "";
         public static SocketUser usr;
-        public static int randspecies;
+        public static ushort randspecies;
         public static SocketInteractionContext con;
      
         public static async Task WhoseThatPokemon()
@@ -92,7 +92,7 @@ namespace SysBot.Pokemon.Discord
                             pk = pk.Legalize();
                         }
                         pk.Ball = BallApplicator.ApplyBallLegalByColor(pk);
-                        int[] sugmov = MoveSetApplicator.GetMoveSet(pk, true);
+                        ushort[] sugmov = MoveSetApplicator.GetMoveSet(pk, true);
                         pk.SetMoves(sugmov);
                         int natue = random.Next(24);
                         pk.Nature = natue;
@@ -146,10 +146,10 @@ namespace SysBot.Pokemon.Discord
             await wtpchannel.AddPermissionOverwriteAsync(wtpchannel.Guild.EveryoneRole, new OverwritePermissions(sendMessages: PermValue.Deny));
         }
 
-        public static int[] GetPokedex()
+        public static ushort[] GetPokedex()
         {
-            List<int> dex = new();
-            for (int i = 1; i < (Game == GameVersion.BDSP ? 494 : Game == GameVersion.SWSH? 899:Game == GameVersion.GE? 152:906); i++)
+            List<ushort> dex = new();
+            for (ushort i = 1; i < (Game == GameVersion.BDSP ? 494 : Game == GameVersion.SWSH? 899:Game == GameVersion.GE? 152:906); i++)
             {
                 
                 if (!PersonalTable.GG.IsPresentInGame(i, 0))

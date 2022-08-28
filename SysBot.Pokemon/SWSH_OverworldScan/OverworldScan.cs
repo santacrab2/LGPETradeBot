@@ -175,7 +175,7 @@ namespace SysBot.Pokemon
                     await Click(R, 2_000, token).ConfigureAwait(false);
                     await Click(A, 5_000, token).ConfigureAwait(false);
                     await Click(X, 2_000, token).ConfigureAwait(false);
-                    Log($"The overworld encounter has been found. The progresses has been saved and the game is paused, you can now go and catch {SpeciesName.GetSpeciesName((int)dexn, 2)}");
+                    Log($"The overworld encounter has been found. The progresses has been saved and the game is paused, you can now go and catch {SpeciesName.GetSpeciesName((ushort)dexn, 2)}");
                     return;
                 }                    
             } 
