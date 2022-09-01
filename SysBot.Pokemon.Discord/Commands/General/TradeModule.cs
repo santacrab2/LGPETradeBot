@@ -44,14 +44,14 @@ namespace SysBot.Pokemon.Discord
                 }
                 
                 var set = await ConvertToShowdown(ShowdownSet);
-              
+                RegenTemplate rset = new(set);
            
 
                 try
                 {
                     var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE, 7);
                     var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
-                    var pkm = sav.GetLegalFromSet(set, out var res);
+                    var pkm = sav.GetLegalFromSet(rset, out var res);
                     pkm = pkm.Legalize();
                     if (pkm.Species == 151)
                         pkm.SetAwakenedValues(set);
@@ -208,7 +208,7 @@ namespace SysBot.Pokemon.Discord
             await DeferAsync();
            
             var set = await ConvertToShowdown(ShowdownSet);
-           
+            RegenTemplate rset = new(set);
              
   
 
@@ -216,8 +216,8 @@ namespace SysBot.Pokemon.Discord
             {
                 var trainer = TrainerSettings.GetSavedTrainerData(GameVersion.GE,7);
                 var sav = SaveUtil.GetBlankSAV((GameVersion)trainer.Game, trainer.OT);
-                var pkm = sav.GetLegalFromSet(set, out var result);
-                pkm = pkm.Legalize();
+                var pkm = sav.GetLegalFromSet(rset, out var result);
+        
                 if (pkm.Species == 151 || pkm.Species == 150)
                     pkm.SetAwakenedValues(set);
                
