@@ -79,14 +79,14 @@ namespace SysBot.Pokemon.Discord
                     if (tradepokemon)
                     {
                         var set = new ShowdownSet($"{SpeciesName.GetSpeciesNameGeneration(randspecies,2,7)}\nShiny: Yes");
-                        var template = AutoLegalityWrapper.GetTemplate(set);
+                        var template = new RegenTemplate(set);
                         var sav = SaveUtil.GetBlankSAV(GameVersion.GE,"Piplup");
                         var pk = sav.GetLegalFromSet(template, out var result);
                         pk = pk.Legalize();
                         if (!new LegalityAnalysis(pk).Valid)
                         {
                             set = new ShowdownSet(SpeciesName.GetSpeciesNameGeneration(randspecies, 2, 7));
-                            template = AutoLegalityWrapper.GetTemplate(set);
+                            template = new RegenTemplate(set);
                             sav = SaveUtil.GetBlankSAV(GameVersion.GE, "Piplup");
                             pk = sav.GetLegalFromSet(template, out result);
                             pk = pk.Legalize();
