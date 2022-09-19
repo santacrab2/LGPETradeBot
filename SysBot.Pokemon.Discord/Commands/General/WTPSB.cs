@@ -96,14 +96,11 @@ namespace SysBot.Pokemon.Discord
                         pk.SetMoves(sugmov);
                         int natue = random.Next(24);
                         pk.Nature = natue;
-                       
 
-                        LetsGoTrades.discordname.Enqueue(con.User);
-                        LetsGoTrades.discordID.Enqueue(con.User.Id);
-                        LetsGoTrades.Channel.Enqueue(con.Channel);
-                        LetsGoTrades.tradepkm.Enqueue(pk);
-                        LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{con.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Context))}");
+
+                        var queueitem = new TheQobject { commandtype = LetsGoTrades.commandtype.trade, discordcontext = con, tradepkm = (PB7)pk };
+                        LetsGoTrades.TheQ.Enqueue(queueitem);
+                        await con.Interaction.ModifyOriginalResponseAsync(x => x.Content = $"{con.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.TheQ.Count}. Receiving: {(pk.IsShiny ? "Shiny" : "")} {(Species)pk.Species}{(pk.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pk.Form, GameInfo.Strings, pk.Species, pk.Context))}");
                     }
                     usr = null;
                     guess = "";
@@ -120,7 +117,7 @@ namespace SysBot.Pokemon.Discord
         public async Task WTPguess([Summary("pokemon","put the pokemon name here")]string userguess)
         {
             await DeferAsync();
-            if (LetsGoTrades.discordID.Contains(Context.User.Id))
+            if (LetsGoTrades.TheQ.Any(z => z.discordcontext.User == Context.User))
             {
                 await FollowupAsync("please wait until you are out of queue to guess to avoid double queueing.");
                 return;

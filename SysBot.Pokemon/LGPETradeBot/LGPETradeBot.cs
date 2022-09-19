@@ -19,7 +19,13 @@ using System.Diagnostics;
 
 namespace SysBot.Pokemon
 {
-
+    public class TheQobject
+    {
+        public IInteractionContext discordcontext { get; set; }
+      
+        public PB7 tradepkm { get; set; }
+        public LetsGoTrades.commandtype commandtype { get; set; }
+    }
     public class LetsGoTrades : PokeRoutineExecutor
     {
 
@@ -27,11 +33,7 @@ namespace SysBot.Pokemon
         public static SAV7b sav = new();
         public static PB7 pkm = new();
         public static PokeTradeHub<PK8> Hub;
-        public static Queue discordname = new();
-        public static Queue Channel = new();
-        public static Queue discordID = new();
-        public static Queue tradepkm = new();
-        public static Queue Commandtypequ = new();
+        public static Queue<TheQobject> TheQ = new();
         public static int initialloop = 0;
         int passes = 0;
         public LetsGoTrades(PokeTradeHub<PK8> hub, PokeBotState cfg) : base(cfg)
@@ -109,7 +111,7 @@ namespace SysBot.Pokemon
             {
                 
                 int waitCounter = 0;
-                while (tradepkm.Count == 0 && !Hub.Config.TradeBot.distribution)
+                while (TheQ.Count == 0 && !Hub.Config.TradeBot.distribution)
                 {
                     
                    
@@ -119,7 +121,7 @@ namespace SysBot.Pokemon
                     await Task.Delay(1_000, token).ConfigureAwait(false);
 
                 }
-                while (tradepkm.Count == 0 && Hub.Config.TradeBot.distribution)
+                while (TheQ.Count == 0 && Hub.Config.TradeBot.distribution)
                 {
                     
                     Log("Starting Distribution");
@@ -368,7 +370,7 @@ namespace SysBot.Pokemon
                     initialloop++;
                     continue;
                 }
-                if (tradepkm.Count == 0)
+                if (TheQ.Count == 0)
                     continue;
                 Log("starting a trade sequence");
                
@@ -386,11 +388,11 @@ namespace SysBot.Pokemon
                 var code2 = System.Drawing.Image.FromFile($"{System.IO.Directory.GetCurrentDirectory()}//code2.png");
                 var finalpic = Merge(code0, code1, code2);
                 finalpic.Save($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
-                var user = (IUser)discordname.Peek();
+                var user = TheQ.Dequeue();
                 var filename = System.IO.Path.GetFileName($"{System.IO.Directory.GetCurrentDirectory()}//finalcode.png");
                 var lgpeemb = new EmbedBuilder().WithTitle($"{code[0]}, {code[1]}, {code[2]}").WithImageUrl($"attachment://{filename}").Build();
-                await user.SendFileAsync(filename,text: $"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:", embed: lgpeemb);
-                var pkm =(PB7)tradepkm.Peek();
+                await user.discordcontext.User.SendFileAsync(filename,text: $"My IGN is {Connection.Label.Split('-')[0]}\nHere is your link code:", embed: lgpeemb);
+                var pkm =user.tradepkm;
                 if (pkm != null)
                 {
                     var slotofs = GetSlotOffset(1, 0);
@@ -398,22 +400,7 @@ namespace SysBot.Pokemon
                     await Connection.WriteBytesAsync(pkm.EncryptedBoxData.Slice(0, StoredLength), BoxSlot1, token);
                     await Connection.WriteBytesAsync(pkm.EncryptedBoxData.AsSpan(StoredLength).ToArray(), (uint)(slotofs + StoredLength + 0x70), token);
                 }
-                else
-                {
-                   
-                    read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    while (read[0] != overworld)
-                    {
-                        await Click(B, 1000, token);
-                        read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
-                    }
-                    discordID.Dequeue();
-                    discordname.Dequeue();
-                    Channel.Dequeue();
-                    tradepkm.Dequeue();
-                    Commandtypequ.Dequeue();
-                    continue;
-                }
+             
                 await SetController(token);
                 for (int i = 0; i < 3; i++)
                     await Click(A, 1000, token);
@@ -524,8 +511,8 @@ namespace SysBot.Pokemon
                         await SetStick(SwitchStick.RIGHT, 0, 0, 0, token).ConfigureAwait(false);
                     }
                 }
-                Log($"Searching for user {discordname.Peek()}");
-                await user.SendMessageAsync("searching for you now, you have 45 seconds to match").ConfigureAwait(false);
+                Log($"Searching for user {user.discordcontext.User.Username}");
+                await user.discordcontext.User.SendMessageAsync("searching for you now, you have 45 seconds to match").ConfigureAwait(false);
                 await Task.Delay(3000);
                 btimeout.Restart();
             
@@ -535,7 +522,7 @@ namespace SysBot.Pokemon
                     await Task.Delay(100);
                     if (btimeout.ElapsedMilliseconds >= 45_000)
                     {
-                        await user.SendMessageAsync("I could not find you, please try again!");
+                        await user.discordcontext.User.SendMessageAsync("I could not find you, please try again!");
                         Log("User not found");
                         nofind = true;
                         read = await SwitchConnection.ReadBytesMainAsync(ScreenOff, 1, token);
@@ -550,11 +537,7 @@ namespace SysBot.Pokemon
                 if (nofind)
                 {
                     System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
-                    discordID.Dequeue();
-                    discordname.Dequeue();
-                    Channel.Dequeue();
-                    tradepkm.Dequeue();
-                    Commandtypequ.Dequeue();
+                  
                     continue;
 
                 }
@@ -563,7 +546,7 @@ namespace SysBot.Pokemon
                 await Task.Delay(10000);
               
                 System.IO.File.Delete($"{System.IO.Directory.GetCurrentDirectory()}/Block.png");
-                commandtype command = (commandtype)Commandtypequ.Peek();
+                commandtype command = user.commandtype;
                 if (command == commandtype.trade)
                 {
                     var tradepartnersav = new SAV7b();
@@ -575,25 +558,25 @@ namespace SysBot.Pokemon
                     if (tradepartnersav.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.discordcontext.User.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
                     if(tradepartnersav2.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.discordcontext.User.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
                     while (BitConverter.ToUInt16(await SwitchConnection.ReadBytesMainAsync(ScreenOff, 2, token), 0) == Boxscreen)
                     {
                         await Click(A, 1000, token);
                     }
-                    await user.SendMessageAsync("You have 15 seconds to select your trade pokemon");
+                    await user.discordcontext.User.SendMessageAsync("You have 15 seconds to select your trade pokemon");
                     Log("waiting on trade screen");
 
                     await Task.Delay(15_000).ConfigureAwait(false);
 
 
                     await Click(A, 200, token).ConfigureAwait(false);
-                    await user.SendMessageAsync("trading...");
+                    await user.discordcontext.User.SendMessageAsync("trading...");
                     Log("trading...");
                     await Task.Delay(15000);
                     while (await LGIsInTrade(token))
@@ -666,20 +649,16 @@ namespace SysBot.Pokemon
                         var tpfile = System.IO.Path.GetTempFileName().Replace(".tmp", "." + returnpk.Extension);
                         tpfile = tpfile.Replace("tmp", returnpk.FileNameWithoutExtension);
                         System.IO.File.WriteAllBytes(tpfile, writepoke);
-                        await user.SendFileAsync(tpfile, "here is the pokemon you traded me");
+                        await user.discordcontext.User.SendFileAsync(tpfile, "here is the pokemon you traded me");
                         System.IO.File.Delete(tpfile);
-                        Log($"{discordname.Peek()} completed their trade");
+                        Log($"{user.discordcontext.User.Username} completed their trade");
                     }
                     else
                     {
-                        await user.SendMessageAsync("Something went wrong, no trade happened, please try again!");
-                        Log($"{discordname.Peek()} did not complete their trade");
+                        await user.discordcontext.User.SendMessageAsync("Something went wrong, no trade happened, please try again!");
+                        Log($"{user.discordcontext.User.Username} did not complete their trade");
                     }
-                    discordID.Dequeue();
-                    discordname.Dequeue();
-                    Channel.Dequeue();
-                    tradepkm.Dequeue();
-                    Commandtypequ.Dequeue();
+            
                     initialloop++;
                     await Task.Delay(2500);
                     continue;
@@ -695,20 +674,20 @@ namespace SysBot.Pokemon
                     if (tradepartnersav.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.discordcontext.User.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav.OT}, TID: {tradepartnersav.DisplayTID}, SID: {tradepartnersav.DisplaySID},Game: {(GameVersion)tradepartnersav.Game}");
                     }
                     if (tradepartnersav2.OT != sav.OT)
                     {
                         Log($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}");
-                        await user.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
+                        await user.discordcontext.User.SendMessageAsync($"Found Link Trade Parter: {tradepartnersav2.OT}, TID: {tradepartnersav2.DisplayTID}, SID: {tradepartnersav2.DisplaySID}, Game: {(GameVersion)tradepartnersav.Game}");
                     }
-                    await user.SendMessageAsync("Highlight the Pokemon in your box, you have 30 seconds");
+                    await user.discordcontext.User.SendMessageAsync("Highlight the Pokemon in your box, you have 30 seconds");
                     var offereddata = await SwitchConnection.ReadBytesAsync(OfferedPokemon, 0x104, token);
                     var offeredpbm = new PB7(offereddata);
                     byte[] writepoke = offeredpbm.EncryptedBoxData;
                     var tpfile = $"{System.IO.Path.GetTempPath()}//{offeredpbm.FileName}";
                     System.IO.File.WriteAllBytes(tpfile, writepoke);
-                    await user.SendFileAsync(tpfile, "here is the pokemon you showed me");
+                    await user.discordcontext.User.SendFileAsync(tpfile, "here is the pokemon you showed me");
                     System.IO.File.Delete(tpfile);
 
                     var quicktime = new Stopwatch();
@@ -722,13 +701,13 @@ namespace SysBot.Pokemon
                             writepoke = newofferedpbm.EncryptedBoxData;
                             tpfile = $"{System.IO.Path.GetTempPath()}//{newofferedpbm.FileName}";
                             System.IO.File.WriteAllBytes(tpfile, writepoke);
-                            await user.SendFileAsync(tpfile, "here is the pokemon you showed me");
+                            await user.discordcontext.User.SendFileAsync(tpfile, "here is the pokemon you showed me");
                             System.IO.File.Delete(tpfile);
                             offeredpbm = newofferedpbm;
                         }
 
                     }
-                    await user.SendMessageAsync("Time is up!");
+                    await user.discordcontext.User.SendMessageAsync("Time is up!");
                     await Click(B, 1000, token);
                     await Click(A, 1000, token);
                     Log("spamming b to get back to overworld");
@@ -744,11 +723,7 @@ namespace SysBot.Pokemon
                     await Click(B, 1000, token);
                     await Click(B, 1000, token);
                     Log("done spamming b");
-                    discordID.Dequeue();
-                    discordname.Dequeue();
-                    Channel.Dequeue();
-                    Commandtypequ.Dequeue();
-                    tradepkm.Dequeue();
+          
                     initialloop++;
                     await Task.Delay(2500);
                     continue;

@@ -30,7 +30,7 @@ namespace SysBot.Pokemon.Discord
             await DeferAsync();
             if (ShowdownSet != "")
             {
-                if (LetsGoTrades.discordID.Contains(Context.User.Id))
+                if (LetsGoTrades.TheQ.Any(z=>z.discordcontext.User == Context.User))
                 {
                     await FollowupAsync("you are already in queue",ephemeral:true);
                     return;
@@ -73,12 +73,9 @@ namespace SysBot.Pokemon.Discord
                         pkm.ResetPartyStats();
                     try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
                     catch { await FollowupAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
-                    LetsGoTrades.discordname.Enqueue(Context.User);
-                    LetsGoTrades.discordID.Enqueue(Context.User.Id);
-                    LetsGoTrades.Channel.Enqueue(Context.Channel);
-                    LetsGoTrades.tradepkm.Enqueue(pkm);
-                    LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-                    await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
+                    var queueitem = new TheQobject { commandtype = LetsGoTrades.commandtype.trade, discordcontext = Context, tradepkm = (PB7)pkm };
+                    LetsGoTrades.TheQ.Enqueue(queueitem);
+                    await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.TheQ.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
 
                 }
                 catch
@@ -89,7 +86,7 @@ namespace SysBot.Pokemon.Discord
             }
             if(Pb7 != default)
             {
-                if (LetsGoTrades.discordID.Contains(Context.User.Id))
+                if (LetsGoTrades.TheQ.Any(z => z.discordcontext.User == Context.User))
                 {
                     await FollowupAsync("you are already in queue",ephemeral:true);
                     return;
@@ -128,13 +125,10 @@ namespace SysBot.Pokemon.Discord
                 }
                 try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
                 catch { await FollowupAsync("Please enable direct messages from server members to be queued",ephemeral:true); return; };
-                LetsGoTrades.discordname.Enqueue(Context.User);
-                LetsGoTrades.discordID.Enqueue(Context.User.Id);
-                LetsGoTrades.Channel.Enqueue(Context.Channel);
-                LetsGoTrades.tradepkm.Enqueue(pkm);
-                LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.trade);
-             
-                await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.discordID.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
+                var queueitem = new TheQobject { commandtype = LetsGoTrades.commandtype.trade, discordcontext = Context, tradepkm = (PB7)pkm };
+                LetsGoTrades.TheQ.Enqueue(queueitem);
+
+                await FollowupAsync($"{Context.User.Username} - Added to the LGPE Link Trade Queue. Current Position: {LetsGoTrades.TheQ.Count}. Receiving: {(pkm.IsShiny ? "Shiny" : "")} {(Species)pkm.Species}{(pkm.Form == 0 ? "" : "-" + ShowdownParsing.GetStringFromForm(pkm.Form, GameInfo.Strings, pkm.Species, pkm.Context))}");
 
             
             }
@@ -159,13 +153,10 @@ namespace SysBot.Pokemon.Discord
             await DeferAsync();
             try { await Context.User.SendMessageAsync("I've added you to the queue! I'll message you here when your trade is starting."); }
             catch { await FollowupAsync("Please enable direct messages from server members to be queued", ephemeral: true); return; };
-            LetsGoTrades.discordname.Enqueue(Context.User);
-            LetsGoTrades.discordID.Enqueue(Context.User.Id);
-            LetsGoTrades.Channel.Enqueue(Context.Channel);
-            LetsGoTrades.tradepkm.Enqueue(null);
-            LetsGoTrades.Commandtypequ.Enqueue(LetsGoTrades.commandtype.dump);
+            var queueitem = new TheQobject { commandtype = LetsGoTrades.commandtype.trade, discordcontext = Context, tradepkm = null };
+            LetsGoTrades.TheQ.Enqueue(queueitem);
 
-            await FollowupAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.discordID.Count}.");
+            await FollowupAsync($"{Context.User.Username} - Added to the LGPE Dump Queue. Current Position: {LetsGoTrades.TheQ}.");
 
         }
         [SlashCommand("queue","shows the queue")]
@@ -173,7 +164,7 @@ namespace SysBot.Pokemon.Discord
         public async Task queue()
         {
             await DeferAsync();
-            Object[] arr = LetsGoTrades.discordname.ToArray();
+            var arr = LetsGoTrades.TheQ.ToArray();
             var sb = new System.Text.StringBuilder();
             var embed = new EmbedBuilder();
             if (arr.Length == 0)
@@ -184,7 +175,7 @@ namespace SysBot.Pokemon.Discord
             foreach (object i in arr)
             {
 
-                sb.AppendLine((r + 1).ToString() + ". " + arr[r].ToString());
+                sb.AppendLine((r + 1).ToString() + ". " + arr[r].discordcontext.User.Username);
                 r++;
             }
             embed.AddField(x =>
