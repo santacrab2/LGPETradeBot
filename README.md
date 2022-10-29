@@ -1,4 +1,4 @@
-# Santa's Lets Go Trade Bot Based on Manu's Encounter Bot
+# THIS REPOSITORY IS OUTDATED AND HAS BEEN ARCHIVED. I HAVE MERGED THIS MODE INTO MODERN DAY SYSBOT WITH ALL ITS MODERN DAY CONVENIENCES. FIND IT HERE. https://github.com/santacrab2/SysBot.NET/tree/LGPE
 
 ## Disclaimer: 
 This is a hobby personal side project. There are no releases, you will need to build yourself builds exactly the same way as standard sysbot. It has been updated with screen offsets. It has a trade evolution catch. There is one outstanding issue and that is occasionally it finds its way into "go for a stroll" and it kills the connection to botbase. This will be fixed once I figure out the pattern, feel free to open up jnoexes and see if you can figure out the pattern. Support for this Fork will not be given on the main PKHeX development server. 
